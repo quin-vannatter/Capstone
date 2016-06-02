@@ -1,4 +1,5 @@
  (function() {
+	var serverAddress = 'ws://142.156.124.159';
 	var isConnected = false;
 	var ws;
 	
@@ -8,7 +9,7 @@
 		} else {
 			console.log('Connecting...');
 			
-			ws = new WebSocket('ws://142.156.124.159');
+			ws = new WebSocket(serverAddress);
 					
 			ws.onopen = function () {
 				console.log('Connection opened.');
