@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace ServerConnections
 {
-    class TcpServer
+    public class TcpServer
     {
         // Buffer size default.
         private const int DEFAULT_BUFFER_SIZE = 500;
