@@ -1,4 +1,3 @@
-// Test
  (function() {
 	var isConnected = false;
 	var ws;
