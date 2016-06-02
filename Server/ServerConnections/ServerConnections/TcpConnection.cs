@@ -15,7 +15,6 @@ namespace ServerConnections
     {
         // Number of bytes for buffer size if size isn't supplied.
         private const int DEFAULT_BUFFER_SIZE = 500;
-        private readonly byte[] STOP_INDICATOR = {255, 255};
 
         // Client that handles everything in class.
         private TcpClient client;
@@ -122,7 +121,6 @@ namespace ServerConnections
             }
             catch
             {
-
                 // If there was an issue closing the connection, return false.
                 return false;
             }
