@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace ServerConnections
 {
-    class TcpConnection
+    public class TcpConnection
     {
         // Number of bytes for buffer size if size isn't supplied.
         private const int DEFAULT_BUFFER_SIZE = 500;
@@ -87,6 +87,13 @@ namespace ServerConnections
                     // Read data will be put in this buffer.
                     byte[] buffer = new byte[BufferSize];
                     client.GetStream().Read(buffer, 0, buffer.Length);
+
+                    // Checking to make sure buffer is valid.
+                    alive = false;
+                    foreach (byte value in buffer) alive = alive || value != 0;
+
+                    // Trigger the event.
+                    if (alive) ReadData(buffer);
                 }
                 catch
                 {
@@ -98,6 +105,26 @@ namespace ServerConnections
 
             // Indicate that the connection is closed.
             ConnectionClosed();
+        }
+
+        /// <summary>
+        /// Writes data to the stream of the TCP client.
+        /// </summary>
+        /// <param name="data">Data being written to the client.</param>
+        public bool WriteData(byte [] data)
+        {
+            try
+            {
+                // Write to the client stream.
+                client.GetStream().Write(data, 0, data.Length);
+                return true;
+            }
+            catch
+            {
+                // If there was an issue, indicate the connection is dead. Return false.
+                alive = false;
+                return false;
+            }
         }
         
         /// <summary>
