@@ -15,7 +15,7 @@
 			isConnected = true;
 					
 			ws.onopen = function () {
-				console.log('Connection opened.');
+				console.log('Connection established.');
 			};
 			
 			ws.onmessage = function (evt) {
@@ -67,8 +67,10 @@
 		}
 	}
 	
-	document.onreadystatechange = function() { 
-		if (document.readyState == 'interactive') {
+	initClient = function() { 
+		if (!window.WebSocket) {
+			console.log('Browser does not support WebSockets.');
+		} else {		
 			document.getElementById('connect').addEventListener('click', connect);
 			document.getElementById('move').addEventListener('click', move);
 			document.getElementById('shoot').addEventListener('click', shoot);
