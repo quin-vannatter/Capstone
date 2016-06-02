@@ -2,42 +2,71 @@
 	var isConnected = false;
 	var ws;
 	
-	ws.onopen = function () {
-		console.log('Opening...')
-		ws.send('Test send.');
-	};
-	
-	ws.onmessage = function (evt) { 
-	  var received_msg = evt.data;
-	  console.log("Message is received...");
-	  console.log(received_msg);
-	};
-
-	ws.onclose = function()	{ 
-	  console.log("Connection is closed..."); 
-	};
-   
 	function connect() {
 		if (isConnected) {
 			console.log('Already connected.');
 		} else {
-			ws = new WebSocket("ws://142.156.124.159");
+			console.log('Connecting...');
+			
+			ws = new WebSocket('ws://142.156.124.159');
+					
+			ws.onopen = function () {
+				console.log('Connection opened.');
+			};
+			
+			ws.onmessage = function (evt) {
+				var received_msg = evt.data;
+
+				console.log('Message received:');
+				console.log(received_msg);
+			};
+			
+			ws.error = function (evt) {
+				var received_msg = evt.data;
+
+				console.log('Error received:');
+				console.log(received_msg);
+			};
+
+			ws.onclose = function()	{ 
+				console.log('Connection is closed.');
+			};
 		}
 	}
 
 	function move() {
-		console.log('moving');
+		sendMessage('move');
 	}
 
 	function shoot() {
-		console.log('shooting');
+		sendMessage('shoot');
+	}
+	
+	function disconnect() {
+		if (!isConnected) {
+			console.log('Not connected.');
+		} else {
+			console.log('Closing connection...');
+			
+			ws.close();
+		}
 	}
 
+	function sendMessage(message) {
+		if (!isConnected) {
+			console.log('Not connected.');
+		} else {
+			console.log('Sending message: ' + message);
+			ws.send(message);
+		}
+	}
+	
 	document.onreadystatechange = function() { 
-		if (document.readyState == "interactive") {
-			document.getElementById("connect").addEventListener('click', connect);
-			document.getElementById("move").addEventListener('click', move);
-			document.getElementById("shoot").addEventListener('click', shoot);
+		if (document.readyState == 'interactive') {
+			document.getElementById('connect').addEventListener('click', connect);
+			document.getElementById('move').addEventListener('click', move);
+			document.getElementById('shoot').addEventListener('click', shoot);
+			document.getElementById('disconnect').addEventListener('click', disconnect);
 		}
 	};
 }());
