@@ -1,7 +1,9 @@
  (function() {
-	var serverAddress = 'ws://142.156.124.159';
+	var serverAddress = 'ws://142.156.124.159:70';
 	var isConnected = false;
 	var ws;
+	
+	var shotCount = 0;
 	
 	function connect() {
 		if (isConnected) {
@@ -10,6 +12,7 @@
 			console.log('Connecting...');
 			
 			ws = new WebSocket(serverAddress);
+			isConnected = true;
 					
 			ws.onopen = function () {
 				console.log('Connection opened.');
@@ -31,6 +34,7 @@
 
 			ws.onclose = function()	{ 
 				console.log('Connection is closed.');
+				isConnected = false;
 			};
 		}
 	}
@@ -40,7 +44,8 @@
 	}
 
 	function shoot() {
-		sendMessage('shoot');
+		shotCount++;
+		sendMessage('shoot: ' + shotCount);
 	}
 	
 	function disconnect() {
