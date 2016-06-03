@@ -159,7 +159,10 @@ namespace ServerConnections
         /// <param name="data">Data that is recieved from the client.</param>
         private void ReadData(byte [] data)
         {
-            ReadDataEvent?.Invoke(this, data);
+            //ReadDataEvent?.Invoke(this, data);
+
+            // 4.5 Framework.
+            if(ReadDataEvent != null) ReadDataEvent(this, data);
         }
 
         /// <summary>
@@ -167,7 +170,10 @@ namespace ServerConnections
         /// </summary>
         private void ConnectionClosed()
         {
-            ConnectionClosedEvent?.Invoke(this);
+            //ConnectionClosedEvent?.Invoke(this);
+
+            // 4.5 Framework.
+            if(ConnectionClosedEvent != null) ConnectionClosedEvent(this);
         }
     }
 }

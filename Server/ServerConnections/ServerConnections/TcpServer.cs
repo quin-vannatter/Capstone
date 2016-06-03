@@ -108,7 +108,10 @@ namespace ServerConnections
         /// <param name="client">Client returned from the listener.</param>
         private void ClientConnect(TcpClient client)
         {
-            ClientConnectEvent?.Invoke(this, new TcpConnection(client, BufferSize));
+            //ClientConnectEvent?.Invoke(this, new TcpConnection(client, BufferSize));
+
+            // 4.5 Framework.
+            if (ClientConnectEvent != null) ClientConnectEvent(this, new TcpConnection(client, BufferSize));
         }
 
         /// <summary>
@@ -116,7 +119,10 @@ namespace ServerConnections
         /// </summary>
         private void ConnectionClosed()
         {
-            ConnectionClosedEvent?.Invoke(this);
+            //ConnectionClosedEvent?.Invoke(this);
+
+            // 4.5 Framework.
+            if (ConnectionClosedEvent != null) ConnectionClosedEvent(this);
         }
     }
 }
