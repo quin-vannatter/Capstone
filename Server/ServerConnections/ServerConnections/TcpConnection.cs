@@ -16,6 +16,9 @@ namespace ServerConnections
         // Number of bytes for buffer size if size isn't supplied.
         private const int DEFAULT_BUFFER_SIZE = 500;
 
+        // Number of times empty buffers can be sent untill the connection is considered closed.
+        private const int EMPTY_BUFFER_COUNT = 10;
+
         // Client that handles everything in class.
         private TcpClient client;
 
@@ -24,6 +27,9 @@ namespace ServerConnections
 
         // If the connection is still alive.
         private bool alive;
+
+        // Count for empty buffers.
+        private int emptyBufferCount;
 
         // Event handlers.
         public delegate void ReadDataHandler(object sender, byte[] data);
@@ -44,6 +50,9 @@ namespace ServerConnections
             // Create the TCP cleint.
             client = new TcpClient();
 
+            // Set empty buffer count.
+            emptyBufferCount = 0;
+
             // Connect to the destination.
             client.Connect(hostName, port);
 
@@ -52,6 +61,9 @@ namespace ServerConnections
 
             // Client connection is alive.
             alive = true;
+
+            // Start the thread to check for read data.
+            new Thread(new ThreadStart(TcpWait)).Start();
         }
 
         /// <summary>
@@ -66,6 +78,9 @@ namespace ServerConnections
 
             // Set the buffer size.
             BufferSize = bufferSize;
+
+            // Set empty buffer count.
+            emptyBufferCount = 0;
 
             // Client connection is alive.
             alive = true;
@@ -91,6 +106,19 @@ namespace ServerConnections
                     // Checking to make sure buffer is valid.
                     alive = false;
                     foreach (byte value in buffer) alive = alive || value != 0;
+
+                    if(!alive)
+                    {
+                        if (emptyBufferCount < EMPTY_BUFFER_COUNT)
+                        {
+                            alive = true;
+                            emptyBufferCount++;
+                        }
+                        else
+                        {
+                            emptyBufferCount = 0;
+                        }
+                    }
 
                     // Trigger the event.
                     if (alive) ReadData(buffer);
