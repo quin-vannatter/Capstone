@@ -1,0 +1,10 @@
+{
+    "name": "testgame",
+    "version": "1.0.0",
+    "description": "test socket",
+    "dependencies": {
+        "socket.io": "latest",
+        "express": "latest"
+    },
+    "author": "jer"
+}
