@@ -12,8 +12,6 @@ var port = 3700;
 
 // Serve index.html for GET requests.
 app.get('/', function (req, res) {
-    console.log('Trying to load index.html');
-
     res.sendFile(__dirname + '/index.html');
 });
 
@@ -26,48 +24,54 @@ http.listen(port, function () {
 });
 
 
-var clients = {};
-var Game = require('./classes/game.js');
-var Player = require('./classes/player.js');
+var avatars = {};
 
-var game = new Game();
+//var Game = require('./classes/game.js');
+//var Player = require('./classes/player.js');
+//var game = new Game();
 
-/*
-setInterval(function () {
-    game.tick();
-}, 500);
-*/
-
-io.on('error', function (error) {
-    console.error(error.stack);
-});
 
 // Setup socket on-connect.
-io.on('connection', function (client) {
-    console.log('Client connecting.');
+io.on('connection', function (socket) {
+    console.log('\tClient connecting.');
 
-    // Generate user id.
-    client.userId = uuid();
-    clients[client.userId] = client;
+    socket.userId = uuid();
 
-    console.log('\t User connected: ' + client.userId);
-    //console.log(clients);
+    console.log('\tUser id: ' + socket.userId);
 
-    // Disconnect.
-    client.on('disconnect', function (client) {
-        console.log('\t User disconnected.');
-        console.log(client);
-
-        //clients[client.userId] = null;
+    socket.on('error', function (err) {
+        console.error(err);
     });
 
-    // Set name.
-	client.on('set name', function (nameMessage) {
-        console.log('\t Set name request:');
-        console.log(nameMessage);
+    /**
+     * Event for when a client sets their name. Should occur immediately after
+     * connecting. Creates a new avatar for the client, and notifies other
+     * client of the new avatar.
+     * 
+     * @param name The client's name.
+     */
+    socket.on('set name', function (name) {
+        console.log('\tUser[' + socket.userId + '] = ' + name);
 
-		clients[nameMessage.userId] = nameMessage.name;
+        avatars[socket.userId] = {
+            name: name,
+            x: 50,
+            y: 50
+        };
 
-        client.broadcast('player joined', clients[nameMessage.userId]);
-	});
+        // Send the client its userId.
+        socket.emit('get userId', socket.userId);
+
+        io.emit('player joined', avatars);
+    });
+
+    /**
+     * Event for when a client disconnects. Removes player from the game.
+     */
+    socket.on('disconnect', function () {
+        console.log('\t User disconnected: ' + avatars[socket.userId].name);
+
+        socket.broadcast.emit('player quit', avatars[socket.userId].name);
+        delete avatars[socket.userId];
+    });
 });
