@@ -1,1 +1,0 @@
-Contains all files for the client side of the game.
