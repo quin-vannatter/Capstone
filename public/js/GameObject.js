@@ -11,7 +11,7 @@
 class GameObject {
 	
 	// Constructor for a game object.
-    constructor(texture, x, y, width, height, speed) {
+    constructor(texture, x, y, width, height, speed, rotation) {
 		
 		// Set the texture as an image.
 		this.texture = new Image();
@@ -32,6 +32,7 @@ class GameObject {
 		};
 		
 		this.speed = speed;
+		this.rotation = rotation;
 		
 		this.velocity = {
 			x: 0,
@@ -53,8 +54,20 @@ class GameObject {
 		return this.loc;
 	}
 	
+	setSize(value) {
+		this.size = value;
+	}
+	
 	getSize() {
 		return this.size;
+	}
+	
+	setRotatation(value) {
+		this.rotation = value
+	}
+	
+	getRotatation() {
+		return this.rotation;
 	}
 }
 

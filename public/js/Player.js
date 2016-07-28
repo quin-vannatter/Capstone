@@ -15,7 +15,7 @@ class Player extends GameObject {
 		const SIZE = 50;
 		const SPEED = 5;
 		
-        super(TEXTURE, x, y, SIZE, SIZE, SPEED);
+        super(TEXTURE, x, y, SIZE, SIZE, SPEED, 0);
     }
 	
 	setLoc(x,y) {
@@ -28,5 +28,3 @@ class Player extends GameObject {
 		this.loc.x += this.velocity.x;
 	}
 }
-
-// module.exports = Player;

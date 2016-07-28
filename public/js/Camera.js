@@ -22,18 +22,24 @@ class Camera {
 		// Set the focus.
 		this.focus = focus;
 		this.center = {
-			width: canvas.width/2,
-			height: canvas.height/2
+			width: canvas.width/2 - focus.getSize().width/2,
+			height: canvas.height/2 - focus.getSize().height/2
 		};
+		
+		this.CAMERA_SPEED = 10;
     }
 	
 	getFocus() {
 		return this.focus;
 	}
 	
+	setFocus(focus) {
+		this.focus = focus;
+	}
+	
 	update() {
-		this.loc.x += (this.focus.getLoc().x - this.loc.x)/20;
-		this.loc.y += (this.focus.getLoc().y - this.loc.y)/20;
+		this.loc.x += (this.focus.getLoc().x - this.loc.x)/this.CAMERA_SPEED;
+		this.loc.y += (this.focus.getLoc().y - this.loc.y)/this.CAMERA_SPEED;
 	}
 	
 	calculateLoc(obj) {

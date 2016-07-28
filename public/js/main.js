@@ -27,15 +27,13 @@
 		down: 'KeyS',
 		left: 'KeyA',
 		right: 'KeyD',
-		up2: 'ArrowUp',
-		down2: 'ArrowDown',
-		left2: 'ArrowLeft',
-		right2: 'ArrowRight',
 		shoot: 1,
-		teleport: 3
+		teleport: 2,
+		focus: 3
 	};
 	
 	var input = {};
+	var inputOld = {};
 	
 	// Where the game is drawn.
 	var canvas;
@@ -54,7 +52,6 @@
 		
 		document.addEventListener('keydown',handleInputEvent);
 		document.addEventListener('keyup',handleInputEvent);
-		document.addEventListener('mousemove',handleInputEvent);
 		document.addEventListener('mouseup',handleInputEvent);
 		document.addEventListener('mousedown',handleInputEvent);
 		
@@ -62,6 +59,7 @@
 		for(var key in inputMapping){
 			if(inputMapping.hasOwnProperty(key)) {
 				input[key] = false;
+				inputOld[key] = false;
 			}
 		}
 		
@@ -125,6 +123,13 @@
 				g.update();
 			}
 		});
+		
+		// Update the input old.
+		for(var key in input) {
+			if(input.hasOwnProperty(key)) {
+				inputOld[key] = input[key];
+			}
+		}
 	}
 	
 	function updatePlayerMovement() {
@@ -133,18 +138,23 @@
 			y: 0
 		}
 		
-		if(input.up) { v.y = -1; }
-		if(input.down) { v.y = 1; }
-		if(!input.up && !input.down) { v.y = 0; }
+		var move = false;
 		
-		if(input.left) { v.x = -1; }
-		if(input.right) { v.x = 1; }
-		if(!input.left && !input.right) { v.x = 0; }
+		//if(input.up) { v.y = -1; }
+		//else if(input.down) { v.y = 1; }
 		
-		var direction = Math.atan2(v.y,v.x);
+		//if(input.left) { v.x = -1; }
+		//else if(input.right) { v.x = 1; }
+		
+		//var direction = Math.atan2(v.y,v.x);
+		
+		if(input.left) player.setRotate(-0.1);
+		if(input.right) player.setRotate(0.1);
+		if(input.up) move = true;
+		
 		v = {
-			x: player.speed * Math.cos(direction) * Math.abs(v.x),
-			y: player.speed * Math.sin(direction) * Math.abs(v.y)
+			x: !move ? 0 : player.speed * Math.cos(player.getRotate()),
+			y: !move ? 0 : player.speed * Math.sin(player.getRotate())
 		}
 		
 		player.setVel(v);
@@ -194,8 +204,10 @@
 				var loc = camera.calculateLoc(g);
 				
 				// Draw the game object.
+				context.rotate(g.getRotate());
 				context.drawImage(g.getTex(),loc.x,loc.y,
 					g.getSize().width,g.getSize().height);
+				context.rotate(0);
 			}
 		});
 	}
