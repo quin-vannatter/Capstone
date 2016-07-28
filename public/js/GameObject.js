@@ -31,7 +31,7 @@ class GameObject {
 			height: height
 		};
 		
-		this.speed = 0;
+		this.speed = speed;
 		
 		this.velocity = {
 			x: 0,
@@ -41,7 +41,8 @@ class GameObject {
 	
 	// Getters for a game object.
 	setVel(velocity) {
-		this.velocity = velocity;
+		this.velocity.x = velocity.x;
+		this.velocity.y = velocity.y;
 	}
 	
 	getTex() {

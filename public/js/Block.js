@@ -8,24 +8,18 @@
 
 'use strict';
 
-class Player extends GameObject {
+class Block extends GameObject {
 	
     constructor(x, y) {
-		const TEXTURE = 'player.png';
+		const TEXTURE = 'block.png';
 		const SIZE = 50;
-		const SPEED = 5;
 		
-        super(TEXTURE, x, y, SIZE, SIZE, SPEED);
+        super(TEXTURE, x, y, SIZE, SIZE, 0);
     }
 	
 	setLoc(x,y) {
 		this.loc.x = x;
 		this.loc.y = y;
-	}
-	
-	update() {
-		this.loc.y += this.velocity.y;
-		this.loc.x += this.velocity.x;
 	}
 }
 

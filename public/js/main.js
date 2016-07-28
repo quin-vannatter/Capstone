@@ -27,18 +27,15 @@
 		down: 'KeyS',
 		left: 'KeyA',
 		right: 'KeyD',
+		up2: 'ArrowUp',
+		down2: 'ArrowDown',
+		left2: 'ArrowLeft',
+		right2: 'ArrowRight',
 		shoot: 1,
 		teleport: 3
 	};
 	
-	var input = {
-		up: false,
-		down: false,
-		left: false,
-		right: false,
-		shoot: false,
-		teleport: false
-	}
+	var input = {};
 	
 	// Where the game is drawn.
 	var canvas;
@@ -50,6 +47,9 @@
 	// The player.
 	var player;
 	
+	// The camera.
+	var camera;
+	
 	document.addEventListener("DOMContentLoaded", function(event) {
 		
 		document.addEventListener('keydown',handleInputEvent);
@@ -57,6 +57,16 @@
 		document.addEventListener('mousemove',handleInputEvent);
 		document.addEventListener('mouseup',handleInputEvent);
 		document.addEventListener('mousedown',handleInputEvent);
+		
+		// Add states to input object using mapping object.
+		for(var key in inputMapping){
+			if(inputMapping.hasOwnProperty(key)) {
+				input[key] = false;
+			}
+		}
+		
+		// Holds all the game objects.
+		gameObjects = [];
 		
 		// Get the canvas.
 		getCanvas();
@@ -91,18 +101,29 @@
 	  * Where the creation of the game objects is done.
 	  */
 	function initalization() {
-		gameObjects = [];
 		player = new Player(0,0);
+		camera = new Camera(player,canvas);
 		gameObjects.push(player);
+		gameObjects.push(camera);
+		gameObjects.push(new Block(34,56));
+		gameObjects.push(new Block(300,100));
+		gameObjects.push(new Block(100,200));
+		gameObjects.push(new Block(-224,50));
 	}
 	
 	/**
 	  * Update all the game objects present in the game objects list.
 	  */
 	function update() {
+		
+		// Update the player movement.
 		updatePlayerMovement();
-		gameObjects.forEach(function(element) {
-			element.update();
+		
+		// Loop through and update each game object.
+		gameObjects.forEach(function(g) {
+			if(typeof(g.update) !== 'undefined') {
+				g.update();
+			}
 		});
 	}
 	
@@ -111,20 +132,19 @@
 			x: 0,
 			y: 0
 		}
-		if(input.up) { v.y = -1;	}
+		
+		if(input.up) { v.y = -1; }
 		if(input.down) { v.y = 1; }
+		if(!input.up && !input.down) { v.y = 0; }
+		
 		if(input.left) { v.x = -1; }
 		if(input.right) { v.x = 1; }
+		if(!input.left && !input.right) { v.x = 0; }
 		
-		var mag = Math.sqrt(Math.pow(v.x,2) + Math.pow(v.y,2));
-		if(mag == 0) {
-			v = {
-				x: 0,
-				y: 0
-			};
-		} else {
-			v.x /= mag;
-			v.y /= mag;
+		var direction = Math.atan2(v.y,v.x);
+		v = {
+			x: player.speed * Math.cos(direction) * Math.abs(v.x),
+			y: player.speed * Math.sin(direction) * Math.abs(v.y)
 		}
 		
 		player.setVel(v);
@@ -134,8 +154,8 @@
 	  * Handles the key events.
 	  */
 	function handleInputEvent(e) {
-		for(var key in input) {
-			if(input.hasOwnProperty(key)) { 
+		for(var key in inputMapping) {
+			if(inputMapping.hasOwnProperty(key)) { 
 				switch(e.type) {
 					case 'keydown':
 					case 'keyup':
@@ -164,11 +184,19 @@
 		context.fillStyle = CANVAS_STYLE;
 		context.fillRect(0,0,canvas.width,canvas.height);
 		
-		// Loop through the game objects and draw each one.
-		for(var i = 0;i < gameObjects.length;i++) {
-			var g = gameObjects[i];
-			context.drawImage(g.getTex(),g.getLoc().x,g.getLoc().y,
-				g.getSize().width,g.getSize().height);
-		}
+		// Loop through the game objects.
+		gameObjects.forEach(function(g) {
+			
+			// If the game object has something to draw.
+			if(typeof(g.getTex) !== 'undefined') {
+				
+				// Calculate the position relative to the camera.
+				var loc = camera.calculateLoc(g);
+				
+				// Draw the game object.
+				context.drawImage(g.getTex(),loc.x,loc.y,
+					g.getSize().width,g.getSize().height);
+			}
+		});
 	}
 }());
