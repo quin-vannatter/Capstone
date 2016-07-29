@@ -11,51 +11,72 @@
 class GameObject {
 	
 	// Constructor for a game object.
-    constructor(texture, x, y, width, height, speed, rotation) {
+    constructor(texture, location, size, speed, velocity, rotation, clipping) {
 		
 		// Set the texture as an image.
-		this.texture = new Image();
-		this.texture.src = texture;
+		if(texture != null) {
+			this.texture = new Image();
+			this.texture.src = texture;
+		}
 		
-		// Set the speed of the game object.
-		this.speed = speed;
-		
-		// Set the location and size.
 		this.loc = {
-			x: x,
-			y: y
+			x: location.x,
+			y: location.y
 		};
 		
 		this.size = {
-			width: width,
-			height: height
+			width: size.width,
+			height: size.height
 		};
 		
 		this.speed = speed;
-		this.rotation = rotation;
 		
 		this.velocity = {
-			x: 0,
-			y: 0
+			x: velocity.x,
+			y: velocity.y
 		};
+		
+		this.rotation = rotation;
+		this.destroy = false;
+		this.clipping = clipping;
     }
 	
 	// Getters for a game object.
 	setVel(velocity) {
-		this.velocity.x = velocity.x;
-		this.velocity.y = velocity.y;
+		this.velocity = {
+			x: velocity.x,
+			y: velocity.y
+		};
+	}
+	
+	getVel() {
+		return this.velocity;
 	}
 	
 	getTex() {
 		return this.texture;
 	}
 	
+	getClipping() {
+		return this.clipping;
+	}
+	
 	getLoc() {
 		return this.loc;
 	}
 	
-	setSize(value) {
-		this.size = value;
+	setLoc(location) {
+		this.loc = {
+			x: location.x,
+			y: location.y
+		};
+	}
+	
+	setSize(size) {
+		this.size = {
+			width: size.x,
+			height: size.y
+		};
 	}
 	
 	getSize() {
@@ -68,6 +89,14 @@ class GameObject {
 	
 	getRotatation() {
 		return this.rotation;
+	}
+	
+	move() {
+		this.loc = Vector.add(this.loc,this.velocity);
+	}
+	
+	checkDestroy() {
+		return this.destroy;
 	}
 }
 

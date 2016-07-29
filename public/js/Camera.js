@@ -8,26 +8,32 @@
 
 'use strict';
 
-class Camera {
+class Camera extends GameObject {
 	
 	// Constructor for a game object.
     constructor(focus, canvas) {
 		
 		// Set the location and size.
-		this.loc = {
+		var location = {
 			x: focus.getLoc().x,
 			y: focus.getLoc().y
 		};
 		
-		// Set the focus.
-		this.focus = focus;
-		this.center = {
-			width: canvas.width/2 - focus.getSize().width/2,
-			height: canvas.height/2 - focus.getSize().height/2
-		};
+        super(null, location, {width: 0, height: 0}, 0, Vector.zero(), 0);
 		
+		// Set the focus.
 		this.CAMERA_SPEED = 10;
+		this.focus = focus;
+		this.canvas = canvas;
+		this.center = {
+			width: this.canvas.width/2 - this.focus.getSize().width/2,
+			height: this.canvas.height/2 - this.focus.getSize().height/2
+		};
     }
+	
+	getLoc() {
+		return this.loc;
+	}
 	
 	getFocus() {
 		return this.focus;
@@ -38,14 +44,22 @@ class Camera {
 	}
 	
 	update() {
-		this.loc.x += (this.focus.getLoc().x - this.loc.x)/this.CAMERA_SPEED;
-		this.loc.y += (this.focus.getLoc().y - this.loc.y)/this.CAMERA_SPEED;
+		this.loc.x += ((this.focus.getLoc().x - this.center.width) - this.loc.x)/this.CAMERA_SPEED;
+		this.loc.y += ((this.focus.getLoc().y - this.center.height) - this.loc.y)/this.CAMERA_SPEED;
+		
 	}
 	
-	calculateLoc(obj) {
+	reCenter() {
+		this.center = {
+			width: this.canvas.width/2 - this.focus.getSize().width/2,
+			height: this.canvas.height/2 - this.focus.getSize().height/2
+		};
+	}
+	
+	calculateOffset(obj) {
 		return {
-			x: obj.getLoc().x - this.loc.x + this.center.width,
-			y: obj.getLoc().y - this.loc.y + this.center.height
+			x: obj.getLoc().x - this.loc.x,
+			y: obj.getLoc().y - this.loc.y
 		}
 	}
 }

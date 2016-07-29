@@ -9,18 +9,9 @@
 'use strict';
 
 class Block extends GameObject {
-	
-    constructor(x, y) {
+    constructor(location, size) {
 		const TEXTURE = 'block.png';
-		const SIZE = 50;
 		
-        super(TEXTURE, x, y, SIZE, SIZE, 0);
+        super(TEXTURE, location, size, 0, Vector.zero(), 0, true);
     }
-	
-	setLoc(x,y) {
-		this.loc.x = x;
-		this.loc.y = y;
-	}
 }
-
-// module.exports = Player;

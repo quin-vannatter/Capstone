@@ -10,21 +10,46 @@
 
 class Player extends GameObject {
 	
-    constructor(x, y) {
-		const TEXTURE = 'player.png';
-		const SIZE = 50;
-		const SPEED = 5;
+    constructor(location, texture) {
+		const SIZE = {
+			width: 50,
+			height: 50
+		};
+		const SPEED = 3;
 		
-        super(TEXTURE, x, y, SIZE, SIZE, SPEED, 0);
+        super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
+		
+		// Per second.
+		this.POWER_RECHARGE = 25;
+		this.MAX_POWER = 50;
+		this.POWER_PER_SHOT = 0;
+		
+		this.power = this.MAX_POWER;
     }
 	
-	setLoc(x,y) {
-		this.loc.x = x;
-		this.loc.y = y;
+	update() {
+		super.move();
+		
+		this.power += this.POWER_RECHARGE * (1/60)
+		
+		if (this.power > this.MAX_POWER) {
+			this.power = this.MAX_POWER;
+		}
 	}
 	
-	update() {
-		this.loc.y += this.velocity.y;
-		this.loc.x += this.velocity.x;
+	subrtactShotPower() {
+		this.power -= this.POWER_PER_SHOT;
+	}
+	
+	getPower() {
+		return this.power;
+	}
+	
+	setPower(power) {
+		this.power = power;
+	}
+	
+	getPowerPerShot() {
+		return this.POWER_PER_SHOT;
 	}
 }
