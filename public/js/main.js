@@ -107,6 +107,7 @@
 	  */
 	function initalization() {
 		player = new Player({x: 225, y: 225}, 'player.png');
+		player2 = new Player({x: 500, y: 400}, 'player.png');
 		
 		camera = new Camera(player,canvas);
 		
@@ -116,6 +117,7 @@
 		gameObjects.push(new Block({x:50,y:1050}, {width:1050, height:50}));
 		
 		gameObjects.push(player);
+		gameObjects.push(player2);
 		gameObjects.push(camera);
 	}
 	
@@ -198,35 +200,54 @@
 						var s2 = g2.getSize();
 						
 						if(l1.x + s1.width > l2.x && l1.x < l2.x + s2.width) {
-							if(l1.y + s1.height + v1.y > l2.y + v2.y && l1.y < l2.y) {
-								
-								if (type === 'Shot') { 
-									v1.y = -v1.y;
-								} else { 
-									l1.y = l2.y - s1.height;
+							if(l1.y + s1.height + v1.y > l2.y && l1.y < l2.y + s2.height/2) {
+								if (type === 'Shot') {
+									if(innerType === 'Shot') {
+										var tmp = v1.y;
+										v1.y = v2.y;
+										v2.y = tmp;
+									} else {
+										v1.y = -v1.y;
+									}
+								} else {
 									v1.y = 0; 
 								}
-							} else if(l1.y + v1.y < l2.y + s2.height && l1.y > l2.y) {
-								if (type === 'Shot') { 
-									v1.y = -v1.y;
-								} else { 
-									l1.y = l2.y + s2.height;
+							} else if(l1.y + v1.y < l2.y + s2.height && l1.y + s1.height > l2.y + s2.height/2) {
+								if (type === 'Shot') {
+									if(innerType === 'Shot') {
+										var tmp = v1.y;
+										v1.y = v2.y;
+										v2.y = tmp;
+									} else {
+										v1.y = -v1.y;
+									}
+								} else {
 									v1.y = 0; 
 								}
 							}
 						}else if(l1.y + s1.height > l2.y && l1.y < l2.y + s2.height) {
-							if(l1.x + s1.width + v1.x > l2.x && l1.x < l2.x) {
+							if(l1.x + s1.width + v1.x > l2.x && l1.x + s1.width < l2.x + s2.width/2) {
 								if (type === 'Shot') { 
-									v1.x = -v1.x;
-								} else { 
-									l1.x = l2.x - s1.width;
+									if(innerType === 'Shot') {
+										var tmp = v1.x;
+										v1.x = v2.x;
+										v2.x = tmp;
+									} else {
+										v1.x = -v1.x;
+									}
+								} else {
 									v1.x = 0; 
 								}
-							} else if(l1.x + v1.x < l2.x + s2.width && l1.x > l2.x) {
+							} else if(l1.x + v1.x < l2.x + s2.width && l1.x > l2.x + s2.width/2) {
 								if (type === 'Shot') { 
-									v1.x = -v1.x;
+									if(innerType === 'Shot') {
+										var tmp = v1.x;
+										v1.x = v2.x;
+										v2.x = tmp;
+									} else {
+										v1.x = -v1.x;
+									}
 								} else {
-									l1.x = l2.x + s2.width;
 									v1.x = 0;
 								}
 							}

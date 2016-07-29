@@ -13,11 +13,11 @@ class Shot extends GameObject {
     constructor(sourceObj, destination) {
 		const TEXTURE = 'shot.png';
 		const SIZE = {
-			width: 10,
-			height: 10
+			width: 15,
+			height: 15
 		};
-		const SPEED = 7;
-		const MAX_DISTANCE = 9000000000000000000;
+		const SPEED = 15;
+		const MAX_DISTANCE = 900;
 		
 		var srcLoc = sourceObj.getLoc();
 		var loc = {
@@ -27,7 +27,7 @@ class Shot extends GameObject {
 		
 		var vector = Vector.normalize(Vector.delta(destination, loc));
 		var velocity = Vector.multiply(vector, SPEED);
-		loc = Vector.add(loc,velocity);
+		
         super(TEXTURE, loc, SIZE, SPEED, velocity, 0, true);
 		
 		this.owner = sourceObj;
