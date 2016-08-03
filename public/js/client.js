@@ -10,15 +10,15 @@ document.addEventListener('DOMContentLoaded', function() {
     context = canvas.getContext('2d');
     resizeCanvas();
     
-    
-	window.addEventListener('resize',resizeCanvas);
+	window.addEventListener('resize', resizeCanvas);
 
-    
+    initGame();
 
     setInterval(function() {
         game.update();
+        camera.update();
+        drawGame();
     }, Game.UPDATE_INTERVAL);
-
 });
 
 function drawGame() {
@@ -26,27 +26,28 @@ function drawGame() {
     context.clearRect(0, 0, canvas.width, canvas.height)
     
     // Loop through the game objects.
-    game.getGameObjects.forEach(function(g) {
+    game.getGameObjects().forEach(function(g) {
         // If the game object has something to draw.
         if(g.getTex() != null) {
-            
             // Calculate the position relative to the camera.
             var loc = camera.calculateOffset(g);
             
             // Draw the game object.
-            context.drawImage(g.getTex(),loc.x,loc.y,
+            context.drawImage(g.getTex(), loc.x, loc.y,
                 g.getSize().width,g.getSize().height);
         }
     });
 }
 
+/**
+ * Initializes this game.
+ */
 function initGame() {
     game = new Game();
-    player = new Player({x: 225, y: 225}, IMG_PLAYER);
+    player = new Player({x: 225, y: 225}, 'img/player.png');
+    game.addObject(player);
     camera = new Camera(player, canvas);
 
-    game.addObject(camera);
-    game.addObject(player);
     game.addObject(new Player({x: 400, y: 400}, 'img/player2.png'));
 }
 
