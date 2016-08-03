@@ -6,10 +6,20 @@
  *
  */
 	
+/**
+ * Check if the file is being run on the client or the server.
+ */
+function isServer() {
+	return ! (typeof window != 'undefined' && window.document);
+}
+
+
 // When the game starts.
-(function() {
+var Game = {create: function() {
 	'use-strict';
 	
+	this.test = 'hello';
+
 	// Game interval.
 	const GAME_INTERVAL = 1000/60;
 	
@@ -20,6 +30,9 @@
 		width: 900,
 		height: 500
 	};
+
+	const IMG_PLAYER = 'img/player.png';
+	const IMG_PLAYER_2 = 'img/player2.png';
 	
 	// Inputs.
 	var inputMapping = {
@@ -44,42 +57,14 @@
 	};
 	
 	// Holds objects that get drawn.
-	var gameObjects;
+	this.gameObjects = [];
 	
 	// The player.
 	var player;
 	
 	// The camera.
 	var camera;
-	
-	document.addEventListener("DOMContentLoaded", function(event) {
-		document.addEventListener('keydown',handleInputEvent);
-		document.addEventListener('keyup',handleInputEvent);
-		document.addEventListener('mouseup',handleInputEvent);
-		document.addEventListener('mousedown',handleInputEvent);
-		window.addEventListener('resize',resizeCanvas);
-		
-		// Add states to input object using mapping object.
-		for(var key in inputMapping){
-			if(inputMapping.hasOwnProperty(key)) {
-				input[key] = false;
-				inputOld[key] = false;
-			}
-		}
-		
-		// Holds all the game objects.
-		gameObjects = [];
-		
-		// Get the canvas.
-		getCanvas();
-		
-		// Initialize the game objects.
-		initalization();
-		
-		// Start the game
-		gameFrame();
-	});
-	
+
 	/**
 	  * Gets the canvas of the game.
 	  */
@@ -102,23 +87,53 @@
 		setTimeout(gameFrame, GAME_INTERVAL);
 	}
 
+	function addObject(newObject) {
+		console.log(this.gameObjects);
+		this.gameObjects.push(newObject);
+	}
+
+	function load() {
+		document.addEventListener("DOMContentLoaded", function(event) {
+			document.addEventListener('keydown',handleInputEvent);
+			document.addEventListener('keyup',handleInputEvent);
+			document.addEventListener('mouseup',handleInputEvent);
+			document.addEventListener('mousedown',handleInputEvent);
+			window.addEventListener('resize',resizeCanvas);
+			
+			// Add states to input object using mapping object.
+			for(var key in inputMapping){
+				if(inputMapping.hasOwnProperty(key)) {
+					input[key] = false;
+					inputOld[key] = false;
+				}
+			}
+			
+			// Get the canvas.
+			getCanvas();
+			
+			// Initialize the game objects.
+			initalization();
+			
+			// Start the game
+			gameFrame();
+		});
+	}
+
+
+	this.addObject = addObject;
+	this.load = load;
+
 	/**
 	  * Where the creation of the game objects is done.
 	  */
 	function initalization() {
-		player = new Player({x: 225, y: 225}, 'player.png');
-		player2 = new Player({x: 500, y: 400}, 'player.png');
+		player = new Player({x: 225, y: 225}, IMG_PLAYER);
 		
 		camera = new Camera(player,canvas);
-		
-		gameObjects.push(new Block({x:50,y:50,}, {width:1000, height:50}));
-		gameObjects.push(new Block({x:1050,y:50}, {width:50, height:1000}));
-		gameObjects.push(new Block({x:50,y:50}, {width:50,height:1000}));
-		gameObjects.push(new Block({x:50,y:1050}, {width:1050, height:50}));
-		
-		gameObjects.push(player);
-		gameObjects.push(player2);
-		gameObjects.push(camera);
+
+		//this.gameObjects.push(player);
+		//addObject(player);
+		//this.gameObjects.push(camera);
 	}
 	
 	/**
@@ -132,10 +147,10 @@
 		checkPhysics();
 		
 		// Check for objects that need to be destroyed.
-		for(var i = gameObjects.length-1; i >= 0; i--) {
-			var g = gameObjects[i];
+		for(var i = this.gameObjects.length-1; i >= 0; i--) {
+			var g = this.gameObjects[i];
 			if(g.checkDestroy()) { 
-				gameObjects.splice(i,1);
+				this.gameObjects.splice(i,1);
 				continue;
 			}
 			if(typeof(g.update) !== 'undefined') {
@@ -165,7 +180,7 @@
 		
 		if(input.shoot && !inputOld.shoot && player.getPower() > player.getPowerPerShot()) {
 			player.subrtactShotPower();
-			gameObjects.push(new Shot(player,cursor));
+			this.gameObjects.push(new Shot(player,cursor));
 		}
 		
 		velocity = Vector.multiply(Vector.normalize(velocity),player.speed);
@@ -173,18 +188,18 @@
 	}
 	
 	function checkPhysics() {
-		for(var i = 0;i < gameObjects.length; i++) {
-			var type = gameObjects[i].constructor.name;
+		for(var i = 0;i < this.gameObjects.length; i++) {
+			var type = this.gameObjects[i].constructor.name;
 			
 			if (type !== 'Player' && type !== 'Shot') { continue; }
 			
-			var g1 = gameObjects[i];
+			var g1 = this.gameObjects[i];
 			
 			if(g1.getClipping()) {
-				for(var h = 0; h < gameObjects.length; h++) {
-					var g2 = gameObjects[h];
+				for(var h = 0; h < this.gameObjects.length; h++) {
+					var g2 = this.gameObjects[h];
 					
-					var innerType = gameObjects[h].constructor.name;
+					var innerType = this.gameObjects[h].constructor.name;
 					
 					if (type === 'Player' && innerType === 'Shot' && g2.getOwner() === g1
 						|| type === 'Shot' && innerType === 'Player' && g1.getOwner() === g2) {
@@ -225,7 +240,7 @@
 									v1.y = 0; 
 								}
 							}
-						}else if(l1.y + s1.height > l2.y && l1.y < l2.y + s2.height) {
+						} else if(l1.y + s1.height > l2.y && l1.y < l2.y + s2.height) {
 							if(l1.x + s1.width + v1.x > l2.x && l1.x + s1.width < l2.x + s2.width/2) {
 								if (type === 'Shot') { 
 									if(innerType === 'Shot') {
@@ -262,6 +277,8 @@
 	  * Handles the key events.
 	  */
 	function handleInputEvent(e) {
+		event.preventDefault();
+
 		for(var key in inputMapping) {
 			if(inputMapping.hasOwnProperty(key)) { 
 				switch(e.type) {
@@ -304,7 +321,7 @@
 		context.clearRect(0,0,canvas.width,canvas.height)
 		
 		// Loop through the game objects.
-		gameObjects.forEach(function(g) {
+		this.gameObjects.forEach(function(g) {
 			
 			// If the game object has something to draw.
 			if(g.getTex() != null) {
@@ -322,4 +339,13 @@
 			}
 		});
 	}
-}());
+	return this;
+}};
+
+var game;
+
+if(isServer()) {
+	module.exports = Game;
+} else {
+	game = Game.create();
+}

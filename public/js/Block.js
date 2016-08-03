@@ -10,7 +10,7 @@
 
 class Block extends GameObject {
     constructor(location, size) {
-		const TEXTURE = 'block.png';
+		const TEXTURE = 'img/block.png';
 		
         super(TEXTURE, location, size, 0, Vector.zero(), 0, true);
     }

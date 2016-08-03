@@ -22,7 +22,7 @@ class Player extends GameObject {
 		// Per second.
 		this.POWER_RECHARGE = 25;
 		this.MAX_POWER = 50;
-		this.POWER_PER_SHOT = 0;
+		this.POWER_PER_SHOT = 10;
 		
 		this.power = this.MAX_POWER;
     }

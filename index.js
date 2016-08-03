@@ -23,13 +23,22 @@ http.listen(port, function () {
     console.log('Listening on port ' + port);
 });
 
+/*
+require('./public/js/main.js');
+console.log(game.inputMapping);
+*/
+
+
+//require('./public/js/testModule.js');
+//var game = require('./public/js/main').create();
+
+var gamejs = new require('./public/js/Game.js');
+
+var Game = gamejs.Game;
+var game = new Game();
+
 
 var avatars = {};
-
-//var Game = require('./classes/game.js');
-//var Player = require('./classes/player.js');
-//var game = new Game();
-
 
 // Setup socket on-connect.
 io.on('connection', function (socket) {

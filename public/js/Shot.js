@@ -11,7 +11,7 @@
 class Shot extends GameObject {
 	
     constructor(sourceObj, destination) {
-		const TEXTURE = 'shot.png';
+		const TEXTURE = 'img/shot.png';
 		const SIZE = {
 			width: 15,
 			height: 15
