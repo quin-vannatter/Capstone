@@ -10,7 +10,7 @@
 
 class Player extends GameObject {
 	
-    constructor(location, texture) {
+    constructor(location, texture, playerId, input) {
 		const SIZE = {
 			width: 50,
 			height: 50
@@ -25,7 +25,17 @@ class Player extends GameObject {
 		this.POWER_PER_SHOT = 10;
 		
 		this.power = this.MAX_POWER;
+		this.playerId = playerId;
+		this.input = input;
     }
+	
+	updateInput(inputChanges) {
+		for(var key in inputChanges) {
+			if(inputChanges.hasOwnProperty(key)) {
+				this.input[key] = inputChanges[key];
+			}
+		}
+	}
 	
 	update() {
 		super.move();

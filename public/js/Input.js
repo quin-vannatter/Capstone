@@ -87,7 +87,13 @@
 	/**
 	 * Gets the state of a key.
 	 */
-	Input.prototype.getMapping = function() {
+	Input.prototype.getInput = function() {
+		var input = {};
+		for(var key in this.input) {
+			if(this.input.hasOwnProperty(key)) {
+				input[key] = this.input[key];
+			}
+		}
 		return input;
 	}
 	
