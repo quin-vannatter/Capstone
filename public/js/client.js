@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initGame();
 
     setInterval(function() {
+
         game.update();
         camera.update();
         drawGame();
@@ -40,18 +41,23 @@ function drawGame() {
     });
 }
 
+function updateInput() {
+    var result = input.getChanges();
+    if(result.changed) {
+        
+        player.updateInput(result.mapping);
+    }
+}
+
 /**
  * Initializes this game.
  */
 function initGame() {
     game = new Game();
 
-
     player = new Player({x: 400, y: 400}, 'img/player.png', 1, Input.getEmptyInput());
     camera = new Camera(player, canvas);
     input = new Input(canvas, camera);
-
-    
 
     game.addObject(player);
     game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
