@@ -9,15 +9,19 @@
 'use strict';
 
 class Player extends GameObject {
+<<<<<<< HEAD
 	
     constructor(location, texture, playerId, input) {
+=======
+    constructor(location, texture) {
+>>>>>>> origin/master
 		const SIZE = {
 			width: 50,
 			height: 50
 		};
 		const SPEED = 5;
 		
-        super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
+		super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
 		
 		// Per second.
 		this.POWER_RECHARGE = 25;
