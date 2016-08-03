@@ -7,6 +7,7 @@
 		// Make sure the game is accessible.
 		this.canvas = canvas;
 		this.camera = camera;
+		console.log(camera);
 		
 		// The input mapping.
 		this.inputMapping = {

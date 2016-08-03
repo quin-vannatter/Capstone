@@ -9,19 +9,18 @@
 'use strict';
 
 class Player extends GameObject {
-<<<<<<< HEAD
-	
     constructor(location, texture, playerId, input) {
-=======
-    constructor(location, texture) {
->>>>>>> origin/master
 		const SIZE = {
 			width: 50,
 			height: 50
 		};
 		const SPEED = 5;
 		
-		super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
+		if (texture === 'img/player.png') {
+			super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
+		} else {
+			super(texture, location, SIZE, SPEED, {x: 1, y: 0}, 0, true);
+		}
 		
 		// Per second.
 		this.POWER_RECHARGE = 25;

@@ -3,6 +3,7 @@ var context;
 
 var game;
 var player;
+var input;
 var camera;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -44,11 +45,16 @@ function drawGame() {
  */
 function initGame() {
     game = new Game();
-    player = new Player({x: 225, y: 225}, 'img/player.png');
-    game.addObject(player);
-    camera = new Camera(player, canvas);
 
-    game.addObject(new Player({x: 400, y: 400}, 'img/player2.png'));
+
+    player = new Player({x: 400, y: 400}, 'img/player.png', 1, Input.getEmptyInput());
+    camera = new Camera(player, canvas);
+    input = new Input(canvas, camera);
+
+    
+
+    game.addObject(player);
+    game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
 }
 
 /**
