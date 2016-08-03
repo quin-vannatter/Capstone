@@ -7,8 +7,8 @@
     };
 
     // Rate (in milliseconds) at which the game updates.
-    //Game.UPDATE_INTERVAL = 1000 / 60;
-    Game.UPDATE_INTERVAL = 1000;
+    Game.UPDATE_INTERVAL = 1000 / 60;
+    //Game.UPDATE_INTERVAL = 1000;
 
     /**
      * Loops through all objects and updates their properties based on
