@@ -87,15 +87,29 @@
 	/**
 	 * Gets the state of a key.
 	 */
-	Input.prototype.getKey = function(key) {
-		return this.input[key];
+	Input.prototype.getMapping = function() {
+		return input;
 	}
 	
 	/**
 	 * Gets the state of a key.
 	 */
-	Input.prototype.getOldKey = function(key) {
-		return this.oldInput[key];
+	Input.prototype.getChanges = function() {
+		var mapping = {};
+		var changed = false;
+		for(var key in this.inputMapping) {
+			if(this.inputMapping.hasOwnProperty(key)) { 
+				if(this.oldInput[key] != this.input[key]) {
+					mapping[key] = this.input[key];
+					changed = true;
+				}
+				this.oldInput[key] = this.input[key];
+			}
+		}
+		return {
+			mapping: mapping,
+			changed: changed
+		};
 	}
 	
 	/**
@@ -103,17 +117,6 @@
 	 */
 	Input.prototype.getCursor = function() {
 		return this.cursor;
-	}
-	
-	/**
-	 * Updates the states of the input old. (Should be called after update).
-	 */
-	Input.prototype.updateOld = function() {
-		for(var key in this.inputMapping) {
-			if(this.inputMapping.hasOwnProperty(key)) { 
-				oldInput[key] = input[key];
-			}
-		}
 	}
 	
     exports.Input = Input;
