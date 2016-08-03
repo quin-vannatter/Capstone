@@ -9,7 +9,6 @@
 'use strict';
 
 class Player extends GameObject {
-	
     constructor(location, texture) {
 		const SIZE = {
 			width: 50,
@@ -17,7 +16,7 @@ class Player extends GameObject {
 		};
 		const SPEED = 5;
 		
-        super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
+		super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
 		
 		// Per second.
 		this.POWER_RECHARGE = 25;

@@ -330,12 +330,8 @@ var Game = {create: function() {
 				var loc = camera.calculateOffset(g);
 				
 				// Draw the game object.
-				//context.translate(loc.x,loc.y);
-				//context.rotate(g.getRotatation());
 				context.drawImage(g.getTex(),loc.x,loc.y,
 					g.getSize().width,g.getSize().height);
-				//context.translate(0,0);
-				//context.rotate(0);
 			}
 		});
 	}
