@@ -118,6 +118,16 @@
 		};
 	}
 	
+	Input.getEmptyInput = function() {
+		var input = {};
+		for(var key in this.inputMapping) {
+			if(this.inputMapping.hasOwnProperty(key)) {
+				input[key] = false;
+			}
+		}
+		return input;
+	}
+	
 	/**
 	 * Gets the state of the cursor.
 	 */
