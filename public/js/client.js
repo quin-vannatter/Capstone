@@ -43,7 +43,7 @@ function initSocket() {
     socket = io(serverIP);
 
     socket.on('connect', function(data) {
-        console.log('connected');
+        
     });
 
     socket.on('initialize game', function(data) {
@@ -72,7 +72,7 @@ function initSocket() {
     });
 
     socket.on('player moved', function(data) {
-        game.updatePlayerVelocity(data.playerId, data.velocity);
+        game.updatePlayerLocAndVel(data.playerId, data.loc, data.vel);
     });
 }
 

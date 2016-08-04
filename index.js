@@ -119,11 +119,14 @@ io.on('connection', function (socket) {
     });
 
     socket.on('update movement', function(data) {
+        var player = game.getPlayerById(socket.playerId);
+        
         game.updatePlayerVelocity(socket.playerId, data);
 
         var newInfo = {
             playerId: socket.playerId,
-            velocity: data
+            vel: data,
+            loc: player.getLoc()
         };
 
         socket.broadcast.emit('player moved', newInfo);

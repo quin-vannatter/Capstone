@@ -168,6 +168,13 @@
         return null;
     };
 
+    Game.prototype.updatePlayerLocAndVel = function(playerId, loc, vel) {
+        var player = this.getPlayerById(playerId);
+
+        player.setLoc(loc);
+        player.setVel(vel);
+    };
+
     Game.prototype.updatePlayerVelocity = function(playerId, velocity) {
         var mover = this.getPlayerById(playerId);
 
