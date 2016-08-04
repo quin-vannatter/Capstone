@@ -84,8 +84,8 @@ function processMouse(i, io) {
     // Get mouse coordinates.
     if (i.teleport) {
         var mouseLoc = {
-            x: input.getCursor().x,
-            y: input.getCursor().y
+            x: input.getCursor().x - (player.getSize().width / 2),
+            y: input.getCursor().y - (player.getSize().height / 2)
         };
 
         player.setLoc(mouseLoc);
@@ -151,6 +151,8 @@ function initGame() {
     game.addObject(new Player({x: 300, y: 300}, 'img/player2.png'));
     game.addObject(new Player({x: 500, y: 200}, 'img/player2.png'));
     */
+
+    /*
     game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
     game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
     game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
@@ -162,6 +164,7 @@ function initGame() {
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
+    */
 }
 
 /**
