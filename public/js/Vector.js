@@ -67,4 +67,6 @@ class Vector {
 	}
 }
 
-//module.exports = GameObject;
+if (typeof global !== 'undefined') {
+	module.exports = Vector;
+}

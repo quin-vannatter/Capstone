@@ -8,6 +8,9 @@
 
 'use strict';
 
+var GameObject = require('./GameObject.js');
+
+
 class Shot extends GameObject {
     constructor(sourceObj, destination) {
 		const TEXTURE = 'img/shot.png';
@@ -52,4 +55,8 @@ class Shot extends GameObject {
 	getDistance() {
 		return this.distance;
 	}
+}
+
+if (typeof global !== 'undefined') {
+	module.exports = Shot;
 }

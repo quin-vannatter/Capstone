@@ -25,11 +25,13 @@ http.listen(port, function () {
 
 var gameJS = new require('./public/js/Game.js');
 
-var GameObject = require('./public/js/GameObject.js');
-var Player = require('./classes/Player.js');
-var Block = require('./classes/Block.js');
-var Shot = require('./classes/Shot.js');
-var Vector = require('./classes/Vector.js');
+//var GameObject = require('./public/js/GameObject.js');
+GLOBAL.GameObject = require('./public/js/GameObject.js');
+
+var Player = require('./public/js/Player.js');
+var Block = require('./public/js/Block.js');
+var Shot = require('./public/js/Shot.js');
+var Vector = require('./public/js/Vector.js');
 
 var Game = gameJS.Game;
 

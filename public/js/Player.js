@@ -8,6 +8,7 @@
 
 'use strict';
 
+
 class Player extends GameObject {
     constructor(location, texture, playerId) {
 		const SIZE = {
@@ -63,4 +64,8 @@ class Player extends GameObject {
 			this.destroy = true;
 		}
 	}
+}
+
+if (typeof global !== 'undefined') {
+	module.exports = Player;
 }

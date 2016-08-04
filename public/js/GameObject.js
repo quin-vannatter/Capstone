@@ -14,7 +14,7 @@ class GameObject {
     constructor(texture, location, size, speed, velocity, rotation, clipping) {
 		
 		// Set the texture as an image.
-		if(texture != null) {
+		if (typeof global === 'undefined') {
 			this.texture = new Image();
 			this.texture.src = texture;
 		}
@@ -104,4 +104,6 @@ class GameObject {
 	}
 }
 
-//module.exports = GameObject;
+if (typeof global !== 'undefined') {
+	module.exports = GameObject;
+}

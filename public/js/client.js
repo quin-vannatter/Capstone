@@ -8,10 +8,12 @@ var camera;
 
 var socket;
 
+require('./GameObject.js');
+
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
 
-    initSocket();
+    //initSocket();
 
     // Prevent right-click from bringing up context menu;
     canvas.oncontextmenu = function (e) {
