@@ -12,6 +12,7 @@ class GameObject {
 	
 	// Constructor for a game object.
     constructor(texture, location, size, speed, velocity, clipping) {
+		this.SMOOTH_VALUE = 2;
 
 		// Set the texture as an image.
 		if (typeof global === 'undefined') {
