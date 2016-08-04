@@ -5,12 +5,13 @@ var game;
 var player;
 var input;
 var camera;
+var mapBounds;
 
 var socket;
 
 var playGame = false;
 
-var serverIP = '142.156.127.156:3700';
+var serverIP = '142.156.127.137:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -125,7 +126,12 @@ function processMouse(i, io) {
             y: cursor.y - (size.height / 2)
         };
 
-        player.teleport(mouseLoc);
+        var mapBounds = game.getMapBounds();
+
+        mouseLoc.x = Math.max(Math.min(mapBounds.max.x,mouseLoc.x),mapBounds.min.x);
+        mouseLoc.y = Math.max(Math.min(mapBounds.max.y,mouseLoc.y),mapBounds.min.y);
+
+        if(!intersectingPlayer(mouseLoc)) { player.teleport(mouseLoc) };
     }
 
     if (i.shoot && !io.shoot) {
@@ -139,6 +145,22 @@ function processMouse(i, io) {
             socket.emit('shot attempt', mouseLoc);
         }
     }
+}
+
+function intersectingPlayer(location) {
+    var found = false;
+    game.getGameObjects().forEach(function(g) {
+        if(g.constructor.name === "Player") {
+            var loc = g.getLoc();
+            var size = g.getSize();
+
+            if(location.x > loc.x && location.x < loc.x + size.width && 
+                location.y > loc.y && location.y < loc.y + size.height ){
+                    found = true;
+            }
+        }
+    });
+    return found;
 }
 
 function updateInput() {

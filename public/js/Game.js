@@ -22,6 +22,7 @@
      * Runs the update method for all game objects.
      */
     Game.prototype.updateObjects = function () {
+        var adjusted = true;
         for(var i = this.gameObjects.length-1; i >= 0; i--) {
             var g = this.gameObjects[i];
 
@@ -30,8 +31,8 @@
 				continue;
 			}
 
-			if(typeof(g.update) !== 'undefined') {
-				g.update();
+            if(typeof(g.update) !== 'undefined') {
+                g.update();
 
                 // Check collision for object now that it has moved.
                 for (var h = this.gameObjects.length - 1; h >= 0; h--) {
@@ -67,14 +68,15 @@
                         }
                     }
                 }
-			}
-		}
+            }
+        }
     }
 
     /**
      * Adjusts an object if it is currently intersecting another object.
      */
     Game.prototype.adjustObject = function (obj1, obj2) {
+        
         var type = obj1.constructor.name;
         var otherType = obj2.constructor.name;
 
@@ -85,17 +87,20 @@
         var size1 = obj1.getSize();
         var size2 = obj2.getSize();
         var movingX = false;
+        var mapBounds = this.getMapBounds();
 
         var deltaX = Math.min(loc1.x + size1.width - loc2.x, loc2.x + size2.width - loc1.x);
         var deltaY = Math.min(loc1.y + size1.height - loc2.y, loc2.y + size2.height - loc1.y);
 
         if (deltaX <= deltaY) {
-            if (loc1.x < loc2.x) { loc1.x = loc2.x - size1.width; }
+            if (loc1.x <= loc2.x) { loc1.x = loc2.x - size1.width; }
             else { loc1.x = loc2.x + size2.width; }
+            loc1.x = Math.max(Math.min(mapBounds.max.x,loc1.x),mapBounds.min.x);
             movingX = true;
         } else {
             if (loc1.y < loc2.y) { loc1.y = loc2.y - size1.height; }
             else { loc1.y = loc2.y + size2.height; }
+            loc1.y = Math.max(Math.min(mapBounds.max.y,loc1.y),mapBounds.min.y);
         }
 
         if (type === 'Shot') {
@@ -213,6 +218,41 @@
     Game.prototype.getGameObjects = function() {
         return this.gameObjects;
     };
+
+    Game.prototype.getMapBounds = function() {
+        var first = true;
+        var mapBounds = {};
+        this.gameObjects.forEach(function(g) {
+            var loc = g.getLoc();
+            var size = g.getSize();
+            var pSize = player.getSize();
+            if(first) {
+                mapBounds = {
+                    min: {
+                        x: loc.x + size.width,
+                        y: loc.y + size.height
+                    },
+                    max: {
+                        x: loc.x,
+                        y: loc.y
+                    }
+                }
+                first = false;
+            } else {
+                mapBounds = {
+                    min: {
+                        x: Math.min(mapBounds.min.x, loc.x + pSize.width/2),
+                        y: Math.min(mapBounds.min.y, loc.y + pSize.height/2)
+                    },
+                    max: {
+                        x: Math.max(mapBounds.max.x, loc.x - pSize.width/2),
+                        y: Math.max(mapBounds.max.y, loc.y - pSize.height/2)
+                    }
+                }
+            }
+        });
+        return mapBounds;
+    }
 
     exports.Game = Game;
 })(typeof global === 'undefined' ? window : exports);
