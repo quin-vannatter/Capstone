@@ -55,12 +55,27 @@ function drawGame() {
     game.getGameObjects().forEach(function(g) {
         // If the game object has something to draw.
         if(g.getTex() != null) {
+
+            // Get the alpha of the game object.
+            var alpha = g.getAlpha();
+
             // Calculate the position relative to the camera.
             var loc = camera.calculateOffset(g);
+            var size = g.getSize();
+            var deltaX = ((size.width * (2 - alpha)) - size.width)/2;
+            var deltaY = ((size.height * (2 - alpha)) - size.height)/2;
+
+            // Set the alpha if it isn't 1.
+            if(alpha != 1) {
+                context.globalAlpha = alpha;
+            }
             
             // Draw the game object.
-            context.drawImage(g.getTex(), loc.x, loc.y,
-                g.getSize().width,g.getSize().height);
+            context.drawImage(g.getTex(), loc.x - deltaX, loc.y - deltaY,
+                size.width * (2 - alpha),size.height * (2 - alpha));
+
+            // Reset the alpha if it wasn't 1.
+            if(alpha != 1) context.globalAlpha = 1;
         }
     });
 }
@@ -82,14 +97,22 @@ function processMovement(i) {
 }
 
 function processMouse(i, io) {
+
     // Get mouse coordinates.
-    if (i.teleport) {
+    if (i.teleport && !io.teleport) {
+
+        // Get the position of the mouse.
+        var cursor = input.getCursor();
+
+        // Get the player size.
+        var size = player.getSize();
+
         var mouseLoc = {
-            x: input.getCursor().x - (player.getSize().width / 2),
-            y: input.getCursor().y - (player.getSize().height / 2)
+            x: cursor.x - (size.width / 2),
+            y: cursor.y - (size.height / 2)
         };
 
-        player.setLoc(mouseLoc);
+        player.teleport(mouseLoc);
     }
 
     if (i.shoot && !io.shoot) {
@@ -132,7 +155,7 @@ function updatePlayerVelocity() {
         player.subrtactShotPower();
         this.gameObjects.push(new Shot(player,cursor));
     }
-    
+
     player.setVel(velocity);
 }
 
@@ -147,13 +170,13 @@ function initGame() {
     input = new Input(canvas, camera);
 
     game.addObject(player);
+
     /*
     game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
     game.addObject(new Player({x: 300, y: 300}, 'img/player2.png'));
     game.addObject(new Player({x: 500, y: 200}, 'img/player2.png'));
     */
 
-    /*
     game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
     game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
     game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
@@ -165,7 +188,6 @@ function initGame() {
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
-    */
 }
 
 /**
