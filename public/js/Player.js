@@ -8,7 +8,6 @@
 
 'use strict';
 
-
 class Player extends GameObject {
     constructor(location, texture, playerId) {
 		const SIZE = {

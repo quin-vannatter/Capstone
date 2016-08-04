@@ -8,10 +8,6 @@
 
 'use strict';
 
-var GameObject = require('./GameObject.js');
-var Vector = require('./Vector.js');
-
-
 class Block extends GameObject {
     constructor(location, size) {
 		const TEXTURE = 'img/block.png';

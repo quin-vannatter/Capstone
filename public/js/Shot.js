@@ -8,9 +8,6 @@
 
 'use strict';
 
-var GameObject = require('./GameObject.js');
-
-
 class Shot extends GameObject {
     constructor(sourceObj, destination) {
 		const TEXTURE = 'img/shot.png';

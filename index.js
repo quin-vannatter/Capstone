@@ -24,14 +24,12 @@ http.listen(port, function () {
 });
 
 var gameJS = new require('./public/js/Game.js');
-
-//var GameObject = require('./public/js/GameObject.js');
 GLOBAL.GameObject = require('./public/js/GameObject.js');
 
-var Player = require('./public/js/Player.js');
-var Block = require('./public/js/Block.js');
-var Shot = require('./public/js/Shot.js');
-var Vector = require('./public/js/Vector.js');
+GLOBAL.Player = require('./public/js/Player.js');
+GLOBAL.Block = require('./public/js/Block.js');
+GLOBAL.Shot = require('./public/js/Shot.js');
+GLOBAL.Vector = require('./public/js/Vector.js');
 
 var Game = gameJS.Game;
 

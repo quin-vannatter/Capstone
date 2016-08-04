@@ -8,8 +8,6 @@ var camera;
 
 var socket;
 
-require('./GameObject.js');
-
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
 
