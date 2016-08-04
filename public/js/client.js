@@ -27,8 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	window.addEventListener('resize', resizeCanvas);
 
-    //initGame();
-
     setInterval(function() {
         if (playGame) {
             updateInput();
@@ -51,8 +49,15 @@ function initSocket() {
     });
 
     socket.on('player joined', function(data) {
-        game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
-        console.log('player joined');
+        game.addObject(createObjectFromTransit(data));
+    });
+
+    socket.on('player quit', function (playerId) {
+        game.removePlayer(playerId);
+    });
+
+    socket.on('player shot', function(data) {
+        game.addObject(createObjectFromTransit(data));
     });
 }
 
@@ -106,7 +111,6 @@ function processMovement(i) {
 }
 
 function processMouse(i, io) {
-
     // Get mouse coordinates.
     if (i.teleport && !io.teleport) {
 
@@ -125,14 +129,14 @@ function processMouse(i, io) {
     }
 
     if (i.shoot && !io.shoot) {
-        if (player.getPower() >= player.getPowerPerShot()) {
-            var mouseLoc = {
-                x: input.getCursor().x,
-                y: input.getCursor().y
-            };
+        var mouseLoc = {
+            x: input.getCursor().x,
+            y: input.getCursor().y
+        };
 
-            player.subrtactShotPower();
-            game.addObject(new Shot(player, mouseLoc));
+        if (game.attemptShot(player.getId(), mouseLoc) !== null) {
+            // Send shot request to server.
+            socket.emit('shot attempt', mouseLoc);
         }
     }
 }
@@ -146,10 +150,6 @@ function updateInput() {
     processMouse(i, io);
 
     input.updateOld();
-
-    if(result.changed) {
-       // send to server.
-    }
 }
 
 function updatePlayerVelocity() {
@@ -162,7 +162,7 @@ function updatePlayerVelocity() {
     
     if(input.shoot && !inputOld.shoot && player.getPower() > player.getPowerPerShot()) {
         player.subrtactShotPower();
-        this.gameObjects.push(new Shot(player,cursor));
+        this.gameObjects.push(new Shot(player.getId(), cursor));
     }
 
     player.setVel(velocity);
@@ -176,45 +176,16 @@ function initGame(gameData) {
 
     player = new Player({x: 400, y: 400}, 'img/player.png', gameData.playerId);
 
-/*
-    console.log(JSON.stringify(flatten(player)));
-    console.log(JSON.stringify(player));
-    console.log(JSON.stringify(new Block({x:50,y:50,}, {width:1000, height:50})));
-    console.log(JSON.stringify(gameData.gameObjects[0]));
-*/
-
     camera = new Camera(player, canvas);
     input = new Input(canvas, camera);
 
-    //console.log(gameData);
     gameData.gameObjects.forEach(function(element) {
-        //var newObj = createObjectFromTransit(element);
-
         game.addObject(createObjectFromTransit(element));
     }, this);
 
     game.addObject(player);
 
     playGame = true;
-    /*
-    game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
-    game.addObject(new Player({x: 300, y: 300}, 'img/player2.png'));
-    game.addObject(new Player({x: 500, y: 200}, 'img/player2.png'));
-    */
-
-    /*
-    game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
-    game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
-    game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
-    game.addObject(new Block({x:50,y:1050}, {width:1050, height:50}));
-    game.addObject(new Block({x:200,y:200}, {width:500, height:50}));
-    game.addObject(new Block({x:400,y:290}, {width:50, height:500}));
-    game.addObject(new Block({x:600,y:500}, {width:50, height:550}));
-    game.addObject(new Block({x:500,y:500}, {width:50, height:50}));
-    game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
-    game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
-    game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
-    */
 }
 
 function createObjectFromTransit(tObj) {
@@ -223,16 +194,13 @@ function createObjectFromTransit(tObj) {
             return new Block(tObj.loc, tObj.size);
 
         case 'Player':
-            console.log(tObj);
             var newPlayer = new Player(tObj.loc, 'img/player2.png', tObj.playerId);
             newPlayer.setVel(tObj.velocity);
 
             return newPlayer;
             
         case 'Shot':
-            console.log(tObj);
-
-            break;
+            return new Shot(tObj.ownerId, tObj.loc, tObj.vel);
     }
 }
 

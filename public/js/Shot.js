@@ -9,8 +9,14 @@
 'use strict';
 
 class Shot extends GameObject {
-    constructor(sourceObj, destination) {
+	// If 4 arguments are not provided, there should be 3.
+	// In that case, srcLoc refers to the shot location,
+	// and srcSize refers to the velocity. Also, the shot
+	// will be an enemyshot and should be textured
+	// appropriately.
+    constructor(srcId, srcLoc, srcSize, destination) {
 		const TEXTURE = 'img/shot.png';
+		const TEXTURE2 = 'img/shot2.png';
 		const SIZE = {
 			width: 15,
 			height: 15
@@ -18,31 +24,39 @@ class Shot extends GameObject {
 		const SPEED = 10;
 		const MAX_DISTANCE = 9000;
 		const SHOT_DAMAGE = 1;
+
+		if (arguments.length === 3) {
+        	super(TEXTURE2, srcLoc, SIZE, SPEED, srcSize, true);
+		} else {
+			var loc = {
+				x: srcLoc.x + srcSize.width / 2,
+				y: srcLoc.y + srcSize.height / 2
+			};
+			
+			var vector = Vector.normalize(Vector.delta(destination, loc));
+			var velocity = Vector.multiply(vector, SPEED);
 		
-		var srcLoc = sourceObj.getLoc();
-		var loc = {
-			x: srcLoc.x + sourceObj.getSize().width / 2,
-			y: srcLoc.y + sourceObj.getSize().height / 2
-		};
+        	super(TEXTURE, loc, SIZE, SPEED, velocity, true);
+		}
 		
-		var vector = Vector.normalize(Vector.delta(destination, loc));
-		var velocity = Vector.multiply(vector, SPEED);
-		
-        super(TEXTURE, loc, SIZE, SPEED, velocity, 0, true);
-		
-		this.owner = sourceObj;
+		this.ownerId = srcId;
 		this.distance = MAX_DISTANCE;
 		this.shotDamage = SHOT_DAMAGE;
+		this.hitPlayer = false;
     }
 
 	toTransit() {
 		return {
 			type: 'Shot',
-			ownerId: this.sourceObj.getPlayerId(),
-			loc: this.location,
+			ownerId: this.ownerId,
+			loc: this.loc,
 			vel: this.velocity,
 			distance: this.distance
 		}
+	}
+
+	getOwnerId() {
+		return this.ownerId;
 	}
 	
 	update() {
@@ -61,6 +75,14 @@ class Shot extends GameObject {
 
 	getDistance() {
 		return this.distance;
+	}
+
+	setHitPlayer(value) {
+		this.hitPlayer = value;
+	}
+
+	getHitPlayer() {
+		return this.hitPlayer;
 	}
 }
 

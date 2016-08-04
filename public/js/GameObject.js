@@ -103,7 +103,7 @@ class GameObject {
 		this.loc = Vector.add(this.loc,this.velocity);
 	}
 	
-	checkDestroy() {
+	getDestroy() {
 		return this.destroy;
 	}
 

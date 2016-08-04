@@ -102,12 +102,22 @@ class Player extends GameObject {
 		this.teleporting = true;
 	}
 
-	takeShotDamage(shot) {
-		this.currentHealth -= shot.getDamage();
+	getHealth() {
+		return this.currentHealth;
+	}
 
-		if (this.currentHealth <= 0) {
-			this.destroy = true;
+	takeShotDamage(shot) {
+		if (!shot.getHitPlayer()) {
+			this.currentHealth -= shot.getDamage();
+
+			if (this.currentHealth <= 0) {
+				this.destroy = true;
+			}
 		}
+	}
+
+	getId() {
+		return this.playerId;
 	}
 }
 

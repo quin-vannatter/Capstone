@@ -1,3 +1,30 @@
+/*
+// sending to sender-client only
+socket.emit('message', "this is a test");
+
+// sending to all clients, include sender
+io.emit('message', "this is a test");
+
+// sending to all clients except sender
+socket.broadcast.emit('message', "this is a test");
+
+// sending to all clients in 'game' room(channel) except sender
+socket.broadcast.to('game').emit('message', 'nice game');
+
+// sending to all clients in 'game' room(channel), include sender
+io.in('game').emit('message', 'cool game');
+
+// sending to sender client, only if they are in 'game' room(channel)
+socket.to('game').emit('message', 'enjoy the game');
+
+// sending to all clients in namespace 'myNamespace', include sender
+io.of('myNamespace').emit('message', 'gg');
+
+// sending to individual socketid
+socket.broadcast.to(socketid).emit('message', 'for your eyes only');
+*/
+
+
 'use strict';
 
 var express = require('express');
@@ -37,14 +64,14 @@ var game = new Game();
 
 initGame(game);
 
-/*
-while (players.length > 0) {
-    // Game loop.
-}
-*/
+// Run game if there is at least one player.
+setInterval(function() {
+    if (io.sockets.clients.length > 0) {
+        game.update();
+    }
 
+}, Game.UPDATE_INTERVAL);
 
-var avatars = {};
 
 // Setup socket on-connect.
 io.on('connection', function (socket) {
@@ -58,11 +85,12 @@ io.on('connection', function (socket) {
     
     socket.emit('initialize game', initialGameState);
     
-    // Send the new player to all other players.
+    // Create the new player object and add it to the game.
+    var newPlayer = new Player({x: 300, y: 300}, null, socket.playerId);
+    game.addObject(newPlayer);
 
-    /*
-        io.emit('player joined', avatars);
-    */
+    // Send the new player to all other players.
+    socket.broadcast.emit('player joined', newPlayer.toTransit());
 
     console.log('\tClient connected: ' + socket.playerId);
 
@@ -70,20 +98,12 @@ io.on('connection', function (socket) {
         console.error(err);
     });
 
-    /**
-     * Event for when a client sets their name. Should occur immediately after
-     * connecting. Creates a new avatar for the client, and notifies other
-     * client of the new avatar.
-     * 
-     * @param name The client's name.
-     */
-    socket.on('set name', function () {
-        console.log('\tUser[' + socket.userId + ']');
+    socket.on('shot attempt', function (data) {
+        var result = game.attemptShot(socket.playerId, data);
 
-        // Send the client its userId.
-        socket.emit('get userId', socket.playerId);
-
-        io.emit('player joined', avatars);
+        if (result !== null) {
+            socket.broadcast.emit('player shot', result.toTransit());
+        }
     });
 
     /**
@@ -92,8 +112,9 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log('\t User disconnected: ' + socket.playerId);
 
+        game.removePlayer(socket.playerId);
+
         socket.broadcast.emit('player quit', socket.playerId);
-        delete avatars[socket.userId];
     });
 });
 
@@ -111,12 +132,17 @@ function initGame(game) {
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
 
     // TEST OBJECTS.
-    var testPlayer = new Player({x: 100, y: 100}, 'img/player.png', 5);
-    testPlayer.setVel({x: 1, y: 1});
-    game.addObject(testPlayer);
-    //game.addObject(new Shot(testPlayer), { x: 400, y: 400 });
-    //game.addObject(new Shot(testPlayer), { x: 100, y: 400 });
-    //game.addObject(new Shot(testPlayer), { x: 400, y: 100 });
+    /*
+    var tp = new Player({x: 100, y: 100}, 'img/player.png', 5);
+    tp.setVel({x: 1, y: 1});
+    game.addObject(tp);
+
+    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
+    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
+    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
+    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
+    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
+    */
 }
 
 function stringifyGameObjects(gameObjects) {
