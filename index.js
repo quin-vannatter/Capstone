@@ -23,10 +23,25 @@ http.listen(port, function () {
     console.log('Listening on port ' + port);
 });
 
-var gamejs = new require('./public/js/Game.js');
+var gameJS = new require('./public/js/Game.js');
 
-var Game = gamejs.Game;
+var GameObject = require('./public/js/GameObject.js');
+var Player = require('./classes/Player.js');
+var Block = require('./classes/Block.js');
+var Shot = require('./classes/Shot.js');
+var Vector = require('./classes/Vector.js');
+
+var Game = gameJS.Game;
+
 var game = new Game();
+
+initGame(game);
+
+/*
+while (players.length > 0) {
+    // Game loop.
+}
+*/
 
 
 var avatars = {};
@@ -35,9 +50,21 @@ var avatars = {};
 io.on('connection', function (socket) {
     console.log('\tClient connecting.');
 
-    socket.userId = uuid();
+    socket.playerId = uuid();
 
-    io.emit('player joined', avatars);
+    // Send the joining player the game.
+    var initialGameState = {
+        game: game,
+        playerId: socket.playerId
+    };
+    
+    socket.emit('game objects', initialGameState);
+    
+    // Send the new player to all other players.
+
+    /*
+        io.emit('player joined', avatars);
+    */
 
     console.log('\tUser id: ' + socket.userId);
 
@@ -71,3 +98,17 @@ io.on('connection', function (socket) {
         delete avatars[socket.userId];
     });
 });
+
+function initGame(game) {
+    game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
+    game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
+    game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
+    game.addObject(new Block({x:50,y:1050}, {width:1050, height:50}));
+    game.addObject(new Block({x:200,y:200}, {width:500, height:50}));
+    game.addObject(new Block({x:400,y:290}, {width:50, height:500}));
+    game.addObject(new Block({x:600,y:500}, {width:50, height:550}));
+    game.addObject(new Block({x:500,y:500}, {width:50, height:50}));
+    game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
+    game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
+    game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
+}

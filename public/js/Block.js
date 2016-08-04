@@ -1,4 +1,4 @@
-/* Player.js
+/* Block.js
  * The class for a player of the game.
  * 
  * Revision History

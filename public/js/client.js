@@ -37,6 +37,7 @@ function initSocket() {
     socket = io('142.156.124.92:3700');
 
     socket.on('connect', function(data) {
+        console.log(data);
         console.log('connected');
     });
 
