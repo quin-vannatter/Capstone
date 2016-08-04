@@ -75,6 +75,10 @@ class GameObject {
 	}
 	
 	getLoc() {
+		return this.loc;
+	}
+
+	getMoveLoc() {
 		return this.moveLoc;
 	}
 	

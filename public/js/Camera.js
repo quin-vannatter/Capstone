@@ -58,8 +58,8 @@ class Camera extends GameObject {
 	
 	calculateOffset(obj) {
 		return {
-			x: obj.getLoc().x - this.loc.x,
-			y: obj.getLoc().y - this.loc.y
+			x: obj.getMoveLoc().x - this.loc.x,
+			y: obj.getMoveLoc().y - this.loc.y
 		}
 	}
 }
