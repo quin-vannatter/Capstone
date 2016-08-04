@@ -48,17 +48,15 @@ var avatars = {};
 
 // Setup socket on-connect.
 io.on('connection', function (socket) {
-    console.log('\tClient connecting.');
-
     socket.playerId = uuid();
 
     // Send the joining player the game.
     var initialGameState = {
-        game: game,
+        gameObjects: game.getGameObjects(),
         playerId: socket.playerId
     };
     
-    socket.emit('game objects', initialGameState);
+    socket.emit('initialize game', initialGameState);
     
     // Send the new player to all other players.
 
@@ -66,7 +64,7 @@ io.on('connection', function (socket) {
         io.emit('player joined', avatars);
     */
 
-    console.log('\tUser id: ' + socket.userId);
+    console.log('\tClient connected: ' + socket.playerId);
 
     socket.on('error', function (err) {
         console.error(err);
@@ -83,7 +81,7 @@ io.on('connection', function (socket) {
         console.log('\tUser[' + socket.userId + ']');
 
         // Send the client its userId.
-        socket.emit('get userId', socket.userId);
+        socket.emit('get userId', socket.playerId);
 
         io.emit('player joined', avatars);
     });
@@ -92,9 +90,9 @@ io.on('connection', function (socket) {
      * Event for when a client disconnects. Removes player from the game.
      */
     socket.on('disconnect', function () {
-        console.log('\t User disconnected: ' + socket.userId);
+        console.log('\t User disconnected: ' + socket.playerId);
 
-        socket.broadcast.emit('player quit', socket.userId);
+        socket.broadcast.emit('player quit', socket.playerId);
         delete avatars[socket.userId];
     });
 });

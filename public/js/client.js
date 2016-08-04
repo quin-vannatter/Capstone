@@ -8,10 +8,12 @@ var camera;
 
 var socket;
 
+var playGame = false;
+
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
 
-    //initSocket();
+    initSocket();
 
     // Prevent right-click from bringing up context menu;
     canvas.oncontextmenu = function (e) {
@@ -23,22 +25,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	window.addEventListener('resize', resizeCanvas);
 
-    initGame();
+    //initGame();
 
     setInterval(function() {
-        updateInput();
-        game.update();
-        camera.update();
-        drawGame();
+        if (playGame) {
+            updateInput();
+            game.update();
+            camera.update();
+            drawGame();
+        }
     }, Game.UPDATE_INTERVAL);
 });
 
 function initSocket() {
-    socket = io('142.156.124.92:3700');
+    socket = io('142.156.127.156:3700');
 
     socket.on('connect', function(data) {
-        console.log(data);
         console.log('connected');
+    });
+
+    socket.on('initialize game', function(data) {
+        console.log(data);
+        initGame(data);
     });
 
     socket.on('player joined', function(data) {
@@ -136,17 +144,42 @@ function updatePlayerVelocity() {
     player.setVel(velocity);
 }
 
+function flatten(obj) {
+    var result = Object.create(obj);
+    for(var key in result) {
+        result[key] = result[key];
+    }
+    return result;
+}
+
 /**
  * Initializes this game.
  */
-function initGame() {
+function initGame(gameData) {
     game = new Game();
 
-    player = new Player({x: 400, y: 400}, 'img/player.png', 1, Input.getEmptyInput());
+    player = new Player({x: 400, y: 400}, 'img/player.png', gameData.playerId);
+
+/*
+    console.log(JSON.stringify(flatten(player)));
+    console.log(JSON.stringify(player));
+    console.log(JSON.stringify(new Block({x:50,y:50,}, {width:1000, height:50})));
+    console.log(JSON.stringify(gameData.gameObjects[0]));
+*/
+
     camera = new Camera(player, canvas);
     input = new Input(canvas, camera);
 
+    //console.log(gameData);
+    gameData.gameObjects.forEach(function(element) {
+        console.log(element);
+        game.addObject(element);
+    }, this);
+
     game.addObject(player);
+
+    playGame = true;
+
     /*
     game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
     game.addObject(new Player({x: 300, y: 300}, 'img/player2.png'));

@@ -11,7 +11,7 @@
 class GameObject {
 	
 	// Constructor for a game object.
-    constructor(texture, location, size, speed, velocity, rotation, clipping) {
+    constructor(texture, location, size, speed, velocity) {
 		
 		// Set the texture as an image.
 		if (typeof global === 'undefined') {

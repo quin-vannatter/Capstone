@@ -14,6 +14,15 @@ class Block extends GameObject {
 		
         super(TEXTURE, location, size, 0, Vector.zero(), 0, true);
     }
+
+    toTransit() {
+        return {
+            type: 'Block',
+            texture: this.TEXTURE,
+            location: this.location,
+            size: this.size
+        }
+    }
 }
 
 if (typeof global !== 'undefined') {

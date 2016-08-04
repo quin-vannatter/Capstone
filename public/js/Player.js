@@ -19,6 +19,8 @@ class Player extends GameObject {
 		
 		super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
 
+		this.playerId = playerId;
+
 		this.currentHealth = MAX_HEALTH;
 		
 		// Per second.

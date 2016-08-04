@@ -5,8 +5,7 @@
     "dependencies": {
         "socket.io": "latest",
         "express": "latest",
-        "node-uuid": "latest",
-        "browserify": "latest"
+        "node-uuid": "latest"
     },
     "author": "Jeremy Buick"
 }
