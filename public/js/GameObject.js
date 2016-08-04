@@ -11,7 +11,7 @@
 class GameObject {
 	
 	// Constructor for a game object.
-    constructor(texture, location, size, speed, velocity) {
+    constructor(texture, location, size, speed, velocity, clipping) {
 		
 		// Set the texture as an image.
 		if (typeof global === 'undefined') {
@@ -36,8 +36,8 @@ class GameObject {
 			y: velocity.y
 		};
 		
-		this.rotation = rotation;
 		this.destroy = false;
+		this.alpha = 1;
 		this.clipping = clipping;
     }
 	
@@ -51,6 +51,14 @@ class GameObject {
 	
 	getVel() {
 		return this.velocity;
+	}
+
+	getAlpha() {
+		return this.alpha;
+	}
+
+	setAlpha(alpha) {
+		this.alpha = alpha;
 	}
 	
 	getTex() {
