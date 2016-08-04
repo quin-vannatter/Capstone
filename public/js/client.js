@@ -224,7 +224,10 @@ function createObjectFromTransit(tObj) {
 
         case 'Player':
             console.log(tObj);
-            return new Player(tObj.loc, 'img/player2.png', tObj.playerId);
+            var newPlayer = new Player(tObj.loc, 'img/player2.png', tObj.playerId);
+            newPlayer.setVel(tObj.velocity);
+
+            return newPlayer;
             
         case 'Shot':
             console.log(tObj);

@@ -43,7 +43,7 @@ class Player extends GameObject {
 			type: 'Player',
 			playerId: this.playerId,
 			loc: this.loc,
-			vel: this.vel
+			velocity: this.velocity
 		}
 	}
 	
