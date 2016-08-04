@@ -129,6 +129,10 @@ io.on('connection', function (socket) {
             loc: player.getLoc()
         };
 
+        // Send the player's new position back to them.
+        socket.emit('update own position', newInfo.loc);
+
+        // Broadcast new player movement to other players.
         socket.broadcast.emit('player moved', newInfo);
     });
 

@@ -79,8 +79,10 @@ function initSocket() {
         var teleporter = game.getPlayerById(data.playerId);
         
         teleporter.teleport(data.loc);
+    });
 
-        console.log('teleport: ' + data.playerId);
+    socket.on('update own position', function(data) {
+        player.setLoc(data);
     });
 }
 
@@ -149,14 +151,16 @@ function processMouse(i, io) {
             y: cursor.y - (size.height / 2)
         };
 
-        socket.emit('teleport attempt', mouseLoc);
-
         var mapBounds = game.getMapBounds(player);
 
         mouseLoc.x = Math.max(Math.min(mapBounds.max.x,mouseLoc.x),mapBounds.min.x);
         mouseLoc.y = Math.max(Math.min(mapBounds.max.y,mouseLoc.y),mapBounds.min.y);
 
-        if(!intersectingPlayer(mouseLoc)) { player.teleport(mouseLoc) };
+        if(!intersectingPlayer(mouseLoc)) { 
+            player.teleport(mouseLoc)
+
+            socket.emit('teleport attempt', mouseLoc);
+        };
     }
 
     if (i.shoot && !io.shoot) {
