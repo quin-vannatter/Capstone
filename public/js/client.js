@@ -10,6 +10,8 @@ var socket;
 
 var playGame = false;
 
+var serverIP = '142.156.127.156:3700';
+
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
 
@@ -38,14 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initSocket() {
-    socket = io('142.156.127.156:3700');
+    socket = io(serverIP);
 
     socket.on('connect', function(data) {
         console.log('connected');
     });
 
     socket.on('initialize game', function(data) {
-        console.log(data);
         initGame(data);
     });
 
@@ -167,14 +168,6 @@ function updatePlayerVelocity() {
     player.setVel(velocity);
 }
 
-function flatten(obj) {
-    var result = Object.create(obj);
-    for(var key in result) {
-        result[key] = result[key];
-    }
-    return result;
-}
-
 /**
  * Initializes this game.
  */
@@ -195,8 +188,9 @@ function initGame(gameData) {
 
     //console.log(gameData);
     gameData.gameObjects.forEach(function(element) {
-        console.log(element);
-        game.addObject(element);
+        //var newObj = createObjectFromTransit(element);
+
+        game.addObject(createObjectFromTransit(element));
     }, this);
 
     game.addObject(player);
@@ -208,6 +202,7 @@ function initGame(gameData) {
     game.addObject(new Player({x: 500, y: 200}, 'img/player2.png'));
     */
 
+    /*
     game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
     game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
     game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
@@ -219,6 +214,23 @@ function initGame(gameData) {
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
+    */
+}
+
+function createObjectFromTransit(tObj) {
+    switch (tObj.type) {
+        case 'Block':
+            return new Block(tObj.loc, tObj.size);
+
+        case 'Player':
+            console.log(tObj);
+            return new Player(tObj.loc, 'img/player2.png', tObj.playerId);
+            
+        case 'Shot':
+            console.log(tObj);
+
+            break;
+    }
 }
 
 /**

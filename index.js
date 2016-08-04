@@ -52,7 +52,7 @@ io.on('connection', function (socket) {
 
     // Send the joining player the game.
     var initialGameState = {
-        gameObjects: game.getGameObjects(),
+        gameObjects: stringifyGameObjects(game.getGameObjects()),
         playerId: socket.playerId
     };
     
@@ -109,4 +109,22 @@ function initGame(game) {
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
+
+    // TEST OBJECTS.
+    var testPlayer = new Player({x: 100, y: 100}, 'img/player.png', 5);
+    testPlayer.setVel({x: 1, y: 1});
+    game.addObject(testPlayer);
+    //game.addObject(new Shot(testPlayer), { x: 400, y: 400 });
+    //game.addObject(new Shot(testPlayer), { x: 100, y: 400 });
+    //game.addObject(new Shot(testPlayer), { x: 400, y: 100 });
+}
+
+function stringifyGameObjects(gameObjects) {
+    var stringedObjects = [];
+
+    gameObjects.forEach(function(element) {
+        stringedObjects.push(element.toTransit());
+    }, this);
+
+    return stringedObjects;
 }

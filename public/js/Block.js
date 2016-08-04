@@ -18,8 +18,7 @@ class Block extends GameObject {
     toTransit() {
         return {
             type: 'Block',
-            texture: this.TEXTURE,
-            location: this.location,
+            loc: this.loc,
             size: this.size
         }
     }

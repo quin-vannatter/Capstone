@@ -17,7 +17,7 @@ class Player extends GameObject {
 		const SPEED = 5;
 		const MAX_HEALTH = 5;
 		
-		super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
+		super(texture, location, SIZE, SPEED, Vector.zero(), true);
 
 		this.playerId = playerId;
 
@@ -37,6 +37,15 @@ class Player extends GameObject {
 		this.teleporting = false;
 		this.playerId = playerId;
     }
+
+	toTransit() {
+		return {
+			type: 'Player',
+			playerId: this.playerId,
+			loc: this.loc,
+			vel: this.vel
+		}
+	}
 	
 	update() {
 		super.move();

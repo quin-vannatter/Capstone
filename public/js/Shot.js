@@ -16,7 +16,7 @@ class Shot extends GameObject {
 			height: 15
 		};
 		const SPEED = 10;
-		const MAX_DISTANCE = 900;
+		const MAX_DISTANCE = 9000;
 		const SHOT_DAMAGE = 1;
 		
 		var srcLoc = sourceObj.getLoc();
@@ -34,6 +34,16 @@ class Shot extends GameObject {
 		this.distance = MAX_DISTANCE;
 		this.shotDamage = SHOT_DAMAGE;
     }
+
+	toTransit() {
+		return {
+			type: 'Shot',
+			ownerId: this.sourceObj.getPlayerId(),
+			loc: this.location,
+			vel: this.velocity,
+			distance: this.distance
+		}
+	}
 	
 	update() {
 		super.move();
