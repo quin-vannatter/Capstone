@@ -22,7 +22,6 @@
      * Runs the update method for all game objects.
      */
     Game.prototype.updateObjects = function () {
-        var adjusted = true;
         for(var i = this.gameObjects.length-1; i >= 0; i--) {
             var g = this.gameObjects[i];
 
@@ -87,7 +86,7 @@
         var size1 = obj1.getSize();
         var size2 = obj2.getSize();
         var movingX = false;
-        var mapBounds = this.getMapBounds();
+        var mapBounds = this.getMapBounds(obj1);
 
         var deltaX = Math.min(loc1.x + size1.width - loc2.x, loc2.x + size2.width - loc1.x);
         var deltaY = Math.min(loc1.y + size1.height - loc2.y, loc2.y + size2.height - loc1.y);
@@ -169,6 +168,12 @@
         return null;
     };
 
+    Game.prototype.updatePlayerVelocity = function(playerId, velocity) {
+        var mover = this.getPlayerById(playerId);
+
+        mover.setVel(velocity);
+    };
+
     /**
      * Attempts to create a shot for the player.
      */
@@ -219,13 +224,13 @@
         return this.gameObjects;
     };
 
-    Game.prototype.getMapBounds = function() {
+    Game.prototype.getMapBounds = function(obj) {
         var first = true;
         var mapBounds = {};
         this.gameObjects.forEach(function(g) {
             var loc = g.getLoc();
             var size = g.getSize();
-            var pSize = player.getSize();
+            var pSize = obj.getSize();
             if(first) {
                 mapBounds = {
                     min: {

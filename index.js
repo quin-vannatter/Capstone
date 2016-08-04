@@ -62,6 +62,8 @@ var Game = gameJS.Game;
 
 var game = new Game();
 
+var spawnLocations = getSpawnLocations();
+
 initGame(game);
 
 // Run game if there is at least one player.
@@ -86,8 +88,18 @@ io.on('connection', function (socket) {
     socket.emit('initialize game', initialGameState);
     
     // Create the new player object and add it to the game.
-    var newPlayer = new Player({x: 300, y: 300}, null, socket.playerId);
+    var loc = getRandomSpawnLocation(spawnLocations);
+
+    var newPlayer = new Player(loc, null, socket.playerId);
     game.addObject(newPlayer);
+
+    // Send the player their spawn location.
+    var playerInfo = {
+        playerId: socket.playerId,
+        loc: loc
+    };
+
+    socket.emit('spawn player', playerInfo);
 
     // Send the new player to all other players.
     socket.broadcast.emit('player joined', newPlayer.toTransit());
@@ -104,6 +116,17 @@ io.on('connection', function (socket) {
         if (result !== null) {
             socket.broadcast.emit('player shot', result.toTransit());
         }
+    });
+
+    socket.on('update movement', function(data) {
+        game.updatePlayerVelocity(socket.playerId, data);
+
+        var newInfo = {
+            playerId: socket.playerId,
+            velocity: data
+        };
+
+        socket.broadcast.emit('player moved', newInfo);
     });
 
     /**
@@ -130,19 +153,6 @@ function initGame(game) {
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
-
-    // TEST OBJECTS.
-    /*
-    var tp = new Player({x: 100, y: 100}, 'img/player.png', 5);
-    tp.setVel({x: 1, y: 1});
-    game.addObject(tp);
-
-    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
-    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
-    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
-    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
-    game.addObject(new Shot(tp.getId(), tp.getLoc(), tp.getSize(), { x: 220, y: 90 }));
-    */
 }
 
 function stringifyGameObjects(gameObjects) {
@@ -153,4 +163,25 @@ function stringifyGameObjects(gameObjects) {
     }, this);
 
     return stringedObjects;
+}
+
+function getSpawnLocations() {
+    var locs = [];
+
+    locs.push({x: 117, y: 105});
+    locs.push({x: 662, y: 125});
+    locs.push({x: 977, y: 195});
+    locs.push({x: 472, y: 285});
+    locs.push({x: 819, y: 951});
+    locs.push({x: 514, y: 968});
+    locs.push({x: 129, y: 960});
+    locs.push({x: 248, y: 350});
+
+    return locs;
+}
+
+function getRandomSpawnLocation(spawnLocations) {
+    var num = Math.floor(Math.random() * spawnLocations.length);
+
+    return spawnLocations[num];
 }

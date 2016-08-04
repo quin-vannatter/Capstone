@@ -11,7 +11,8 @@ var socket;
 
 var playGame = false;
 
-var serverIP = '142.156.127.137:3700';
+//var serverIP = '142.156.127.137:3700';
+var serverIP = '142.156.127.156:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -49,6 +50,15 @@ function initSocket() {
         initGame(data);
     });
 
+    socket.on('spawn player', function(data) {
+        player = new Player(data.loc, 'img/player.png', data.playerId);
+
+        camera = new Camera(player, canvas);
+        input = new Input(canvas, camera);
+
+        game.addObject(player);
+    });
+
     socket.on('player joined', function(data) {
         game.addObject(createObjectFromTransit(data));
     });
@@ -59,6 +69,10 @@ function initSocket() {
 
     socket.on('player shot', function(data) {
         game.addObject(createObjectFromTransit(data));
+    });
+
+    socket.on('player moved', function(data) {
+        game.updatePlayerVelocity(data.playerId, data.velocity);
     });
 }
 
@@ -108,25 +122,26 @@ function processMovement(i) {
 
     velocity = Vector.multiply(Vector.normalize(velocity), player.speed);
 
+    socket.emit('update movement', velocity);
+
     player.setVel(velocity);
 }
 
 function processMouse(i, io) {
-    // Get mouse coordinates.
     if (i.teleport && !io.teleport) {
-
         // Get the position of the mouse.
         var cursor = input.getCursor();
 
         // Get the player size.
         var size = player.getSize();
 
+        // Get mouse coordinates.
         var mouseLoc = {
             x: cursor.x - (size.width / 2),
             y: cursor.y - (size.height / 2)
         };
 
-        var mapBounds = game.getMapBounds();
+        var mapBounds = game.getMapBounds(player);
 
         mouseLoc.x = Math.max(Math.min(mapBounds.max.x,mouseLoc.x),mapBounds.min.x);
         mouseLoc.y = Math.max(Math.min(mapBounds.max.y,mouseLoc.y),mapBounds.min.y);
@@ -168,8 +183,11 @@ function updateInput() {
     var i = input.getInput();
     var io = input.getOldInput();
 
-    processMovement(i);
-    processMouse(i, io);
+    if (result.changed) {
+        processMovement(i);
+        processMouse(i, io);
+    }
+
 
     input.updateOld();
 }
@@ -196,16 +214,9 @@ function updatePlayerVelocity() {
 function initGame(gameData) {
     game = new Game();
 
-    player = new Player({x: 400, y: 400}, 'img/player.png', gameData.playerId);
-
-    camera = new Camera(player, canvas);
-    input = new Input(canvas, camera);
-
     gameData.gameObjects.forEach(function(element) {
         game.addObject(createObjectFromTransit(element));
     }, this);
-
-    game.addObject(player);
 
     playGame = true;
 }
