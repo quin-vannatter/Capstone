@@ -35,7 +35,6 @@ class Player extends GameObject {
 			y: 0
 		};
 		this.teleporting = false;
-		this.teleported = false;
 		this.playerId = playerId;
     }
 
@@ -62,7 +61,6 @@ class Player extends GameObject {
 					y: this.teleportLoc.y
 				});
 				this.teleporting = false;
-				this.teleported = true;
 			}
 		} else {
 			if(alpha < 1) { alpha += this.ALPHA_CHANGE; }
@@ -106,14 +104,6 @@ class Player extends GameObject {
 
 	getHealth() {
 		return this.currentHealth;
-	}
-
-	setTeleported(teleported) {
-		this.teleported = teleported;
-	}
-
-	getTeleported() {
-		return this.teleported;
 	}
 
 	takeShotDamage(shot) {

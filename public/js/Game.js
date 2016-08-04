@@ -235,30 +235,32 @@
         var first = true;
         var mapBounds = {};
         this.gameObjects.forEach(function(g) {
-            var loc = g.getLoc();
-            var size = g.getSize();
-            var pSize = obj.getSize();
-            if(first) {
-                mapBounds = {
-                    min: {
-                        x: loc.x + size.width,
-                        y: loc.y + size.height
-                    },
-                    max: {
-                        x: loc.x,
-                        y: loc.y
+            if(g.constructor.name == "Block") {
+                var loc = g.getLoc();
+                var size = g.getSize();
+                var pSize = obj.getSize();
+                if(first) {
+                    mapBounds = {
+                        min: {
+                            x: loc.x + size.width,
+                            y: loc.y + size.height
+                        },
+                        max: {
+                            x: loc.x,
+                            y: loc.y
+                        }
                     }
-                }
-                first = false;
-            } else {
-                mapBounds = {
-                    min: {
-                        x: Math.min(mapBounds.min.x, loc.x + pSize.width/2),
-                        y: Math.min(mapBounds.min.y, loc.y + pSize.height/2)
-                    },
-                    max: {
-                        x: Math.max(mapBounds.max.x, loc.x - pSize.width/2),
-                        y: Math.max(mapBounds.max.y, loc.y - pSize.height/2)
+                    first = false;
+                } else {
+                    mapBounds = {
+                        min: {
+                            x: Math.min(mapBounds.min.x, loc.x + pSize.width/2),
+                            y: Math.min(mapBounds.min.y, loc.y + pSize.height/2)
+                        },
+                        max: {
+                            x: Math.max(mapBounds.max.x, loc.x - pSize.width/2),
+                            y: Math.max(mapBounds.max.y, loc.y - pSize.height/2)
+                        }
                     }
                 }
             }
