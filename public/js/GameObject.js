@@ -122,6 +122,13 @@ class GameObject {
 			};
 		}
 	}
+
+	syncLocation() {
+		this.moveLoc = {
+			x: this.loc.x,
+			y: this.loc.y
+		};
+	}
 	
 	getDestroy() {
 		return this.destroy;

@@ -64,6 +64,7 @@
                             g2.setHitPlayer(true);
                         } else {
                             this.adjustObject(g1, g2);
+                            g1.syncLocation();
                         }
                     }
                 }
