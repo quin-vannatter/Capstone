@@ -35,6 +35,11 @@ class GameObject {
 			x: velocity.x,
 			y: velocity.y
 		};
+
+		this.moveLoc = {
+			x: location.x,
+			y: location.y
+		};
 		
 		this.destroy = false;
 		this.alpha = 1;
@@ -70,7 +75,7 @@ class GameObject {
 	}
 	
 	getLoc() {
-		return this.loc;
+		return this.moveLoc;
 	}
 	
 	setLoc(location) {
@@ -101,6 +106,8 @@ class GameObject {
 	
 	move() {
 		this.loc = Vector.add(this.loc,this.velocity);
+		this.moveLoc.x += (this.loc.x - this.moveLoc.x)/4;
+		this.moveLoc.y += (this.loc.y - this.moveLoc.y)/4;
 	}
 	
 	getDestroy() {
