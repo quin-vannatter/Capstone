@@ -12,7 +12,8 @@ class GameObject {
 	
 	// Constructor for a game object.
     constructor(texture, location, size, speed, velocity, clipping) {
-		this.SMOOTH_VALUE = 2;
+		this.SMOOTH_VALUE = 4;
+		this.SYNC_DISTANCE = 60;
 
 		// Set the texture as an image.
 		if (typeof global === 'undefined') {
@@ -111,8 +112,15 @@ class GameObject {
 	
 	move() {
 		this.loc = Vector.add(this.loc,this.velocity);
-		this.moveLoc.x += (this.loc.x - this.moveLoc.x)/this.SMOOTH_VALUE;
-		this.moveLoc.y += (this.loc.y - this.moveLoc.y)/this.SMOOTH_VALUE;
+		if(Math.sqrt(Math.pow(this.loc.x - this.moveLoc.x,2) + Math.pow(this.loc.y - this.moveLoc.y,2)) > this.SYNC_DISTANCE) {
+			this.moveLoc.x += (this.loc.x - this.moveLoc.x)/this.SMOOTH_VALUE;
+			this.moveLoc.y += (this.loc.y - this.moveLoc.y)/this.SMOOTH_VALUE;
+		} else {
+			this.moveLoc = {
+				x: this.loc.x,
+				y: this.loc.y
+			};
+		}
 	}
 	
 	getDestroy() {
