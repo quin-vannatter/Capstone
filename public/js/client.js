@@ -6,11 +6,18 @@ var player;
 var input;
 var camera;
 
+var socket;
+
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
+
+    initSocket();
+
+    // Prevent right-click from bringing up context menu;
     canvas.oncontextmenu = function (e) {
         e.preventDefault();
     };
+
     context = canvas.getContext('2d');
     resizeCanvas();
 
@@ -25,6 +32,19 @@ document.addEventListener('DOMContentLoaded', function() {
         drawGame();
     }, Game.UPDATE_INTERVAL);
 });
+
+function initSocket() {
+    socket = io('142.156.124.92:3700');
+
+    socket.on('connect', function(data) {
+        console.log('connected');
+    });
+
+    socket.on('player joined', function(data) {
+        game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
+        console.log('player joined');
+    });
+}
 
 function drawGame() {
     // Draw the background for the canvas.
@@ -126,10 +146,11 @@ function initGame() {
     input = new Input(canvas, camera);
 
     game.addObject(player);
+    /*
     game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
     game.addObject(new Player({x: 300, y: 300}, 'img/player2.png'));
     game.addObject(new Player({x: 500, y: 200}, 'img/player2.png'));
-
+    */
     game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
     game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
     game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));

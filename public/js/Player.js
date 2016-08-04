@@ -17,11 +17,7 @@ class Player extends GameObject {
 		const SPEED = 5;
 		const MAX_HEALTH = 5;
 		
-		if (texture === 'img/player.png') {
-			super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
-		} else {
-			super(texture, location, SIZE, SPEED, {x: 2, y: 2}, 0, true);
-		}
+		super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
 
 		this.currentHealth = MAX_HEALTH;
 		

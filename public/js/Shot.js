@@ -39,7 +39,6 @@ class Shot extends GameObject {
 		super.move();
 		
 		this.distance -= this.speed;
-		if(this.distance <= 0) { this.destroy = true; }
 	}
 	
 	getOwner() {
@@ -48,5 +47,9 @@ class Shot extends GameObject {
 
 	getDamage() {
 		return this.shotDamage;
+	}
+
+	getDistance() {
+		return this.distance;
 	}
 }

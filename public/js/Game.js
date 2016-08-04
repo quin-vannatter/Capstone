@@ -108,6 +108,7 @@
                     vel2.y = tmp;
                 }
             } else if (otherType === 'Block') {
+                if (obj1.getDistance() <= 0) { obj1.setDestroy(true); }
                 if(movingX) {
                     vel1.x *= -1;
                 } else {

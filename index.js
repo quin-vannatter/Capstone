@@ -23,15 +23,6 @@ http.listen(port, function () {
     console.log('Listening on port ' + port);
 });
 
-/*
-require('./public/js/main.js');
-console.log(game.inputMapping);
-*/
-
-
-//require('./public/js/testModule.js');
-//var game = require('./public/js/main').create();
-
 var gamejs = new require('./public/js/Game.js');
 
 var Game = gamejs.Game;
@@ -46,6 +37,8 @@ io.on('connection', function (socket) {
 
     socket.userId = uuid();
 
+    io.emit('player joined', avatars);
+
     console.log('\tUser id: ' + socket.userId);
 
     socket.on('error', function (err) {
@@ -59,14 +52,8 @@ io.on('connection', function (socket) {
      * 
      * @param name The client's name.
      */
-    socket.on('set name', function (name) {
-        console.log('\tUser[' + socket.userId + '] = ' + name);
-
-        avatars[socket.userId] = {
-            name: name,
-            x: 50,
-            y: 50
-        };
+    socket.on('set name', function () {
+        console.log('\tUser[' + socket.userId + ']');
 
         // Send the client its userId.
         socket.emit('get userId', socket.userId);
@@ -78,9 +65,9 @@ io.on('connection', function (socket) {
      * Event for when a client disconnects. Removes player from the game.
      */
     socket.on('disconnect', function () {
-        console.log('\t User disconnected: ' + avatars[socket.userId].name);
+        console.log('\t User disconnected: ' + socket.userId);
 
-        socket.broadcast.emit('player quit', avatars[socket.userId].name);
+        socket.broadcast.emit('player quit', socket.userId);
         delete avatars[socket.userId];
     });
 });
