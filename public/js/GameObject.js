@@ -12,7 +12,7 @@ class GameObject {
 	
 	// Constructor for a game object.
     constructor(texture, location, size, speed, velocity, clipping) {
-		
+
 		// Set the texture as an image.
 		if (typeof global === 'undefined') {
 			this.texture = new Image();
@@ -110,8 +110,8 @@ class GameObject {
 	
 	move() {
 		this.loc = Vector.add(this.loc,this.velocity);
-		this.moveLoc.x += (this.loc.x - this.moveLoc.x)/4;
-		this.moveLoc.y += (this.loc.y - this.moveLoc.y)/4;
+		this.moveLoc.x += (this.loc.x - this.moveLoc.x)/this.SMOOTH_VALUE;
+		this.moveLoc.y += (this.loc.y - this.moveLoc.y)/this.SMOOTH_VALUE;
 	}
 	
 	getDestroy() {
