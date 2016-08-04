@@ -8,15 +8,18 @@ var camera;
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
+    canvas.oncontextmenu = function (e) {
+        e.preventDefault();
+    };
     context = canvas.getContext('2d');
     resizeCanvas();
-    
+
 	window.addEventListener('resize', resizeCanvas);
 
     initGame();
 
     setInterval(function() {
-
+        updateInput();
         game.update();
         camera.update();
         drawGame();
@@ -41,12 +44,67 @@ function drawGame() {
     });
 }
 
+function processMovement(i) {
+    var velocity = {
+        x: 0,
+        y: 0
+    };
+
+    if (i.up) { velocity.y = -1; }
+    else if (i.down) { velocity.y = 1; }
+    if (i.left) { velocity.x = -1; }
+    else if (i.right) { velocity.x = 1; }
+
+    velocity = Vector.multiply(Vector.normalize(velocity), player.speed);
+
+    player.setVel(velocity);
+}
+
+function processMouse(i, io) {
+    // Get mouse coordinates.
+    if (i.teleport) {
+        var mouseLoc = {
+            x: input.getCursor().x,
+            y: input.getCursor().y
+        };
+
+        player.setLoc(mouseLoc);
+    }
+    
+    if (i.shoot && !io.shoot) {
+        console.log(i);
+    }
+}
+
 function updateInput() {
     var result = input.getChanges();
+    var i = input.getInput();
+    var io = input.getOldInput();
+
+    processMovement(i);
+    processMouse(i, io);
+
+    input.updateOld();
+
     if(result.changed) {
-        
-        player.updateInput(result.mapping);
+       // send to server.
     }
+}
+
+function updatePlayerVelocity() {
+    
+    if(input.up) { velocity.y = -1; }
+    else if(input.down) { velocity.y = 1; }
+    
+    if(input.left) { velocity.x = -1; }
+    else if(input.right) { velocity.x = 1; }
+    
+    if(input.shoot && !inputOld.shoot && player.getPower() > player.getPowerPerShot()) {
+        player.subrtactShotPower();
+        this.gameObjects.push(new Shot(player,cursor));
+    }
+    
+    player.setVel(velocity);
 }
 
 /**
@@ -61,6 +119,20 @@ function initGame() {
 
     game.addObject(player);
     game.addObject(new Player({x: 200, y: 400}, 'img/player2.png'));
+    game.addObject(new Player({x: 300, y: 300}, 'img/player2.png'));
+    game.addObject(new Player({x: 500, y: 200}, 'img/player2.png'));
+
+    game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
+    game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
+    game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
+    game.addObject(new Block({x:50,y:1050}, {width:1050, height:50}));
+    game.addObject(new Block({x:200,y:200}, {width:500, height:50}));
+    game.addObject(new Block({x:400,y:290}, {width:50, height:500}));
+    game.addObject(new Block({x:600,y:500}, {width:50, height:550}));
+    game.addObject(new Block({x:500,y:500}, {width:50, height:50}));
+    game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
+    game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
+    game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
 }
 
 /**

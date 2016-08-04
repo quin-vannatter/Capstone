@@ -9,7 +9,7 @@
 'use strict';
 
 class Player extends GameObject {
-    constructor(location, texture, playerId, input) {
+    constructor(location, texture, playerId) {
 		const SIZE = {
 			width: 50,
 			height: 50
@@ -19,7 +19,7 @@ class Player extends GameObject {
 		if (texture === 'img/player.png') {
 			super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
 		} else {
-			super(texture, location, SIZE, SPEED, {x: 1, y: 0}, 0, true);
+			super(texture, location, SIZE, SPEED, {x: 2, y: 2}, 0, true);
 		}
 		
 		// Per second.
@@ -29,16 +29,7 @@ class Player extends GameObject {
 		
 		this.power = this.MAX_POWER;
 		this.playerId = playerId;
-		this.input = input;
     }
-	
-	updateInput(inputChanges) {
-		for(var key in inputChanges) {
-			if(inputChanges.hasOwnProperty(key)) {
-				this.input[key] = inputChanges[key];
-			}
-		}
-	}
 	
 	update() {
 		super.move();

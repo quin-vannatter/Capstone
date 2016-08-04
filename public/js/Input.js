@@ -7,7 +7,6 @@
 		// Make sure the game is accessible.
 		this.canvas = canvas;
 		this.camera = camera;
-		console.log(camera);
 		
 		// The input mapping.
 		this.inputMapping = {
@@ -16,8 +15,8 @@
 			left: 'KeyA',
 			right: 'KeyD',
 			shoot: 1,
-			teleport: 2,
-			focus: 3
+			focus: 2,
+			teleport: 3
 		}
 		
 		// Make the mapping for the input state.
@@ -42,6 +41,8 @@
 		
 		// Add events for inputs.
 		document.addEventListener('mousedown',function(e) {
+			e.preventDefault();
+
 			my.handleInput.call(my,e);
 		});
 		document.addEventListener('mouseup',function(e) {
@@ -101,6 +102,19 @@
 	/**
 	 * Gets the state of a key.
 	 */
+	Input.prototype.getOldInput = function() {
+		var oldInput = {};
+		for(var key in this.oldInput) {
+			if(this.oldInput.hasOwnProperty(key)) {
+				oldInput[key] = this.oldInput[key];
+			}
+		}
+		return oldInput;
+	}
+	
+	/**
+	 * Gets the state of a key.
+	 */
 	Input.prototype.getChanges = function() {
 		var mapping = {};
 		var changed = false;
@@ -110,7 +124,6 @@
 					mapping[key] = this.input[key];
 					changed = true;
 				}
-				this.oldInput[key] = this.input[key];
 			}
 		}
 		return {
@@ -135,6 +148,14 @@
 	Input.prototype.getCursor = function() {
 		return this.cursor;
 	}
+
+	Input.prototype.updateOld = function() {
+		for(var key in this.input) {
+			if(this.input.hasOwnProperty(key)) {
+				this.oldInput[key] = this.input[key];
+			}
+		}
+	};
 	
     exports.Input = Input;
 })(window);
