@@ -84,6 +84,19 @@ function initSocket() {
     socket.on('update own position', function(data) {
         player.setLoc(data);
     });
+
+    socket.on('update all players', function(data) {
+        updatePlayerPositions(data);
+        updateInput();
+    });
+}
+
+function updatePlayerPositions(players) {
+    for(var i = 0; i < players.length; i++) {
+        var cP = players[i];
+
+        game.updatePlayerLocAndVel(cP.playerId, cP.loc, cP.velocity);
+    }
 }
 
 function drawGame() {
@@ -201,7 +214,6 @@ function updateInput() {
         processMovement(i);
         processMouse(i, io);
     }
-
 
     input.updateOld();
 }

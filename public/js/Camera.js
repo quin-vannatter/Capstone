@@ -22,7 +22,7 @@ class Camera extends GameObject {
         super(null, location, {width: 0, height: 0}, 0, Vector.zero(), 0);
 		
 		// Set the focus.
-		this.CAMERA_SPEED = 10;
+		this.CAMERA_SPEED = 18;
 		this.focus = focus;
 		this.canvas = canvas;
 		this.center = {
@@ -58,8 +58,8 @@ class Camera extends GameObject {
 	
 	calculateOffset(obj) {
 		return {
-			x: obj.getMoveLoc().x - this.loc.x,
-			y: obj.getMoveLoc().y - this.loc.y
+			x: obj.getLoc().x - this.loc.x,
+			y: obj.getLoc().y - this.loc.y
 		}
 	}
 }

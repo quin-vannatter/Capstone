@@ -14,7 +14,7 @@ class Player extends GameObject {
 			width: 50,
 			height: 50
 		};
-		const SPEED = 5;
+		const SPEED = 4;
 		const MAX_HEALTH = 5;
 		
 		super(texture, location, SIZE, SPEED, Vector.zero(), true);

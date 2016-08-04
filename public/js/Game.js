@@ -64,7 +64,6 @@
                             g2.setHitPlayer(true);
                         } else {
                             this.adjustObject(g1, g2);
-                            g1.syncLocation();
                         }
                     }
                 }
@@ -230,6 +229,21 @@
      */
     Game.prototype.getGameObjects = function() {
         return this.gameObjects;
+    };
+
+    /**
+     * Gets all player objects in the game.
+     */
+    Game.prototype.getPlayersForTransit = function() {
+        var players = [];
+
+        for(var i = 0; i < this.gameObjects.length; i++) {
+            if (this.gameObjects[i].constructor.name === 'Player') {
+                players.push(this.gameObjects[i].toTransit());
+            }
+        }
+
+        return players;
     };
 
     Game.prototype.getMapBounds = function(obj) {

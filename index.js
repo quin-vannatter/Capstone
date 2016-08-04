@@ -37,6 +37,9 @@ var uuid = require('node-uuid');
 // Set port to listen on.
 var port = 3700;
 
+const SYNC_COUNT = 5 * 60;
+var syncCount = SYNC_COUNT;
+
 // Serve index.html for GET requests.
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -72,6 +75,13 @@ setInterval(function() {
         game.update();
     }
 
+    syncCount--;
+
+    if(syncCount <= 0) {
+        syncCount = SYNC_COUNT;
+
+        io.emit('update all players', game.getPlayersForTransit());
+    }
 }, Game.UPDATE_INTERVAL);
 
 
@@ -130,7 +140,7 @@ io.on('connection', function (socket) {
         };
 
         // Send the player's new position back to them.
-        socket.emit('update own position', newInfo.loc);
+        // socket.emit('update own position', newInfo.loc);
 
         // Broadcast new player movement to other players.
         socket.broadcast.emit('player moved', newInfo);
