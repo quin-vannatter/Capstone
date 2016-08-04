@@ -70,9 +70,17 @@ function processMouse(i, io) {
 
         player.setLoc(mouseLoc);
     }
-    
+
     if (i.shoot && !io.shoot) {
-        console.log(i);
+        if (player.getPower() >= player.getPowerPerShot()) {
+            var mouseLoc = {
+                x: input.getCursor().x,
+                y: input.getCursor().y
+            };
+
+            player.subrtactShotPower();
+            game.addObject(new Shot(player, mouseLoc));
+        }
     }
 }
 

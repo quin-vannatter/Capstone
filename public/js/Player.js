@@ -15,12 +15,15 @@ class Player extends GameObject {
 			height: 50
 		};
 		const SPEED = 5;
+		const MAX_HEALTH = 5;
 		
 		if (texture === 'img/player.png') {
 			super(texture, location, SIZE, SPEED, Vector.zero(), 0, true);
 		} else {
 			super(texture, location, SIZE, SPEED, {x: 2, y: 2}, 0, true);
 		}
+
+		this.currentHealth = MAX_HEALTH;
 		
 		// Per second.
 		this.POWER_RECHARGE = 25;
@@ -55,5 +58,13 @@ class Player extends GameObject {
 	
 	getPowerPerShot() {
 		return this.POWER_PER_SHOT;
+	}
+
+	takeShotDamage(shot) {
+		this.currentHealth -= shot.getDamage();
+
+		if (this.currentHealth <= 0) {
+			this.destroy = true;
+		}
 	}
 }

@@ -98,6 +98,10 @@ class GameObject {
 	checkDestroy() {
 		return this.destroy;
 	}
+
+	setDestroy(value) {
+		this.destroy = value;
+	}
 }
 
 //module.exports = GameObject;

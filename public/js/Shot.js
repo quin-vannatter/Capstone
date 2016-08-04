@@ -9,15 +9,15 @@
 'use strict';
 
 class Shot extends GameObject {
-	
     constructor(sourceObj, destination) {
 		const TEXTURE = 'img/shot.png';
 		const SIZE = {
 			width: 15,
 			height: 15
 		};
-		const SPEED = 15;
+		const SPEED = 10;
 		const MAX_DISTANCE = 900;
+		const SHOT_DAMAGE = 1;
 		
 		var srcLoc = sourceObj.getLoc();
 		var loc = {
@@ -32,6 +32,7 @@ class Shot extends GameObject {
 		
 		this.owner = sourceObj;
 		this.distance = MAX_DISTANCE;
+		this.shotDamage = SHOT_DAMAGE;
     }
 	
 	update() {
@@ -43,5 +44,9 @@ class Shot extends GameObject {
 	
 	getOwner() {
 		return this.owner;
+	}
+
+	getDamage() {
+		return this.shotDamage;
 	}
 }

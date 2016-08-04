@@ -25,7 +25,12 @@
     Game.prototype.updateObjects = function () {
         for(var i = this.gameObjects.length-1; i >= 0; i--) {
             var g = this.gameObjects[i];
-        
+
+            if(g.checkDestroy()) { 
+				this.gameObjects.splice(i,1);
+				continue;
+			}
+
 			if(typeof(g.update) !== 'undefined') {
 				g.update();
 
@@ -33,17 +38,31 @@
                 for (var h = this.gameObjects.length - 1; h >= 0; h--) {
                     if (i === h) { continue; }
 
+                    var g1 = this.gameObjects[i];
+                    var g2 = this.gameObjects[h];
+
                     var type = this.gameObjects[i].constructor.name;
                     var innerType = this.gameObjects[h].constructor.name;
 
                     // Don't check blocks colliding with each other.
-                    if (type === 'Block' && innerType === 'Block') { continue; } 
+                    if (type === 'Block' && innerType === 'Block') { continue; }
 
-                    var g1 = this.gameObjects[i];
-                    var g2 = this.gameObjects[h];
-
+                    // Ignore shots colliding with their owner.
+                    if ((type === 'Shot' && innerType === 'Player' && g1.getOwner() === g2)
+                        || (innerType === 'Shot' && type === 'Player' && g2.getOwner() === g1)) {
+                        continue;
+                    }
+                    
+                    // Process the collision if it exists.
                     if (this.intersects(g1, g2)) {
-                        this.adjustObject(g1, g2);
+                        if (type === 'Shot' && innerType === 'Player') {
+                            g1.setDestroy(true);
+                            g2.takeShotDamage(g1);
+                        } else if (type === 'Player' && innerType === 'Shot') {
+                            g2.setDestroy(true);
+                        } else {
+                            this.adjustObject(g1, g2);
+                        }
                     }
                 }
 			}
@@ -54,10 +73,16 @@
      * Adjusts an object if it is currently intersecting another object.
      */
     Game.prototype.adjustObject = function (obj1, obj2) {
+        var type = obj1.constructor.name;
+        var otherType = obj2.constructor.name;
+
         var loc1 = obj1.getLoc();
         var loc2 = obj2.getLoc();
+        var vel1 = obj1.getVel();
+        var vel2 = obj2.getVel();
         var size1 = obj1.getSize();
         var size2 = obj2.getSize();
+        var movingX = false;
 
         var deltaX = Math.min(loc1.x + size1.width - loc2.x, loc2.x + size2.width - loc1.x);
         var deltaY = Math.min(loc1.y + size1.height - loc2.y, loc2.y + size2.height - loc1.y);
@@ -65,9 +90,30 @@
         if (deltaX <= deltaY) {
             if (loc1.x < loc2.x) { loc1.x = loc2.x - size1.width; }
             else { loc1.x = loc2.x + size2.width; }
+            movingX = true;
         } else {
             if (loc1.y < loc2.y) { loc1.y = loc2.y - size1.height; }
             else { loc1.y = loc2.y + size2.height; }
+        }
+
+        if (type === 'Shot') {
+            if (otherType === 'Shot') {
+                if(movingX) {
+                    var tmp = vel1.x;
+                    vel1.x = vel2.x;
+                    vel2.x = tmp;
+                } else {
+                    var tmp = vel1.y;
+                    vel1.y = vel2.y;
+                    vel2.y = tmp;
+                }
+            } else if (otherType === 'Block') {
+                if(movingX) {
+                    vel1.x *= -1;
+                } else {
+                    vel1.y *= -1;
+                }
+            }
         }
     };
 
