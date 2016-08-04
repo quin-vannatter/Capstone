@@ -120,7 +120,7 @@ io.on('connection', function (socket) {
 
     socket.on('update movement', function(data) {
         var player = game.getPlayerById(socket.playerId);
-        
+
         game.updatePlayerVelocity(socket.playerId, data);
 
         var newInfo = {
@@ -130,6 +130,19 @@ io.on('connection', function (socket) {
         };
 
         socket.broadcast.emit('player moved', newInfo);
+    });
+
+    socket.on('teleport attempt', function(data) {
+        var player = game.getPlayerById(socket.playerId);
+        
+        player.teleport(data);
+
+        var returnData = {
+            playerId: socket.playerId,
+            loc: data
+        };
+
+        socket.broadcast.emit('player teleported', returnData);
     });
 
     /**
@@ -156,6 +169,7 @@ function initGame(game) {
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
+    game.addObject(new Block({x:850,y:300}, {width:50, height:400}));
 }
 
 function stringifyGameObjects(gameObjects) {

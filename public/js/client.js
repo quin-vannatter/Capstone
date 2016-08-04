@@ -74,6 +74,14 @@ function initSocket() {
     socket.on('player moved', function(data) {
         game.updatePlayerLocAndVel(data.playerId, data.loc, data.vel);
     });
+
+    socket.on('player teleported', function(data) {
+        var teleporter = game.getPlayerById(data.playerId);
+        
+        teleporter.teleport(data.loc);
+
+        console.log('teleport: ' + data.playerId);
+    });
 }
 
 function drawGame() {
@@ -141,6 +149,8 @@ function processMouse(i, io) {
             y: cursor.y - (size.height / 2)
         };
 
+        socket.emit('teleport attempt', mouseLoc);
+
         var mapBounds = game.getMapBounds(player);
 
         mouseLoc.x = Math.max(Math.min(mapBounds.max.x,mouseLoc.x),mapBounds.min.x);
@@ -190,22 +200,6 @@ function updateInput() {
 
 
     input.updateOld();
-}
-
-function updatePlayerVelocity() {
-    
-    if(input.up) { velocity.y = -1; }
-    else if(input.down) { velocity.y = 1; }
-    
-    if(input.left) { velocity.x = -1; }
-    else if(input.right) { velocity.x = 1; }
-    
-    if(input.shoot && !inputOld.shoot && player.getPower() > player.getPowerPerShot()) {
-        player.subrtactShotPower();
-        this.gameObjects.push(new Shot(player.getId(), cursor));
-    }
-
-    player.setVel(velocity);
 }
 
 /**
