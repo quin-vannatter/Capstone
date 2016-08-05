@@ -61,6 +61,8 @@ GLOBAL.Block = require('./public/js/Block.js');
 GLOBAL.Shot = require('./public/js/Shot.js');
 GLOBAL.Vector = require('./public/js/Vector.js');
 
+var numClients = 0;
+
 var Game = gameJS.Game;
 
 var game = new Game();
@@ -85,6 +87,7 @@ setInterval(function() {
 
 // Setup socket on-connect.
 io.on('connection', function (socket) {
+    numClients++;
     socket.playerId = shortid.generate();
 
     // Send the joining player the game.
@@ -112,7 +115,7 @@ io.on('connection', function (socket) {
     // Send the new player to all other players.
     socket.broadcast.emit('player joined', newPlayer.toTransit());
 
-    console.log('\tClient connected: ' + socket.playerId);
+    console.log('\tClient connected(' + numClients + '): ' + socket.playerId);
 
     socket.on('error', function (err) {
         console.error(err);
@@ -147,21 +150,25 @@ io.on('connection', function (socket) {
     socket.on('teleport attempt', function(data) {
         var player = game.getPlayerById(socket.playerId);
         
-        player.teleport(data);
+        if (player.canTeleport()) {
+            player.teleport(data);
 
-        var returnData = {
-            playerId: socket.playerId,
-            loc: data
-        };
+            var returnData = {
+                playerId: socket.playerId,
+                loc: data
+            };
 
-        socket.broadcast.emit('player teleported', returnData);
+            socket.broadcast.emit('player teleported', returnData);
+        }
     });
 
     /**
      * Event for when a client disconnects. Removes player from the game.
      */
     socket.on('disconnect', function () {
-        console.log('\t User disconnected: ' + socket.playerId);
+        console.log('\t User disconnected(' + numClients + '): ' + socket.playerId);
+        
+        numClients--;
 
         game.removePlayer(socket.playerId);
 

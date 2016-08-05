@@ -151,7 +151,7 @@ function processMovement(i) {
 }
 
 function processMouse(i, io) {
-    if (i.teleport && !io.teleport) {
+    if (i.teleport && !io.teleport && player.canTeleport()) {
         // Get the position of the mouse.
         var cursor = input.getCursor();
 

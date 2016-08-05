@@ -29,6 +29,9 @@ class Player extends GameObject {
 		this.POWER_PER_SHOT = 10;
 		this.ALPHA_CHANGE = 0.1;
 		this.RESPAWN_TIME = 3 * 60;
+		this.TELEPORT_TIME = 3 * 60;
+
+		this.teleportTime = this.TELEPORT_TIME;
 		
 		this.power = this.MAX_POWER;
 		this.respawn = this.RESPAWN_TIME;
@@ -96,10 +99,16 @@ class Player extends GameObject {
 
 		if(!this.kill) {
 			super.move();
-			this.power += this.POWER_RECHARGE * (1/60)
+			this.power += this.POWER_RECHARGE * (1/60);
 			
 			if (this.power > this.MAX_POWER) {
 				this.power = this.MAX_POWER;
+			}
+
+			this.teleportTime++;
+			
+			if (this.teleportTime > this.TELEPORT_TIME) {
+				this.teleportTime = this.TELEPORT_TIME;
 			}
 		}
 	}
@@ -126,6 +135,7 @@ class Player extends GameObject {
 			y: location.y
 		};
 		this.teleporting = true;
+		this.teleportTime = 0;
 	}
 
 	getHealth() {
@@ -134,6 +144,10 @@ class Player extends GameObject {
 
 	getKill() {
 		return this.kill;
+	}
+
+	canTeleport() {
+		return this.teleportTime === this.TELEPORT_TIME;
 	}
 
 	takeShotDamage(shot, location) {
