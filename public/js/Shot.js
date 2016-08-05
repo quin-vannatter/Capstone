@@ -18,8 +18,8 @@ class Shot extends GameObject {
 		const TEXTURE = 'img/shot.png';
 		const TEXTURE2 = 'img/shot2.png';
 		const SIZE = {
-			width: 15,
-			height: 15
+			width: 14,
+			height: 14
 		};
 		const SPEED = 8;
 		const MAX_DISTANCE = 900;

@@ -76,7 +76,7 @@ setInterval(function() {
     }
 
     syncCount--;
-
+    
     if(syncCount <= 0) {
         syncCount = SYNC_COUNT;
 
