@@ -5,7 +5,7 @@
     "dependencies": {
         "socket.io": "latest",
         "express": "latest",
-        "node-uuid": "latest"
+        "shortid": "latest"
     },
     "author": "Jeremy Buick"
 }

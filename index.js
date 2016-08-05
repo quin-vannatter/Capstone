@@ -32,7 +32,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var uuid = require('node-uuid');
+var shortid = require('shortid');
 
 // Set port to listen on.
 var port = 3700;
@@ -74,7 +74,7 @@ setInterval(function() {
     }
 
     syncCount--;
-
+    
     if(syncCount <= 0) {
         syncCount = SYNC_COUNT;
 
@@ -85,7 +85,7 @@ setInterval(function() {
 
 // Setup socket on-connect.
 io.on('connection', function (socket) {
-    socket.playerId = uuid();
+    socket.playerId = shortid.generate();
 
     // Send the joining player the game.
     var initialGameState = {
