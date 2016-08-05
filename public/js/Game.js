@@ -4,6 +4,7 @@
      */
     var Game = function() {
         this.gameObjects = [];
+        this.SYNC_DISTANCE = 75;
     };
 
     // Rate (in milliseconds) at which the game updates.
@@ -168,6 +169,31 @@
         return null;
     };
 
+    /**
+     * Returns the distance between two points.
+     */
+    Game.prototype.getDistance = function (p1, p2) {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + (Math.pow(p1.y - p2.y, 2)));
+    };
+
+    /**
+     * Updates the player's velocity, and, if the distance between the player's current
+     * location and the specified location is greater than the sync distance, update
+     * the player's location.
+     */
+    Game.prototype.updateVelAndLocRange = function (playerId, loc, vel) {
+        var player = this.getPlayerById(playerId);
+
+        player.setVel(vel);
+        
+        if (this.getDistance(player.getLoc(), loc) > this.SYNC_DISTANCE) {
+            player.setLoc(loc);
+        }
+    };
+
+    /**
+     * Updates a player's location and velocity.
+     */
     Game.prototype.updatePlayerLocAndVel = function(playerId, loc, vel) {
         var player = this.getPlayerById(playerId);
 
@@ -175,6 +201,9 @@
         player.setVel(vel);
     };
 
+    /**
+     * Updates a player's velocity.
+     */
     Game.prototype.updatePlayerVelocity = function(playerId, velocity) {
         var mover = this.getPlayerById(playerId);
 
@@ -211,7 +240,7 @@
                 return;
             }
         }
-    }
+    };
 
     /**
      * Add a new game object.

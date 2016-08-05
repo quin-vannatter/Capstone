@@ -21,7 +21,7 @@ class Shot extends GameObject {
 			width: 15,
 			height: 15
 		};
-		const SPEED = 10;
+		const SPEED = 8;
 		const MAX_DISTANCE = 900;
 		const SHOT_DAMAGE = 1;
 

@@ -12,7 +12,7 @@ var socket;
 var playGame = false;
 
 //var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.156:3700';
+var serverIP = '142.156.127.37:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -95,7 +95,7 @@ function updatePlayerPositions(players) {
     for(var i = 0; i < players.length; i++) {
         var cP = players[i];
 
-        game.updatePlayerLocAndVel(cP.playerId, cP.loc, cP.velocity);
+        game.updateVelAndLocRange(cP.playerId, cP.loc, cP.velocity);
     }
 }
 
