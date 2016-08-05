@@ -12,7 +12,7 @@ var socket;
 var playGame = false;
 
 //var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.156:3700';
+var serverIP = '142.156.127.94:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setInterval(function() {
         if (playGame) {
-            updateInput();
+            if(!player.getKill())updateInput();
             game.update();
             camera.update();
             drawGame();

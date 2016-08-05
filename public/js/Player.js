@@ -16,25 +16,32 @@ class Player extends GameObject {
 		};
 		const SPEED = 4;
 		const MAX_HEALTH = 5;
-		
+
 		super(texture, location, SIZE, SPEED, Vector.zero(), true);
 
 		this.playerId = playerId;
-
 		this.currentHealth = MAX_HEALTH;
-		
+		this.MAX_HEALTH = MAX_HEALTH;
+
 		// Per second.
 		this.POWER_RECHARGE = 25;
 		this.MAX_POWER = 50;
 		this.POWER_PER_SHOT = 10;
 		this.ALPHA_CHANGE = 0.1;
+		this.RESPAWN_TIME = 3 * 60;
 		
 		this.power = this.MAX_POWER;
+		this.respawn = this.RESPAWN_TIME;
 		this.teleportLoc = {
 			x: 0,
 			y: 0
 		};
+		this.respawnLoc = {
+			x: 0,
+			y: 0
+		}
 		this.teleporting = false;
+		this.kill = false;
 		this.playerId = playerId;
     }
 
@@ -48,21 +55,37 @@ class Player extends GameObject {
 	}
 	
 	update() {
-		super.move();
 		var alpha = this.getAlpha();
+
+		if(this.kill && alpha>0) {
+			alpha -= this.ALPHA_CHANGE;
+		}
 
 		if(this.teleporting) {
 			if(alpha > 0) {
 				alpha -= this.ALPHA_CHANGE;
 			} else {
 				alpha = 0;
-				this.setLoc({
+				this.loc = {
 					x: this.teleportLoc.x,
 					y: this.teleportLoc.y
-				});
+				};
 				this.teleporting = false;
 			}
-		} else {
+		} 
+		
+		if(this.kill) {
+			 this.respawn --;
+			 if(this.respawn <= 0) {
+				this.kill = false;
+				this.loc = {
+					x: this.respawnLoc.x,
+					y: this.respawnLoc.y
+				}
+			 }
+		}
+
+		if(!this.kill && !this.teleporting) {
 			if(alpha < 1) { alpha += this.ALPHA_CHANGE; }
 			else { alpha = 1; }
 		}
@@ -71,10 +94,13 @@ class Player extends GameObject {
 		alpha = Math.min(Math.max(0,alpha),1);
 		this.setAlpha(alpha);
 
-		this.power += this.POWER_RECHARGE * (1/60)
-		
-		if (this.power > this.MAX_POWER) {
-			this.power = this.MAX_POWER;
+		if(!this.kill) {
+			super.move();
+			this.power += this.POWER_RECHARGE * (1/60)
+			
+			if (this.power > this.MAX_POWER) {
+				this.power = this.MAX_POWER;
+			}
 		}
 	}
 	
@@ -106,18 +132,39 @@ class Player extends GameObject {
 		return this.currentHealth;
 	}
 
-	takeShotDamage(shot) {
+	getKill() {
+		return this.kill;
+	}
+
+	takeShotDamage(shot, location) {
 		if (!shot.getHitPlayer()) {
 			this.currentHealth -= shot.getDamage();
-
 			if (this.currentHealth <= 0) {
-				this.destroy = true;
+				this.kill = true;
+				this.respawn = this.RESPAWN_TIME;
+				this.setVel(Vector.zero());
+				this.currentHealth = this.MAX_HEALTH;
+				this.power = this.MAX_POWER;
+				this.respawnLoc = {
+					x: location.x,
+					y: location.y
+				};
+				return true;
+			} else {
+				return false;
 			}
 		}
 	}
 
 	getId() {
 		return this.playerId;
+	}
+
+	setSpawnLoc(location) {
+		this.respawnLoc = {
+			x: location.x,
+			y: location.y
+		};
 	}
 }
 

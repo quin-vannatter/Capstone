@@ -23,27 +23,27 @@
      */
     Game.prototype.updateObjects = function () {
         for(var i = this.gameObjects.length-1; i >= 0; i--) {
-            var g = this.gameObjects[i];
+            var g1 = this.gameObjects[i];
 
-            if(g.getDestroy()) { 
+            if(g1.getDestroy()) { 
 				this.gameObjects.splice(i,1);
 				continue;
 			}
 
-            if(typeof(g.update) !== 'undefined') {
-                g.update();
-
+            if(typeof(g1.update) !== 'undefined') {
+                g1.update();
+                
                 // Check collision for object now that it has moved.
                 for (var h = this.gameObjects.length - 1; h >= 0; h--) {
                     if (i === h) { continue; }
 
-                    var g1 = this.gameObjects[i];
                     var g2 = this.gameObjects[h];
 
                     var type = g1.constructor.name;
                     var innerType = g2.constructor.name;
 
                     // Don't check blocks colliding with each other.
+                    if (type === 'Player' && g1.getKill()) { continue; }
                     if (type === 'Block' && innerType === 'Block') { continue; }
 
                     // Ignore shots colliding with their owner.
@@ -55,12 +55,14 @@
                     // Process the collision if it exists.
                     if (this.intersects(g1, g2)) {
                         if (type === 'Shot' && innerType === 'Player') {
+                            var location = this.getRandomSpawnLocation();
                             g1.setDestroy(true);
-                            g2.takeShotDamage(g1);
+                            g2.takeShotDamage(g1, location);
                             g1.setHitPlayer(true);
                         } else if (type === 'Player' && innerType === 'Shot') {
+                            var location = this.getRandomSpawnLocation();
                             g2.setDestroy(true);
-                            g1.takeShotDamage(g2);
+                            g1.takeShotDamage(g2, location);
                             g2.setHitPlayer(true);
                         } else {
                             this.adjustObject(g1, g2);
@@ -69,6 +71,28 @@
                 }
             }
         }
+    }
+    
+    function getSpawnLocations() {
+        var locs = [];
+
+        locs.push({x: 117, y: 105});
+        locs.push({x: 662, y: 125});
+        locs.push({x: 977, y: 195});
+        locs.push({x: 472, y: 285});
+        locs.push({x: 819, y: 951});
+        locs.push({x: 514, y: 968});
+        locs.push({x: 129, y: 960});
+        locs.push({x: 248, y: 350});
+
+        return locs;
+    }
+
+    Game.prototype.getRandomSpawnLocation = function() {
+        var spawnLocations = getSpawnLocations();
+        var num = Math.floor(Math.random() * spawnLocations.length);
+
+        return spawnLocations[num];
     }
 
     /**

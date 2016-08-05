@@ -65,8 +65,6 @@ var Game = gameJS.Game;
 
 var game = new Game();
 
-var spawnLocations = getSpawnLocations();
-
 initGame(game);
 
 // Run game if there is at least one player.
@@ -98,7 +96,7 @@ io.on('connection', function (socket) {
     socket.emit('initialize game', initialGameState);
     
     // Create the new player object and add it to the game.
-    var loc = getRandomSpawnLocation(spawnLocations);
+    var loc = game.getRandomSpawnLocation();
 
     var newPlayer = new Player(loc, null, socket.playerId);
     game.addObject(newPlayer);
@@ -194,25 +192,4 @@ function stringifyGameObjects(gameObjects) {
     }, this);
 
     return stringedObjects;
-}
-
-function getSpawnLocations() {
-    var locs = [];
-
-    locs.push({x: 117, y: 105});
-    locs.push({x: 662, y: 125});
-    locs.push({x: 977, y: 195});
-    locs.push({x: 472, y: 285});
-    locs.push({x: 819, y: 951});
-    locs.push({x: 514, y: 968});
-    locs.push({x: 129, y: 960});
-    locs.push({x: 248, y: 350});
-
-    return locs;
-}
-
-function getRandomSpawnLocation(spawnLocations) {
-    var num = Math.floor(Math.random() * spawnLocations.length);
-
-    return spawnLocations[num];
 }
