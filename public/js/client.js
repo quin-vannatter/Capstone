@@ -132,9 +132,17 @@ function drawGame() {
                 context.globalAlpha = alpha;
             }
             
-            // Draw the game object.
-            context.drawImage(g.getTex(), loc.x - deltaX, loc.y - deltaY,
-                size.width * (2 - alpha),size.height * (2 - alpha));
+            if(!g.isPattern()) {
+                // Draw the game object.
+                context.drawImage(g.getTex(), loc.x - deltaX, loc.y - deltaY,
+                    size.width * (2 - alpha),size.height * (2 - alpha));
+            } else {
+                context.translate(loc.x - deltaX, loc.y - deltaY)
+                var pattern = context.createPattern(g.getTex(),"repeat");
+                context.fillStyle = pattern;
+                context.fillRect(0,0, size.width * (2 - alpha),size.height * (2 - alpha));
+                context.translate(-(loc.x - deltaX), -(loc.y - deltaY));
+            }
 
             // Reset the alpha if it wasn't 1.
             if(alpha != 1) context.globalAlpha = 1;

@@ -13,6 +13,7 @@ class Block extends GameObject {
 		const TEXTURE = 'img/block.png';
 		
         super(TEXTURE, location, size, 0, Vector.zero(), 0, true);
+        this.pattern = true;
     }
 
     toTransit() {

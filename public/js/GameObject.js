@@ -38,6 +38,7 @@ class GameObject {
 		this.destroy = false;
 		this.alpha = 1;
 		this.clipping = clipping;
+		this.pattern = false;
     }
 	
 	// Getters for a game object.
@@ -50,6 +51,10 @@ class GameObject {
 	
 	getVel() {
 		return this.velocity;
+	}
+
+	isPattern() {
+		return this.pattern;
 	}
 
 	getAlpha() {
