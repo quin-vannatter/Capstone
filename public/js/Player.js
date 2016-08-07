@@ -31,7 +31,7 @@ class Player extends GameObject {
 		this.RESPAWN_TIME = 3 * 60;
 		this.TELEPORT_TIME = 3 * 60;
 		this.LOC_PROXIMITY = 0.5;
-		this.MOVE_EASE = 4;
+		this.MOVE_EASE = 8;
 
 		this.teleportTime = this.TELEPORT_TIME;
 		

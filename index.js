@@ -58,7 +58,7 @@ GLOBAL.Block = require('./public/js/Block.js');
 GLOBAL.Shot = require('./public/js/Shot.js');
 GLOBAL.Vector = require('./public/js/Vector.js');
 
-const SYNC_INTERVAL = 0.5 * 60;
+const SYNC_INTERVAL = 0.1 * 60;
 var currentSync = SYNC_INTERVAL;
 
 var numClients = 0;
