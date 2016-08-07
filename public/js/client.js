@@ -5,7 +5,6 @@ var game;
 var player;
 var input;
 var camera;
-var mapBounds;
 
 var socket;
 
@@ -193,10 +192,10 @@ function processMouse(i, io) {
             y: cursor.y - (size.height / 2)
         };
 
-        var mapBounds = game.getMapBounds(player);
+        var mapBounds = game.mapBounds;
 
-        mouseLoc.x = Math.max(Math.min(mapBounds.max.x,mouseLoc.x),mapBounds.min.x);
-        mouseLoc.y = Math.max(Math.min(mapBounds.max.y,mouseLoc.y),mapBounds.min.y);
+        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width/2,mouseLoc.x),mapBounds.min.x + size.width/2);
+        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height/2,mouseLoc.y),mapBounds.min.y + size.height/2);
 
         if(!intersectingPlayer(mouseLoc)) { 
             player.teleport(mouseLoc)
@@ -258,6 +257,7 @@ function initGame(gameData) {
     }, this);
 
     playGame = true;
+    game.calculateMapBounds();
 }
 
 function createObjectFromTransit(tObj) {

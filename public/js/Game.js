@@ -6,6 +6,7 @@
         this.gameObjects = [];
         this.SYNC_DISTANCE = 500;
         this.TRUST_DISTANCE = 50;
+        this.mapBounds = {};
     };
 
     // Rate (in milliseconds) at which the game updates.
@@ -113,7 +114,7 @@
         var size1 = obj1.getSize();
         var size2 = obj2.getSize();
         var movingX = false;
-        var mapBounds = this.getMapBounds(obj1);
+        var mapBounds = game.mapBounds;
 
         var deltaX = Math.min(loc1.x + size1.width - loc2.x, loc2.x + size2.width - loc1.x);
         var deltaY = Math.min(loc1.y + size1.height - loc2.y, loc2.y + size2.height - loc1.y);
@@ -121,12 +122,12 @@
         if (deltaX <= deltaY) {
             if (loc1.x <= loc2.x) { loc1.x = loc2.x - size1.width; }
             else { loc1.x = loc2.x + size2.width; }
-            loc1.x = Math.max(Math.min(mapBounds.max.x,loc1.x),mapBounds.min.x);
+            loc1.x = Math.max(Math.min(mapBounds.max.x - size1.width/2,loc1.x),mapBounds.min.x + size1.width/2);
             movingX = true;
         } else {
             if (loc1.y < loc2.y) { loc1.y = loc2.y - size1.height; }
             else { loc1.y = loc2.y + size2.height; }
-            loc1.y = Math.max(Math.min(mapBounds.max.y,loc1.y),mapBounds.min.y);
+            loc1.y = Math.max(Math.min(mapBounds.max.y - size1.height/2,loc1.y),mapBounds.min.y + size1.height/2);
         }
 
         if (type === 'Shot') {
@@ -303,14 +304,13 @@
         return players;
     };
 
-    Game.prototype.getMapBounds = function(obj) {
+    Game.prototype.calculateMapBounds = function() {
         var first = true;
         var mapBounds = {};
         this.gameObjects.forEach(function(g) {
             if(g.constructor.name == "Block") {
                 var loc = g.getLoc();
                 var size = g.getSize();
-                var pSize = obj.getSize();
                 if(first) {
                     mapBounds = {
                         min: {
@@ -326,18 +326,18 @@
                 } else {
                     mapBounds = {
                         min: {
-                            x: Math.min(mapBounds.min.x, loc.x + pSize.width/2),
-                            y: Math.min(mapBounds.min.y, loc.y + pSize.height/2)
+                            x: Math.min(mapBounds.min.x, loc.x),
+                            y: Math.min(mapBounds.min.y, loc.y)
                         },
                         max: {
-                            x: Math.max(mapBounds.max.x, loc.x - pSize.width/2),
-                            y: Math.max(mapBounds.max.y, loc.y - pSize.height/2)
+                            x: Math.max(mapBounds.max.x, loc.x),
+                            y: Math.max(mapBounds.max.y, loc.y)
                         }
                     }
                 }
             }
         });
-        return mapBounds;
+        this.mapBounds = mapBounds;
     }
 
     exports.Game = Game;

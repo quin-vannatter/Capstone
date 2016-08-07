@@ -206,6 +206,7 @@ function initGame(game) {
     game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
     game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
     game.addObject(new Block({x:850,y:300}, {width:50, height:400}));
+    game.calculateMapBounds();
 }
 
 function stringifyGameObjects(gameObjects) {
