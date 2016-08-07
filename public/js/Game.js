@@ -210,10 +210,7 @@
         var player = this.getPlayerById(playerId);
 
         player.setVel(vel);
-        
-        if (this.getDistance(player.getLoc(), loc) > this.SYNC_DISTANCE) {
-            player.setLoc(loc);
-        }
+        player.setUpdateLoc(loc);
     };
 
     /**
