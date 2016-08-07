@@ -12,7 +12,7 @@ var socket;
 var playGame = false;
 
 //var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.37:3700';
+var serverIP = '142.156.127.156:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -145,7 +145,12 @@ function processMovement(i) {
 
     velocity = Vector.multiply(Vector.normalize(velocity), player.speed);
 
-    socket.emit('update movement', velocity);
+    var updateData = {
+        loc: player.getLoc(),
+        vel: velocity
+    };
+
+    socket.emit('update movement', updateData);
 
     player.setVel(velocity);
 }

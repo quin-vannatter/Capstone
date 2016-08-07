@@ -37,7 +37,7 @@ var shortid = require('shortid');
 // Set port to listen on.
 var port = 3700;
 
-const SYNC_COUNT = 5 * 60;
+const SYNC_COUNT = .5 * 60;
 var syncCount = SYNC_COUNT;
 
 // Serve index.html for GET requests.
@@ -131,17 +131,24 @@ io.on('connection', function (socket) {
 
     socket.on('update movement', function(data) {
         var player = game.getPlayerById(socket.playerId);
+        var loc = player.getLoc();
 
-        game.updatePlayerVelocity(socket.playerId, data);
+        if (game.getDistance(player.getLoc(), data.loc) > game.TRUST_DISTANCE) {
+            socket.emit('update own position', loc);
+            console.log('NO TRUST');
+        } else {
+            loc = data.loc;
+            player.setLoc(loc);
+            console.log('TRUST');
+        }
+
+        game.updatePlayerVelocity(socket.playerId, data.vel);
 
         var newInfo = {
             playerId: socket.playerId,
-            vel: data,
-            loc: player.getLoc()
+            vel: data.vel,
+            loc: loc
         };
-
-        // Send the player's new position back to them.
-        // socket.emit('update own position', newInfo.loc);
 
         // Broadcast new player movement to other players.
         socket.broadcast.emit('player moved', newInfo);
