@@ -114,7 +114,6 @@
         var size1 = obj1.getSize();
         var size2 = obj2.getSize();
         var movingX = false;
-        var mapBounds = game.mapBounds;
 
         var deltaX = Math.min(loc1.x + size1.width - loc2.x, loc2.x + size2.width - loc1.x);
         var deltaY = Math.min(loc1.y + size1.height - loc2.y, loc2.y + size2.height - loc1.y);
@@ -122,12 +121,12 @@
         if (deltaX <= deltaY) {
             if (loc1.x <= loc2.x) { loc1.x = loc2.x - size1.width; }
             else { loc1.x = loc2.x + size2.width; }
-            loc1.x = Math.max(Math.min(mapBounds.max.x - size1.width/2,loc1.x),mapBounds.min.x + size1.width/2);
+            loc1.x = Math.max(Math.min(this.mapBounds.max.x - size1.width/2,loc1.x),this.mapBounds.min.x + size1.width/2);
             movingX = true;
         } else {
             if (loc1.y < loc2.y) { loc1.y = loc2.y - size1.height; }
             else { loc1.y = loc2.y + size2.height; }
-            loc1.y = Math.max(Math.min(mapBounds.max.y - size1.height/2,loc1.y),mapBounds.min.y + size1.height/2);
+            loc1.y = Math.max(Math.min(this.mapBounds.max.y - size1.height/2,loc1.y),this.mapBounds.min.y + size1.height/2);
         }
 
         if (type === 'Shot') {

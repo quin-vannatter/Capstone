@@ -194,12 +194,24 @@ io.on('connection', function (socket) {
 });
 
 function initGame(game) {
-    game.addObject(new Block({x:50,y:50,}, {width:1000, height:50}));
-    game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));
-    game.addObject(new Block({x:50,y:50}, {width:50,height:1000}));
-    game.addObject(new Block({x:50,y:1050}, {width:1050, height:50}));
+    // Outside walls.
+    game.addObject(new Block({x:-450,y:50,}, {width:1550, height:50})); // top
+    game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));  // right
+    game.addObject(new Block({x:-450,y:50}, {width:50,height:1000}));   // left
+    game.addObject(new Block({x:-450,y:1050}, {width:1550, height:50})); // bottom
+
+
+    // Top left box.
+    game.addObject(new Block({x:-250,y:200}, {width:200, height:50}));
+    game.addObject(new Block({x:-250,y:250}, {width:50, height:100}));
+    game.addObject(new Block({x:-100,y:250}, {width:50, height:100}));
+    game.addObject(new Block({x:-250,y:350}, {width:200, height:50}));
+
+
+
     game.addObject(new Block({x:200,y:200}, {width:500, height:50}));
-    game.addObject(new Block({x:400,y:290}, {width:50, height:500}));
+    game.addObject(new Block({x:400,y:290}, {width:50, height:200}));
+    game.addObject(new Block({x:400,y:520}, {width:50, height:300}));
     game.addObject(new Block({x:600,y:500}, {width:50, height:550}));
     game.addObject(new Block({x:500,y:500}, {width:50, height:50}));
     game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
