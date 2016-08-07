@@ -31,7 +31,7 @@ class Player extends GameObject {
 		this.RESPAWN_TIME = 3 * 60;
 		this.TELEPORT_TIME = 3 * 60;
 		this.LOC_PROXIMITY = 0.5;
-		this.MOVE_EASE = 2;
+		this.MOVE_EASE = 10;
 
 		this.teleportTime = this.TELEPORT_TIME;
 		
@@ -85,14 +85,7 @@ class Player extends GameObject {
 		} 
 		
 		if(this.kill) {
-			 this.respawn --;
-			 if(this.respawn <= 0) {
-				this.kill = false;
-				this.loc = {
-					x: this.respawnLoc.x,
-					y: this.respawnLoc.y
-				}
-			 }
+			 this.respawn--;
 		}
 
 		if(!this.kill && !this.teleporting) {
@@ -108,6 +101,7 @@ class Player extends GameObject {
 			if(this.updatingLocation) {
 				this.loc.x += (this.updateLoc.x - this.loc.x) / this.MOVE_EASE;
 				this.loc.y += (this.updateLoc.y - this.loc.y) / this.MOVE_EASE;
+
 				if(Math.sqrt(Math.pow(this.updateLoc.x-this.loc.x,2) + Math.pow(this.updateLoc.y - this.loc.y,2)) <= this.LOC_PROXIMITY) {
 					this.loc = {
 						x: this.updateLoc.x,
@@ -129,6 +123,10 @@ class Player extends GameObject {
 				this.teleportTime = this.TELEPORT_TIME;
 			}
 		}
+	}
+
+	getRespawnTime() {
+		return this.respawn;
 	}
 	
 	subrtactShotPower() {
@@ -168,23 +166,28 @@ class Player extends GameObject {
 		return this.teleportTime === this.TELEPORT_TIME;
 	}
 
-	takeShotDamage(shot, location) {
+	killPlayer() {
+		this.kill = true;
+		this.respawn = this.RESPAWN_TIME;
+		this.setVel(Vector.zero());
+		this.currentHealth = this.MAX_HEALTH;
+		this.power = this.MAX_POWER;
+	}
+
+	takeShotDamage(shot) {
 		if (!shot.getHitPlayer()) {
 			this.currentHealth -= shot.getDamage();
-			if (this.currentHealth <= 0) {
-				this.kill = true;
-				this.respawn = this.RESPAWN_TIME;
-				this.setVel(Vector.zero());
-				this.currentHealth = this.MAX_HEALTH;
-				this.power = this.MAX_POWER;
-				this.respawnLoc = {
-					x: location.x,
-					y: location.y
-				};
-				return true;
-			} else {
-				return false;
-			}
+
+			return this.currentHealth <= 0;
+		}
+	}
+
+	respawnPlayer(location) {
+		this.kill = false;
+		this.respawn = this.RESPAWN_TIME;
+		this.loc = {
+			x: location.x,
+			y: location.y
 		}
 	}
 

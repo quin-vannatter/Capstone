@@ -45,8 +45,11 @@
                     var innerType = g2.constructor.name;
 
                     // Don't check blocks colliding with each other.
-                    if (type === 'Player' && g1.getKill()) { continue; }
                     if (type === 'Block' && innerType === 'Block') { continue; }
+
+                    // Don't check dead players.
+                    if (type === 'Player' && g1.getKill()) { continue; }
+                    if (innerType === 'Player' && g2.getKill()) { continue; }
 
                     // Ignore shots colliding with their owner.
                     if ((type === 'Shot' && innerType === 'Player' && g1.getOwnerId() === g2.getId())
@@ -57,14 +60,20 @@
                     // Process the collision if it exists.
                     if (this.intersects(g1, g2)) {
                         if (type === 'Shot' && innerType === 'Player') {
-                            var location = this.getRandomSpawnLocation();
                             g1.setDestroy(true);
-                            g2.takeShotDamage(g1, location);
+
+                            if (g2.takeShotDamage(g1)) {
+                                g2.killPlayer();
+                            }
+                            
                             g1.setHitPlayer(true);
                         } else if (type === 'Player' && innerType === 'Shot') {
-                            var location = this.getRandomSpawnLocation();
                             g2.setDestroy(true);
-                            g1.takeShotDamage(g2, location);
+
+                            if (g1.takeShotDamage(g2)) {
+                                g1.killPlayer();
+                            }
+
                             g2.setHitPlayer(true);
                         } else {
                             this.adjustObject(g1, g2);
@@ -202,24 +211,12 @@
     };
 
     /**
-     * Updates the player's velocity, and, if the distance between the player's current
-     * location and the specified location is greater than the sync distance, update
-     * the player's location.
-     */
-    Game.prototype.updateVelAndLocRange = function (playerId, loc, vel) {
-        var player = this.getPlayerById(playerId);
-
-        player.setVel(vel);
-        player.setUpdateLoc(loc);
-    };
-
-    /**
      * Updates a player's location and velocity.
      */
     Game.prototype.updatePlayerLocAndVel = function(playerId, loc, vel) {
         var player = this.getPlayerById(playerId);
 
-        player.setLoc(loc);
+        player.setUpdateLoc(loc);
         player.setVel(vel);
     };
 
@@ -282,8 +279,25 @@
         return this.gameObjects;
     };
 
+
     /**
      * Gets all player objects in the game.
+     */
+    Game.prototype.getAllPlayers = function() {
+        var players = [];
+
+        for(var i = 0; i < this.gameObjects.length; i++) {
+            if (this.gameObjects[i].constructor.name === 'Player') {
+                players.push(this.gameObjects[i]);
+            }
+        }
+
+        return players;
+    };
+
+
+    /**
+     * Gets all player objects in the game to send to clients.
      */
     Game.prototype.getPlayersForTransit = function() {
         var players = [];

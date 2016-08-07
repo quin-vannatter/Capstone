@@ -68,8 +68,11 @@ initGame(game);
 
 // Run game if there is at least one player.
 setInterval(function() {
-    if (io.sockets.clients.length > 0) {
+    if (numClients > 0) {
         game.update();
+        
+        var players = game.getAllPlayers();
+        checkRespawns(players);
     }
 }, Game.UPDATE_INTERVAL);
 
@@ -129,7 +132,7 @@ io.on('connection', function (socket) {
             player.setLoc(loc);
         }
 
-        game.updatePlayerVelocity(socket.playerId, data.vel);
+        player.setVel(data.vel);
 
         var newInfo = {
             playerId: socket.playerId,
@@ -193,4 +196,21 @@ function stringifyGameObjects(gameObjects) {
     }, this);
 
     return stringedObjects;
+}
+
+function checkRespawns(players) {
+    for(var i = 0; i < players.length; i++) {
+        if (players[i].getKill() && players[i].getRespawnTime() <= 0) {
+            var loc = game.getRandomSpawnLocation();
+
+            players[i].respawnPlayer(loc);
+
+            var data = {
+                playerId: players[i].getId(),
+                loc: loc
+            };
+
+            io.emit('respawn player', data);
+        }
+    }
 }

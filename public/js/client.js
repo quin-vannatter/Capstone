@@ -84,6 +84,12 @@ function initSocket() {
     socket.on('update own position', function(data) {
         player.setLoc(data);
     });
+
+    socket.on('respawn player', function(data) {
+        var player = game.getPlayerById(data.playerId);
+
+        player.respawnPlayer(data.loc);
+    });
 }
 
 function drawGame() {
