@@ -62,6 +62,7 @@ const SYNC_INTERVAL = 0.1 * 60;
 var currentSync = SYNC_INTERVAL;
 
 var numClients = 0;
+var clientIPs = [];
 
 var Game = gameJS.Game;
 
@@ -89,6 +90,13 @@ setInterval(function() {
 // Setup socket on-connect.
 io.on('connection', function (socket) {
     numClients++;
+
+    if (clientIPs.indexOf(socket.conn.remoteAddress) !== -1) {
+        socket.disconnect();
+        return;
+    }
+
+    clientIPs.push(socket.conn.remoteAddress);
     socket.playerId = shortid.generate();
 
     // Send the joining player the game.
@@ -177,6 +185,9 @@ io.on('connection', function (socket) {
         numClients--;
 
         game.removePlayer(socket.playerId);
+        
+        var ipIndex = clientIPs.indexOf(socket.conn.remoteAddress);
+        clientIPs.splice(ipIndex, 1);
 
         socket.broadcast.emit('player quit', socket.playerId);
     });
