@@ -30,6 +30,8 @@ class Player extends GameObject {
 		this.ALPHA_CHANGE = 0.1;
 		this.RESPAWN_TIME = 3 * 60;
 		this.TELEPORT_TIME = 3 * 60;
+		this.LOC_PROXIMITY = 0.5;
+		this.MOVE_EASE = 2;
 
 		this.teleportTime = this.TELEPORT_TIME;
 		
@@ -43,6 +45,11 @@ class Player extends GameObject {
 			x: 0,
 			y: 0
 		}
+		this.updateLoc = {
+			x: location.x,
+			y: location.y
+		};
+		this.updatingLocation = false;
 		this.teleporting = false;
 		this.kill = false;
 		this.playerId = playerId;
@@ -98,6 +105,17 @@ class Player extends GameObject {
 		this.setAlpha(alpha);
 
 		if(!this.kill) {
+			if(this.updatingLocation) {
+				this.loc.x += (this.updateLoc.x - this.loc.x) / this.MOVE_EASE;
+				this.loc.y += (this.updateLoc.y - this.loc.y) / this.MOVE_EASE;
+				if(Math.sqrt(Math.pow(this.updateLoc.x-this.loc.x,2) + Math.pow(this.updateLoc.y - this.loc.y,2)) <= this.LOC_PROXIMITY) {
+					this.loc = {
+						x: this.updateLoc.x,
+						y: this.updateLoc.y
+					};
+					this.updatingLocation = false;
+				}
+			}
 			super.move();
 			this.power += this.POWER_RECHARGE * (1/60);
 			
@@ -179,6 +197,14 @@ class Player extends GameObject {
 			x: location.x,
 			y: location.y
 		};
+	}
+
+	setUpdateLoc(location) {
+		this.updateLoc = {
+			x: location.x,
+			y: location.y
+		};
+		this.updatingLocation = true;
 	}
 }
 
