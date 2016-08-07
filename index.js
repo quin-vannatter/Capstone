@@ -37,9 +37,6 @@ var shortid = require('shortid');
 // Set port to listen on.
 var port = 3700;
 
-const SYNC_COUNT = .5 * 60;
-var syncCount = SYNC_COUNT;
-
 // Serve index.html for GET requests.
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -73,14 +70,6 @@ initGame(game);
 setInterval(function() {
     if (io.sockets.clients.length > 0) {
         game.update();
-    }
-
-    syncCount--;
-    
-    if(syncCount <= 0) {
-        syncCount = SYNC_COUNT;
-
-        io.emit('update all players', game.getPlayersForTransit());
     }
 }, Game.UPDATE_INTERVAL);
 
@@ -135,11 +124,9 @@ io.on('connection', function (socket) {
 
         if (game.getDistance(player.getLoc(), data.loc) > game.TRUST_DISTANCE) {
             socket.emit('update own position', loc);
-            console.log('NO TRUST');
         } else {
             loc = data.loc;
             player.setLoc(loc);
-            console.log('TRUST');
         }
 
         game.updatePlayerVelocity(socket.playerId, data.vel);

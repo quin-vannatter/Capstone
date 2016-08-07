@@ -5,7 +5,7 @@
     var Game = function() {
         this.gameObjects = [];
         this.SYNC_DISTANCE = 500;
-        this.TRUST_DISTANCE = 10;
+        this.TRUST_DISTANCE = 20;
     };
 
     // Rate (in milliseconds) at which the game updates.
