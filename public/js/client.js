@@ -86,9 +86,26 @@ function initSocket() {
     });
 
     socket.on('respawn player', function(data) {
-        var player = game.getPlayerById(data.playerId);
+        var respawner = game.getPlayerById(data.playerId);
 
-        player.respawnPlayer(data.loc);
+        respawner.respawnPlayer(data.loc);
+    });
+
+    socket.on('player died', function(data) {
+        var dieingPlayer = game.getPlayerById(data);
+
+        dieingPlayer.killPlayer();
+    });
+
+    socket.on('update all players', function(data) {
+        for (var i = 0; i < data.length; i++) {
+            var updatingPlayer = game.getPlayerById(data[i].playerId);
+
+            if (updatingPlayer.getId() !== player.getId()) {
+                updatingPlayer.setUpdateLoc(data[i].loc);
+                updatingPlayer.setVel(data[i].velocity);
+            }
+        }
     });
 }
 

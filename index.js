@@ -58,6 +58,9 @@ GLOBAL.Block = require('./public/js/Block.js');
 GLOBAL.Shot = require('./public/js/Shot.js');
 GLOBAL.Vector = require('./public/js/Vector.js');
 
+const SYNC_INTERVAL = 0.5 * 60;
+var currentSync = SYNC_INTERVAL;
+
 var numClients = 0;
 
 var Game = gameJS.Game;
@@ -73,6 +76,12 @@ setInterval(function() {
         
         var players = game.getAllPlayers();
         checkRespawns(players);
+
+        currentSync--;
+        if (currentSync <= 0) {
+            currentSync = SYNC_INTERVAL;
+            io.emit('update all players', game.getPlayersForTransit());
+        }
     }
 }, Game.UPDATE_INTERVAL);
 
@@ -211,6 +220,9 @@ function checkRespawns(players) {
             };
 
             io.emit('respawn player', data);
+        } else if (!players[i].getKill() && players[i].getHealth() <= 0) {
+            players[i].killPlayer();
+            io.emit('player died', players[i].getId());
         }
     }
 }

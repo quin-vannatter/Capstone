@@ -5,7 +5,7 @@
     var Game = function() {
         this.gameObjects = [];
         this.SYNC_DISTANCE = 500;
-        this.TRUST_DISTANCE = 20;
+        this.TRUST_DISTANCE = 50;
     };
 
     // Rate (in milliseconds) at which the game updates.
@@ -61,19 +61,11 @@
                     if (this.intersects(g1, g2)) {
                         if (type === 'Shot' && innerType === 'Player') {
                             g1.setDestroy(true);
-
-                            if (g2.takeShotDamage(g1)) {
-                                g2.killPlayer();
-                            }
-                            
+                            g2.takeShotDamage(g1);
                             g1.setHitPlayer(true);
                         } else if (type === 'Player' && innerType === 'Shot') {
                             g2.setDestroy(true);
-
-                            if (g1.takeShotDamage(g2)) {
-                                g1.killPlayer();
-                            }
-
+                            g1.takeShotDamage(g2);
                             g2.setHitPlayer(true);
                         } else {
                             this.adjustObject(g1, g2);
