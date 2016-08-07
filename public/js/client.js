@@ -11,8 +11,8 @@ var socket;
 
 var playGame = false;
 
-//var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.156:3700';
+var serverIP = '142.156.127.137:3700';
+//var serverIP = '142.156.127.156:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -112,6 +112,12 @@ function initSocket() {
 function drawGame() {
     // Draw the background for the canvas.
     context.clearRect(0, 0, canvas.width, canvas.height)
+
+    var img = new Image();
+    img.src = 'img/bg.png';
+    var bgPat = context.createPattern(img,"repeat");
+    context.fillStyle = bgPat;
+    context.fillRect(0,0,canvas.width,canvas.height);
     
     // Loop through the game objects.
     game.getGameObjects().forEach(function(g) {
