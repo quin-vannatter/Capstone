@@ -121,6 +121,10 @@ function initSocket() {
             if (Math.abs(updatingPlayer.getHealth() - data[i].health) > 20) {
                 updatingPlayer.setHealth(data[i].health);
             }
+
+            // Update K/Ds.
+            updatingPlayer.setNumKills(data[i].numKills);
+            updatingPlayer.setNumDeaths(data[i].numDeaths);
         }
     });
 }

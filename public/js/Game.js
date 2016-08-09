@@ -75,7 +75,7 @@
 
     Game.prototype.applyShotHit = function(shot, player) {
         shot.setDestroy(true);
-        player.takeShotDamage(shot);
+        player.takeShotDamage(shot, this.getPlayerById(shot.getOwnerId()));
         shot.setHitPlayer(true);
     };
     

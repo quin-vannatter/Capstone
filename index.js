@@ -103,8 +103,7 @@ io.on('connection', function (socket) {
 
     // Send the joining player the game.
     var initialGameState = {
-        gameObjects: stringifyGameObjects(game.getGameObjects()),
-        playerId: socket.playerId
+        gameObjects: stringifyGameObjects(game.getGameObjects())
     };
     
     socket.emit('initialize game', initialGameState);

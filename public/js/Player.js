@@ -61,7 +61,7 @@ class Player extends GameObject {
 		this.MOVE_EASE = 8;
 
 		// Health increase (every second).
-		this.HEALTH_RATE = 5 / 60;
+		this.HEALTH_RATE = 4 / 60;
 
 		this.teleportTime = this.TELEPORT_TIME;
 		
@@ -86,6 +86,9 @@ class Player extends GameObject {
 
 		this.numKills = 0;
 		this.numDeaths = 0;
+
+		// The last player to hit this player with a shot.
+		this.lastHitter = null;
     }
 
 	toTransit() {
@@ -95,8 +98,8 @@ class Player extends GameObject {
 			loc: this.loc,
 			velocity: this.velocity,
 			health: this.currentHealth,
-			kills: this.numKills,
-			deaths: this.numDeaths
+			numKills: this.numKills,
+			numDeaths: this.numDeaths
 		}
 	}
 
@@ -289,10 +292,12 @@ class Player extends GameObject {
 		this.currentHealth = this.MAX_HEALTH;
 		this.power = this.MAX_POWER;
 		this.numDeaths++;
+		this.lastHitter.setNumKills(this.lastHitter.getNumKills() + 1);
 	}
 
-	takeShotDamage(shot) {
+	takeShotDamage(shot, shooter) {
 		if (!shot.getHitPlayer()) {
+			this.lastHitter = shooter;
 			this.currentHealth -= shot.getDamage();
 		}
 	}
