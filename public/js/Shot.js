@@ -23,7 +23,7 @@ class Shot extends GameObject {
 		};
 		const SPEED = 8;
 		const MAX_DISTANCE = 900;
-		const SHOT_DAMAGE = 1;
+		const SHOT_DAMAGE = 15;
 
 		if (arguments.length === 3) {
         	super(TEXTURE2, srcLoc, SIZE, SPEED, srcSize, true);
