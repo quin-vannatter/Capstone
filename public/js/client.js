@@ -323,6 +323,9 @@ function processMouse(i, io) {
         // Get the position of the mouse.
         var cursor = input.getCursor();
 
+        // Get the player size.
+        var size = player.getSize();
+
         // Get mouse coordinates.
         var mouseLoc = {
             x: cursor.x - (size.width / 2),
