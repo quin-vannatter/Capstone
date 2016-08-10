@@ -334,8 +334,8 @@ function processMouse(i, io) {
 
         var mapBounds = game.mapBounds;
 
-        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width/2,mouseLoc.x),mapBounds.min.x + size.width/2);
-        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height/2,mouseLoc.y),mapBounds.min.y + size.height/2);
+        mouseLoc.x = Math.max(Math.min(mapBounds.max.x, mouseLoc.x),mapBounds.min.x);
+        mouseLoc.y = Math.max(Math.min(mapBounds.max.y, mouseLoc.y),mapBounds.min.y);
 
         if(!intersectingPlayer(mouseLoc)) { 
             player.teleport(mouseLoc)
