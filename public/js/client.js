@@ -162,7 +162,15 @@ function initSocket(spectate) {
 
 function startGame(e) {
     if((e.keyIdentifier === KEY_ENTER || e.type == 'click') && !startedGame) {
-        playerName = document.getElementById('playerName').value;
+
+        playerName = document.getElementById('playerName').value.trim();
+
+        if (playerName.length < 1) {
+            playerName = NAME_DEFAULT;
+        }
+
+        playerName = playerName.substr(0, NAME_MAX_LENGTH);
+
         document.getElementById('input').style.display = 'none';
         socket.emit('join game',playerName);
         startedGame = true;
