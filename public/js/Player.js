@@ -96,6 +96,7 @@ class Player extends GameObject {
 		this.lastHitter = null;
 
 		this.playerName = name;
+		this.score = 0;
     }
 
 	setName(newName) {
@@ -133,10 +134,12 @@ class Player extends GameObject {
 
 	setNumKills(newKills) {
 		this.numKills = newKills;
+		this.updateScore();
 	}
 
 	setNumDeaths(newDeaths) {
 		this.numDeaths = newDeaths;
+		this.updateScore();
 	}
 
 	getNumKills() {
@@ -293,6 +296,16 @@ class Player extends GameObject {
 		return this.POWER_PER_SHOT;
 	}
 
+	getScore() {
+		return this.score;
+	}
+
+	updateScore() {
+		this.score = this.numKills / Math.max(this.numDeaths, 1);
+		this.score += this.numKills * .1;
+		this.score -= this.numDeaths * .01;
+	}
+
 	teleport(location) {
 		this.teleportLoc = {
 			x: location.x,
@@ -321,6 +334,7 @@ class Player extends GameObject {
 		this.currentHealth = this.MAX_HEALTH;
 		this.power = this.MAX_POWER;
 		this.numDeaths++;
+		this.updateScore();
 		this.lastHitter.setNumKills(this.lastHitter.getNumKills() + 1);
 	}
 

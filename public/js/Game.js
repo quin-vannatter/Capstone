@@ -8,6 +8,7 @@
         this.TRUST_DISTANCE = 50;
         this.mapBounds = {};
         this.spawnLocations = [];
+        this.SCOREBOARD_COUNT = 5;
     };
 
     // Rate (in milliseconds) at which the game updates.
@@ -182,6 +183,12 @@
 
     Game.prototype.getLeaders = function() {
         var players = this.getAllPlayers();
+
+        players.sort(function(a, b) {
+            return b.getScore() - a.getScore();
+        });
+
+        players = players.slice(0, this.SCOREBOARD_COUNT);
 
         return players;
     };
