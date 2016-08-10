@@ -52,7 +52,7 @@ class Player extends GameObject {
 
 		this.NAME_OFFSET = {
 			x: (this.size.width / 2),
-			y: 40
+			y: 45
 		}
 
 		// Per second.

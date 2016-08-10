@@ -20,12 +20,11 @@ var SPECTATE_COUNT = 10 * 60;
 var COLOUR_HEALTH = '#C90808';
 var COLOUR_HEALTH_BACKGROUND = '#473E2F';
 var COLOUR_KD = '#18556B';
-var COLOUR_NAME = '#18556B';
+var COLOUR_NAME = '#124557';
 var COLOUR_LEADERBOARD = '#8ED479';
 var LEADERBOARD_ALPHA = 0.5;
 
-//var TEXT_NAME = '15px Verdana';
-var TEXT_NAME = '15px Arial';
+var TEXT_NAME = '15px Verdana';
 var TEXT_KD = '15px Verdana';
 var TEXT_LEADER_HEADING = '25px Verdana';
 var TEXT_LEADER = '16px Verdana';
