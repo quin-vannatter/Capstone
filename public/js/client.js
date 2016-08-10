@@ -17,14 +17,15 @@ var spectateIndex = -1;
 var spectateWait = SPECTATE_COUNT;
 var SPECTATE_COUNT = 10 * 60;
 
-var COLOUR_HEALTH = 'red';
+var COLOUR_HEALTH = '#C90808';
 var COLOUR_HEALTH_BACKGROUND = '#473E2F';
-var COLOUR_KD = '#0F3C70';
-var COLOUR_NAME = '#0F3C70';
-var COLOUR_LEADERBOARD = '#6D9F5E';
+var COLOUR_KD = '#18556B';
+var COLOUR_NAME = '#18556B';
+var COLOUR_LEADERBOARD = '#8ED479';
 var LEADERBOARD_ALPHA = 0.5;
 
-var TEXT_NAME = '15px Verdana';
+//var TEXT_NAME = '15px Verdana';
+var TEXT_NAME = '15px Arial';
 var TEXT_KD = '15px Verdana';
 var TEXT_LEADER_HEADING = '25px Verdana';
 var TEXT_LEADER = '16px Verdana';
@@ -244,66 +245,13 @@ function drawGame() {
 
                 // Draw player related stuff if they are not teleporting.
                 if (g.constructor.name === 'Player' && !g.getTeleporting()) {
-
                     // Draw health if the player has less than 100%.
                     if (g.getHealthPercent() !== 1) {
-                        var hbo = g.getHealthBarOffset(objSize.height);
-                        var hbs = g.getHealthBarSize();
-
-                        var hbl = {
-                            x: loc.x - deltaX + hbo.x,
-                            y: loc.y - deltaY + hbo.y
-                        };
-
-                        var healthOffsets = g.getHealthOffsetInBar();
-
-                        var healthDim = {
-                            x: hbl.x + healthOffsets.x,
-                            y: hbl.y + healthOffsets.y,
-                            width: g.getHealthPercent() * healthOffsets.width,
-                            height: healthOffsets.height
-                        };
-
-                        context.fillStyle = COLOUR_HEALTH_BACKGROUND;
-                        context.fillRect(hbl.x, hbl.y, hbs.width, hbs.height);
-
-                        context.fillStyle = COLOUR_HEALTH;
-                        context.fillRect(healthDim.x, healthDim.y, healthDim.width, healthDim.height);
+                        drawHealth(loc, deltaX, deltaY, g, objSize);
                     }
 
-                    // Draw kills and deaths.
-                    var kdo = g.getKDOffset(objSize.height);
-
-                    var kdl = {
-                        x: loc.x - deltaX + kdo.x,
-                        y: loc.y - deltaY + kdo.y
-                    };
-
-                    // Measure string width.
-                    context.font = TEXT_KD;
-                    context.fillStyle = COLOUR_KD;
-
-                    var kdString = g.getKDString();
-                    var kdStringWidth = context.measureText(kdString).width;
-
-                    context.fillText(kdString, kdl.x - (kdStringWidth / 2), kdl.y);
-
-                    // Draw name.
-                    var no = g.getNameOffset(objSize.height);
-
-                    var nl = {
-                        x: loc.x - deltaX + no.x,
-                        y: loc.y - deltaY + no.y
-                    };
-
-                    // Measure string width.
-                    context.font = TEXT_NAME;
-                    context.fillStyle = COLOUR_NAME;
-                    
-                    var nameString = g.getName();
-                    var nameStringWidth = context.measureText(nameString).width;
-
-                    context.fillText(nameString, nl.x - (nameStringWidth / 2), nl.y);
+                    drawKD(loc, deltaX, deltaY, g, objSize);
+                    drawName(loc, deltaX, deltaY, g, objSize);
                 }
             } else {
 
@@ -322,7 +270,81 @@ function drawGame() {
         }
     });
     
-    // Leaderboard.
+    var oldAlpha = context.globalAlpha;
+
+    drawLeaderBoard();
+
+    context.globalAlpha = oldAlpha;
+}
+
+function drawHealth(loc, deltaX, deltaY, g, objSize) {
+    var hbo = g.getHealthBarOffset(objSize.height);
+    var hbs = g.getHealthBarSize();
+
+    var hbl = {
+        x: loc.x - deltaX + hbo.x,
+        y: loc.y - deltaY + hbo.y
+    };
+
+    var healthOffsets = g.getHealthOffsetInBar();
+
+    var healthDim = {
+        x: hbl.x + healthOffsets.x,
+        y: hbl.y + healthOffsets.y,
+        width: g.getHealthPercent() * healthOffsets.width,
+        height: healthOffsets.height
+    };
+
+    context.fillStyle = COLOUR_HEALTH_BACKGROUND;
+    context.fillRect(hbl.x, hbl.y, hbs.width, hbs.height);
+
+    context.fillStyle = COLOUR_HEALTH;
+    context.fillRect(healthDim.x, healthDim.y, healthDim.width, healthDim.height);
+}
+
+function drawName(loc, deltaX, deltaY, g, objSize) {
+    var no = g.getNameOffset(objSize.height);
+
+    var nl = {
+        x: loc.x - deltaX + no.x,
+        y: loc.y - deltaY + no.y
+    };
+
+    // Measure string width.
+    context.font = TEXT_NAME;
+    context.fillStyle = COLOUR_NAME;
+    
+    var nameString = g.getName();
+    var nameStringWidth = context.measureText(nameString).width;
+
+    var nameProp = {
+        font: TEXT_NAME,
+        fillStyle: COLOUR_NAME
+    };
+    
+    context.fillText(nameString, nl.x - (nameStringWidth / 2), nl.y);
+}
+
+function drawKD(loc, deltaX, deltaY, g, objSize) {
+    var kdo = g.getKDOffset(objSize.height);
+
+    var kdl = {
+        x: loc.x - deltaX + kdo.x,
+        y: loc.y - deltaY + kdo.y
+    };
+
+    // Measure string width.
+    context.font = TEXT_KD;
+    context.fillStyle = COLOUR_KD;
+
+    var kdString = g.getKDString();
+    var kdStringWidth = context.measureText(kdString).width;
+
+    context.fillText(kdString, kdl.x - (kdStringWidth / 2), kdl.y);
+}
+
+function drawLeaderBoard() {
+     // Leaderboard.
     var leaders = game.getLeaders();
     var ltp = {
         x: 10,
@@ -333,8 +355,6 @@ function drawGame() {
         baseHeight: 47,
         heightPerPlayer: 20
     };
-
-    var oldAlpha = context.globalAlpha;
 
     // Get the max name length.
     var maxNameLength = 0;
@@ -372,8 +392,6 @@ function drawGame() {
     for (var i = 0; i < leaders.length; i++) {
         context.fillText(leaders[i].getLeaderString(), ltp.x, ltp.y + i * ltp.height);
     }
-
-    context.globalAlpha = oldAlpha;
 }
 
 function processMovement(i) {
