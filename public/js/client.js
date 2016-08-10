@@ -21,7 +21,8 @@ var COLOUR_HEALTH = 'red';
 var COLOUR_HEALTH_BACKGROUND = '#473E2F';
 var COLOUR_KD = '#125E66';
 var COLOUR_NAME = 'black';
-var COLOUR_LEADERBOARD = '#126632';
+var COLOUR_LEADERBOARD = '#6D9F5E';
+var LEADERBOARD_ALPHA = 0.5;
 
 var TEXT_NAME = '15px Verdana';
 var TEXT_KD = '15px Verdana';
@@ -328,18 +329,17 @@ function drawGame() {
         y: 60,
         height: 20,
         headY: 25,
-        baseWidth: 190,
+        baseWidth: 200,
         baseHeight: 47,
         heightPerPlayer: 20
     };
 
-    context.fillStyle = COLOUR_LEADERBOARD;
-    context.font = TEXT_KD_HEADER;
-    context.fillText('K/D', 12, 43);
+    var oldAlpha = context.globalAlpha;
+
+    // Get the max name length.
+    var maxNameLength = 0;
 
     context.font = TEXT_LEADER;
-
-    var maxNameLength = 0;
 
     for (var i = 0; i < leaders.length; i++) {
         var name = leaders[i].getLeaderString();
@@ -348,24 +348,32 @@ function drawGame() {
         if (nameLength > maxNameLength) {
             maxNameLength = nameLength;
         }
-
-        context.fillText(name, ltp.x, ltp.y + i * ltp.height);
     }
 
     maxNameLength += 20;
 
-    var currentAlpha = context.globalAlpha;
-
-    context.globalAlpha = 0.2;
+    context.globalAlpha = LEADERBOARD_ALPHA;
 
     context.fillStyle = '#000000';
     context.fillRect(0, 0, Math.max(ltp.baseWidth, maxNameLength), ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
     
-    context.globalAlpha = currentAlpha;
+    context.globalAlpha = 1;
+
+    context.font = TEXT_LEADER_HEADING;
 
     context.fillStyle = COLOUR_LEADERBOARD;
-    context.font = TEXT_LEADER_HEADING;
     context.fillText('SCOREBOARD', ltp.x, ltp.headY);
+
+    context.font = TEXT_KD_HEADER;
+    context.fillText('K/D', 12, 43);
+
+    context.font = TEXT_LEADER;
+
+    for (var i = 0; i < leaders.length; i++) {
+        context.fillText(leaders[i].getLeaderString(), ltp.x, ltp.y + i * ltp.height);
+    }
+
+    context.globalAlpha = oldAlpha;
 }
 
 function processMovement(i) {
