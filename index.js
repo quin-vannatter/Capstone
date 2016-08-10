@@ -65,6 +65,8 @@ GLOBAL.Vector = require('./public/js/Vector.js');
 const SYNC_INTERVAL = 0.1 * 60;
 var currentSync = SYNC_INTERVAL;
 
+var ONE_CLIENT_PER_IP = false;
+
 var numClients = 0;
 var clientIPs = [];
 
@@ -95,7 +97,7 @@ setInterval(function() {
 io.on('connection', function (socket) {
     numClients++;
 
-    if (clientIPs.indexOf(socket.conn.remoteAddress) !== -1) {
+    if (ONE_CLIENT_PER_IP && clientIPs.indexOf(socket.conn.remoteAddress) !== -1) {
         socket.disconnect();
         return;
     }

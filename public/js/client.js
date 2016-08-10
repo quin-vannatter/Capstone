@@ -13,8 +13,11 @@ var socket;
 
 var playGame = false;
 
+var healthFillColor = 'red';
+var KDFillColor = '#125E66';
+
 //var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.45:3700';
+var serverIP = '142.156.127.157:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -31,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     backgroundImg = new Image();
     backgroundImg.src = 'img/bg.png';
+
+    healthBarImg = new Image();
+    healthBarImg.src = 'img/healthbar.png';
 
 	window.addEventListener('resize', resizeCanvas);
 
@@ -110,6 +116,15 @@ function initSocket() {
                 updatingPlayer.setUpdateLoc(data[i].loc);
                 updatingPlayer.setVel(data[i].velocity);
             }
+            
+            // Update the health if it is off by a lot.
+            if (Math.abs(updatingPlayer.getHealth() - data[i].health) > 20) {
+                updatingPlayer.setHealth(data[i].health);
+            }
+
+            // Update K/Ds.
+            updatingPlayer.setNumKills(data[i].numKills);
+            updatingPlayer.setNumDeaths(data[i].numDeaths);
         }
     });
 }
@@ -126,9 +141,13 @@ function drawGame() {
     game.getGameObjects().forEach(function(g) {
         // If the game object has something to draw.
         if(g.getTex() != null) {
-
             // Get the alpha of the game object.
             var alpha = g.getAlpha();
+
+            // If the object is a dead player, don't draw it.
+            if (g.constructor.name === 'Player' && g.isDead()) {
+                return true;
+            }
 
             // Calculate the position relative to the camera.
             var loc = camera.calculateOffset(g);
@@ -142,9 +161,57 @@ function drawGame() {
             }
             
             if(!g.isPattern()) {
+                var objSize = {
+                    width: size.width * (2 - alpha),
+                    height: size.height * (2 - alpha)
+                };
+
                 // Draw the game object.
                 context.drawImage(g.getTex(), loc.x - deltaX, loc.y - deltaY,
-                    size.width * (2 - alpha),size.height * (2 - alpha));
+                    objSize.width, objSize.height);
+
+                // Draw player related stuff if they are not teleporting.
+                if (g.constructor.name === 'Player' && !g.getTeleporting()) {
+                    // Draw health if the player has less than 100%.
+                    if (g.getHealthPercent() !== 1) {
+                        var hbo = g.getHealthBarOffset(objSize.height);
+                        var hbs = g.getHealthBarSize();
+
+                        var hbl = {
+                            x: loc.x - deltaX + hbo.x,
+                            y: loc.y - deltaY + hbo.y
+                        };
+
+                        var healthOffsets = g.getHealthOffsetInBar();
+
+                        var healthDim = {
+                            x: hbl.x + healthOffsets.x,
+                            y: hbl.y + healthOffsets.y,
+                            width: g.getHealthPercent() * healthOffsets.width,
+                            height: healthOffsets.height
+                        };
+
+                        context.fillStyle = healthFillColor;
+                        context.fillRect(healthDim.x, healthDim.y, healthDim.width, healthDim.height);
+                        context.drawImage(healthBarImg, hbl.x, hbl.y, hbs.width, hbs.height);
+                    }
+
+                    // Draw kills and deaths.
+                    var hbo = g.getKDOffset(objSize.height);
+
+                    var kdl = {
+                        x: loc.x - deltaX + hbo.x,
+                        y: loc.y - deltaY + hbo.y
+                    };
+
+                    // Measure string width.
+                    var kdString = g.getKDString();
+                    var stringWidth = context.measureText(kdString).width;
+
+                    context.font = "18px Arial";
+                    context.fillStyle = KDFillColor;
+                    context.fillText(kdString, kdl.x - (stringWidth / 2), kdl.y);
+                }
             } else {
                 context.translate(loc.x - deltaX, loc.y - deltaY)
                 var pattern = context.createPattern(g.getTex(),"repeat");

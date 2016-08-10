@@ -62,13 +62,9 @@
                     // Process the collision if it exists.
                     if (this.intersects(g1, g2)) {
                         if (type === 'Shot' && innerType === 'Player') {
-                            g1.setDestroy(true);
-                            g2.takeShotDamage(g1);
-                            g1.setHitPlayer(true);
+                            this.applyShotHit(g1, g2);
                         } else if (type === 'Player' && innerType === 'Shot') {
-                            g2.setDestroy(true);
-                            g1.takeShotDamage(g2);
-                            g2.setHitPlayer(true);
+                            this.applyShotHit(g2, g1);
                         } else {
                             this.adjustObject(g1, g2);
                         }
@@ -77,6 +73,12 @@
             }
         }
     }
+
+    Game.prototype.applyShotHit = function(shot, player) {
+        shot.setDestroy(true);
+        player.takeShotDamage(shot, this.getPlayerById(shot.getOwnerId()));
+        shot.setHitPlayer(true);
+    };
     
     Game.prototype.setSpawnLocations = function(locations) {
         this.spawnLocations = [];
