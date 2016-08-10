@@ -26,7 +26,8 @@ var TEXT_LEADER = '18px Verdana';
 var playerName = '';
 
 //var serverIP = '142.156.127.45:3700';
-var serverIP = '142.156.127.157:3700';
+//var serverIP = '142.156.127.157:3700';
+var serverIP = '10.113.13.16:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -334,8 +335,8 @@ function processMouse(i, io) {
 
         var mapBounds = game.mapBounds;
 
-        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width/2,mouseLoc.x),mapBounds.min.x + size.width/2);
-        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height/2,mouseLoc.y),mapBounds.min.y + size.height/2);
+        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width,mouseLoc.x),mapBounds.min.x);
+        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height,mouseLoc.y),mapBounds.min.y);
 
         if(!intersectingPlayer(mouseLoc)) { 
             player.teleport(mouseLoc)

@@ -121,12 +121,12 @@
         if (deltaX <= deltaY) {
             if (loc1.x <= loc2.x) { loc1.x = loc2.x - size1.width; }
             else { loc1.x = loc2.x + size2.width; }
-            loc1.x = Math.max(Math.min(this.mapBounds.max.x - size1.width/2,loc1.x),this.mapBounds.min.x + size1.width/2);
+            loc1.x = Math.max(Math.min(this.mapBounds.max.x - size1.width,loc1.x),this.mapBounds.min.x);
             movingX = true;
         } else {
             if (loc1.y < loc2.y) { loc1.y = loc2.y - size1.height; }
             else { loc1.y = loc2.y + size2.height; }
-            loc1.y = Math.max(Math.min(this.mapBounds.max.y - size1.height/2,loc1.y),this.mapBounds.min.y + size1.height/2);
+            loc1.y = Math.max(Math.min(this.mapBounds.max.y - size1.height,loc1.y),this.mapBounds.min.y);
         }
 
         if (type === 'Shot') {
@@ -331,8 +331,8 @@
                 } else {
                     mapBounds = {
                         min: {
-                            x: Math.min(mapBounds.min.x, loc.x),
-                            y: Math.min(mapBounds.min.y, loc.y)
+                            x: Math.min(mapBounds.min.x, loc.x + size.width),
+                            y: Math.min(mapBounds.min.y, loc.y + size.height)
                         },
                         max: {
                             x: Math.max(mapBounds.max.x, loc.x),
@@ -341,7 +341,7 @@
                     }
                 }
             }
-        });
+        });ds
         this.mapBounds = mapBounds;
     }
 
