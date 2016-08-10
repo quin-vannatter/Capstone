@@ -25,8 +25,8 @@ var TEXT_LEADER = '18px Verdana';
 
 var playerName = '';
 
-var serverIP = '142.156.127.45:3700';
-//var serverIP = '142.156.127.157:3700';
+//var serverIP = '142.156.127.45:3700';
+var serverIP = '142.156.127.157:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
