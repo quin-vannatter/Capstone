@@ -25,7 +25,7 @@ class Player extends GameObject {
 		this.HEALTH_BAR_SCALE = .15;
 		this.HEALTH_BAR_BASE_SIZE = {
 			width: 450,
-			height: 90
+			height: 70
 		}
 
 		this.HEALTH_BAR_SIZE = {
@@ -34,14 +34,14 @@ class Player extends GameObject {
 		}
 
 		this.HEALTH_OFFSET_IN_BAR = {
-			x: 2.5,
-			y: 3.5,
-			width: this.HEALTH_BAR_SIZE.width - 5.2,
-			height: this.HEALTH_BAR_SIZE.height - 5
+			x: 1,
+			y: 1,
+			width: this.HEALTH_BAR_SIZE.width - 3,
+			height: this.HEALTH_BAR_SIZE.height - 2.5
 		}
 
 		this.HEALTH_BAR_OFFSET = {
-			x: -10,
+			x: -9,
 			y: 1
 		};
 
@@ -380,7 +380,6 @@ class Player extends GameObject {
 				y: location.y
 			};
 			this.updatingLocation = true;
-			console.log('updating');
 		} else {
 			this.loc = {
 				x: location.x,

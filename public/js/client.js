@@ -14,6 +14,7 @@ var socket;
 var playGame = false;
 
 var COLOUR_HEALTH = 'red';
+var COLOUR_HEALTH_BACKGROUND = '#2F2111';
 var COLOUR_KD = '#125E66';
 var COLOUR_NAME = 'black';
 var COLOUR_LEADERBOARD = '#126632';
@@ -209,9 +210,11 @@ function drawGame() {
                             height: healthOffsets.height
                         };
 
+                        context.fillStyle = COLOUR_HEALTH_BACKGROUND;
+                        context.fillRect(hbl.x, hbl.y, hbs.width, hbs.height);
+
                         context.fillStyle = COLOUR_HEALTH;
                         context.fillRect(healthDim.x, healthDim.y, healthDim.width, healthDim.height);
-                        context.drawImage(healthBarImg, hbl.x, hbl.y, hbs.width, hbs.height);
                     }
 
                     // Draw kills and deaths.
