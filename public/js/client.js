@@ -323,6 +323,9 @@ function processMouse(i, io) {
         // Get the position of the mouse.
         var cursor = input.getCursor();
 
+        // Get the player size.
+        var size = player.getSize();
+
         // Get mouse coordinates.
         var mouseLoc = {
             x: cursor.x - (size.width / 2),
@@ -331,8 +334,8 @@ function processMouse(i, io) {
 
         var mapBounds = game.mapBounds;
 
-        mouseLoc.x = Math.max(Math.min(mapBounds.max.x, mouseLoc.x),mapBounds.min.x);
-        mouseLoc.y = Math.max(Math.min(mapBounds.max.y, mouseLoc.y),mapBounds.min.y);
+        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width/2,mouseLoc.x),mapBounds.min.x + size.width/2);
+        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height/2,mouseLoc.y),mapBounds.min.y + size.height/2);
 
         if(!intersectingPlayer(mouseLoc)) { 
             player.teleport(mouseLoc)
