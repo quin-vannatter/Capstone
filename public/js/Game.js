@@ -341,7 +341,7 @@
                     }
                 }
             }
-        });ds
+        });
         this.mapBounds = mapBounds;
     }
 

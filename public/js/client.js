@@ -25,13 +25,11 @@ var TEXT_LEADER = '18px Verdana';
 
 var playerName = '';
 
-//var serverIP = '142.156.127.45:3700';
-//var serverIP = '142.156.127.157:3700';
-var serverIP = '10.113.13.16:3700';
+var serverIP;
 
 document.addEventListener('DOMContentLoaded', function() {
+    serverIP = location.href;
     canvas = document.getElementById('canvas');
-
     document.getElementById('play').addEventListener('click', function () {
         playerName = document.getElementById('playerName').value;
 
