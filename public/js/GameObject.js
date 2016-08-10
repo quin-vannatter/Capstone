@@ -68,10 +68,6 @@ class GameObject {
 	getTex() {
 		return this.texture;
 	}
-
-	setClipping(value) {
-		this.clipping = value;
-	}
 	
 	getClipping() {
 		return this.clipping;

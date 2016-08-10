@@ -61,7 +61,7 @@
                     }
                     
                     // Process the collision if it exists.
-                    if (this.intersects(g1, g2)) {
+                    if (this.intersects(g1, g2) && g1.getClipping() && g2.getClipping()) {
                         if (type === 'Shot' && innerType === 'Player') {
                             this.applyShotHit(g1, g2);
                         } else if (type === 'Player' && innerType === 'Shot') {

@@ -62,8 +62,8 @@ class Player extends GameObject {
 		this.ALPHA_CHANGE = 0.1;
 		this.RESPAWN_TIME = 3 * 60;
 		this.TELEPORT_TIME = 3 * 60;
-		this.LOC_PROXIMITY = 0.5;
-		this.MOVE_EASE = 8;
+		this.LOC_PROXIMITY = 5;
+		this.MOVE_EASE = 4;
 
 		// Health increase (every second).
 		this.HEALTH_RATE = 4 / 60;
@@ -240,17 +240,21 @@ class Player extends GameObject {
 			this.addHealth(this.HEALTH_RATE);
 
 			if(this.updatingLocation) {
-				this.clipping = false
 				this.loc.x += (this.updateLoc.x - this.loc.x) / this.MOVE_EASE;
 				this.loc.y += (this.updateLoc.y - this.loc.y) / this.MOVE_EASE;
 
-				if(Math.sqrt(Math.pow(this.updateLoc.x-this.loc.x,2) + Math.pow(this.updateLoc.y - this.loc.y,2)) <= this.LOC_PROXIMITY) {
-					this.loc = {
-						x: this.updateLoc.x,
-						y: this.updateLoc.y
+				var distance = Math.sqrt(Math.pow(this.updateLoc.x - this.loc.x,2) + 
+					Math.pow(this.updateLoc.y - this.loc.y,2));
+
+				if(distance <= this.LOC_PROXIMITY) {
+					this.updateLoc = {
+						x: this.loc.x,
+						y: this.loc.y
 					};
 					this.clipping = true;
 					this.updatingLocation = false;
+				} else {
+					this.clipping = false;
 				}
 			}
 			super.move();
@@ -366,11 +370,23 @@ class Player extends GameObject {
 	}
 
 	setUpdateLoc(location) {
-		this.updateLoc = {
-			x: location.x,
-			y: location.y
-		};
-		this.updatingLocation = true;
+
+		var distance = Math.sqrt(Math.pow(this.updateLoc.x - this.loc.x,2) + 
+			Math.pow(this.updateLoc.y - this.loc.y,2));
+
+		if(distance > this.LOC_PROXIMITY && !this.teleporting) {
+			this.updateLoc = {
+				x: location.x,
+				y: location.y
+			};
+			this.updatingLocation = true;
+			console.log('updating');
+		} else {
+			this.loc = {
+				x: location.x,
+				y: location.y
+			};
+		}
 	}
 }
 

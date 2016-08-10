@@ -149,8 +149,9 @@ function initSocket() {
 }
 
 function drawGame() {
+
     // Draw the background for the canvas.
-    context.clearRect(0, 0, canvas.width, canvas.height)
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
     backgroundPattern = context.createPattern(backgroundImg, 'repeat');
     context.fillStyle = backgroundPattern;
@@ -158,15 +159,12 @@ function drawGame() {
     
     // Loop through the game objects.
     game.getGameObjects().forEach(function(g) {
+
         // If the game object has something to draw.
         if(g.getTex() != null) {
+
             // Get the alpha of the game object.
             var alpha = g.getAlpha();
-
-            // If the object is a dead player, don't draw it.
-            if (g.constructor.name === 'Player' && g.isDead()) {
-                return true;
-            }
 
             // Calculate the position relative to the camera.
             var loc = camera.calculateOffset(g);
@@ -191,6 +189,7 @@ function drawGame() {
 
                 // Draw player related stuff if they are not teleporting.
                 if (g.constructor.name === 'Player' && !g.getTeleporting()) {
+
                     // Draw health if the player has less than 100%.
                     if (g.getHealthPercent() !== 1) {
                         var hbo = g.getHealthBarOffset(objSize.height);
@@ -248,8 +247,10 @@ function drawGame() {
                     context.fillText(nameString, nl.x - (stringWidth / 2), nl.y);
                 }
             } else {
+
                 context.translate(loc.x - deltaX, loc.y - deltaY)
                 var pattern = context.createPattern(g.getTex(),"repeat");
+
                 context.fillStyle = pattern;
                 context.fillRect(0,0, size.width * (2 - alpha),size.height * (2 - alpha));
                 context.translate(-(loc.x - deltaX), -(loc.y - deltaY));
