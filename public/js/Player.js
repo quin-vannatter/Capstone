@@ -46,8 +46,8 @@ class Player extends GameObject {
 		};
 
 		this.KD_OFFSET = {
-			x: (this.size.width / 2) + 2,
-			y: 26
+			x: (this.size.width / 2) + 1.5,
+			y: 26.5
 		}
 
 		this.NAME_OFFSET = {
