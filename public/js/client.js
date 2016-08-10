@@ -18,6 +18,7 @@ var spectateWait = SPECTATE_COUNT;
 var SPECTATE_COUNT = 10 * 60;
 
 var COLOUR_HEALTH = 'red';
+var COLOUR_HEALTH_BACKGROUND = '#473E2F';
 var COLOUR_KD = '#125E66';
 var COLOUR_NAME = 'black';
 var COLOUR_LEADERBOARD = '#126632';
@@ -25,10 +26,11 @@ var COLOUR_LEADERBOARD = '#126632';
 var TEXT_NAME = '15px Verdana';
 var TEXT_KD = '15px Verdana';
 var TEXT_LEADER_HEADING = '25px Verdana';
-var TEXT_LEADER = '18px Verdana';
+var TEXT_LEADER = '16px Verdana';
 
 var KEY_ENTER = 'Enter';
-
+var NAME_DEFAULT = 'anonymous';
+var NAME_MAX_LENGTH = 15;
 var playerName = '';
 
 var serverIP;
@@ -50,9 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     backgroundImg = new Image();
     backgroundImg.src = 'img/bg.png';
-
-    healthBarImg = new Image();
-    healthBarImg.src = 'img/healthbar.png';
 
 	window.addEventListener('resize', resizeCanvas);
 
@@ -255,9 +254,11 @@ function drawGame() {
                             height: healthOffsets.height
                         };
 
+                        context.fillStyle = COLOUR_HEALTH_BACKGROUND;
+                        context.fillRect(hbl.x, hbl.y, hbs.width, hbs.height);
+
                         context.fillStyle = COLOUR_HEALTH;
                         context.fillRect(healthDim.x, healthDim.y, healthDim.width, healthDim.height);
-                        context.drawImage(healthBarImg, hbl.x, hbl.y, hbs.width, hbs.height);
                     }
 
                     // Draw kills and deaths.
@@ -321,24 +322,36 @@ function drawGame() {
         heightPerPlayer: 20
     };
 
+    context.font = TEXT_LEADER;
+    context.fillStyle = COLOUR_LEADERBOARD;
+
+    var maxNameLength = 0;
+
+    for (var i = 0; i < leaders.length; i++) {
+        var name = leaders[i].getLeaderString();
+        var nameLength = context.measureText(name).width;
+
+        if (nameLength > maxNameLength) {
+            maxNameLength = nameLength;
+        }
+
+        context.fillText(name, ltp.x, ltp.y + i * ltp.height);
+    }
+
+    maxNameLength += 20;
+
     var currentAlpha = context.globalAlpha;
 
     context.globalAlpha = 0.2;
-    context.fillRect(0, 0, ltp.baseWidth, ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
+
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, Math.max(ltp.baseWidth, maxNameLength), ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
     
     context.globalAlpha = currentAlpha;
 
     context.fillStyle = COLOUR_LEADERBOARD;
-    
     context.font = TEXT_LEADER_HEADING;
     context.fillText('SCOREBOARD', ltp.x, ltp.headY);
-
-    context.font = TEXT_LEADER;
-    context.fillStyle = COLOUR_LEADERBOARD;
-
-    for (var i = 0; i < leaders.length; i++) {
-        context.fillText(leaders[i].getLeaderString(), ltp.x, ltp.y + i * ltp.height);
-    }
 }
 
 function processMovement(i) {
