@@ -13,8 +13,17 @@ var socket;
 
 var playGame = false;
 
-var healthFillColor = 'red';
-var KDFillColor = '#125E66';
+var COLOUR_HEALTH = 'red';
+var COLOUR_KD = '#125E66';
+var COLOUR_NAME = 'black';
+var COLOUR_LEADERBOARD = '#126632';
+
+var TEXT_NAME = '15px Verdana';
+var TEXT_KD = '15px Verdana';
+var TEXT_LEADER_HEADING = '25px Verdana';
+var TEXT_LEADER = '18px Verdana';
+
+var playerName = '';
 
 var serverIP = '142.156.127.45:3700';
 //var serverIP = '142.156.127.157:3700';
@@ -22,7 +31,14 @@ var serverIP = '142.156.127.45:3700';
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
 
-    initSocket();
+    document.getElementById('play').addEventListener('click', function () {
+        playerName = document.getElementById('playerName').value;
+
+        document.getElementById('input').style.display = 'none';
+        document.getElementById('canvas').style.display = 'block';
+
+        initSocket();
+    });
 
     // Prevent right-click from bringing up context menu;
     canvas.oncontextmenu = function (e) {
@@ -42,16 +58,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setInterval(function() {
         if (playGame) {
-            if(!player.getKill())updateInput();
+            if(!player.getKill()) {
+                updateInput();
+            }
             game.update();
             camera.update();
             drawGame();
         }
     }, Game.UPDATE_INTERVAL);
+
+    document.getElementById('playerName').focus();
 });
 
 function initSocket() {
-    socket = io(serverIP);
+    socket = io(serverIP,{ query: 'playerName=' + playerName });
 
     socket.on('connect', function(data) {
         
@@ -62,14 +82,14 @@ function initSocket() {
     });
 
     socket.on('spawn player', function(data) {
-        player = new Player(data.loc, 'img/player.png', data.playerId);
+        player = new Player(data.loc, 'img/player.png', data.playerId, playerName);
 
         camera = new Camera(player, canvas);
         input = new Input(canvas, camera);
 
         game.addObject(player);
     });
-
+    
     socket.on('player joined', function(data) {
         game.addObject(createObjectFromTransit(data));
     });
@@ -118,7 +138,7 @@ function initSocket() {
             }
             
             // Update the health if it is off by a lot.
-            if (Math.abs(updatingPlayer.getHealth() - data[i].health) > 20) {
+            if (Math.abs(updatingPlayer.getHealth() - data[i].health) > 15) {
                 updatingPlayer.setHealth(data[i].health);
             }
 
@@ -191,26 +211,42 @@ function drawGame() {
                             height: healthOffsets.height
                         };
 
-                        context.fillStyle = healthFillColor;
+                        context.fillStyle = COLOUR_HEALTH;
                         context.fillRect(healthDim.x, healthDim.y, healthDim.width, healthDim.height);
                         context.drawImage(healthBarImg, hbl.x, hbl.y, hbs.width, hbs.height);
                     }
 
                     // Draw kills and deaths.
-                    var hbo = g.getKDOffset(objSize.height);
+                    var kdo = g.getKDOffset(objSize.height);
 
                     var kdl = {
-                        x: loc.x - deltaX + hbo.x,
-                        y: loc.y - deltaY + hbo.y
+                        x: loc.x - deltaX + kdo.x,
+                        y: loc.y - deltaY + kdo.y
                     };
 
                     // Measure string width.
                     var kdString = g.getKDString();
                     var stringWidth = context.measureText(kdString).width;
 
-                    context.font = "18px Arial";
-                    context.fillStyle = KDFillColor;
+                    context.font = TEXT_KD;
+                    context.fillStyle = COLOUR_KD;
                     context.fillText(kdString, kdl.x - (stringWidth / 2), kdl.y);
+
+                    // Draw name.
+                    var no = g.getNameffset(objSize.height);
+
+                    var nl = {
+                        x: loc.x - deltaX + no.x,
+                        y: loc.y - deltaY + no.y
+                    };
+
+                    // Measure string width.
+                    var nameString = g.getName();
+                    stringWidth = context.measureText(nameString).width;
+
+                    context.font = TEXT_NAME;
+                    context.fillStyle = COLOUR_NAME;
+                    context.fillText(nameString, nl.x - (stringWidth / 2), nl.y);
                 }
             } else {
                 context.translate(loc.x - deltaX, loc.y - deltaY)
@@ -221,9 +257,32 @@ function drawGame() {
             }
 
             // Reset the alpha if it wasn't 1.
-            if(alpha != 1) context.globalAlpha = 1;
+            if (alpha !== 1) {
+                context.globalAlpha = 1;
+            }
         }
     });
+    
+    // Leaderboard.
+    var leaders = game.getLeaders();
+    var ltp = {
+        x: 10,
+        y: 50,
+        height: 20,
+        headY: 25
+    };
+
+    context.fillStyle = COLOUR_LEADERBOARD;
+    
+    context.font = TEXT_LEADER_HEADING;
+    context.fillText('SCOREBOARD', ltp.x, ltp.headY);
+
+    context.font = TEXT_LEADER;
+    context.fillStyle = COLOUR_LEADERBOARD;
+
+    for (var i = 0; i < leaders.length; i++) {
+        context.fillText(leaders[i].getLeaderString(), ltp.x, ltp.y + i * ltp.height);
+    }
 }
 
 function processMovement(i) {
@@ -339,7 +398,7 @@ function createObjectFromTransit(tObj) {
             return new Block(tObj.loc, tObj.size);
 
         case 'Player':
-            var newPlayer = new Player(tObj.loc, 'img/player2.png', tObj.playerId);
+            var newPlayer = new Player(tObj.loc, 'img/player2.png', tObj.playerId, tObj.playerName);
             newPlayer.setVel(tObj.velocity);
 
             return newPlayer;

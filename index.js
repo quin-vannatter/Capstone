@@ -112,13 +112,13 @@ io.on('connection', function (socket) {
         gameObjects: stringifyGameObjects(game.getGameObjects()),
         spawns: game.getSpawnLocations()
     };
-    
+
     socket.emit('initialize game', initialGameState);
     
     // Create the new player object and add it to the game.
     var loc = game.getRandomSpawnLocation();
 
-    var newPlayer = new Player(loc, null, socket.playerId);
+    var newPlayer = new Player(loc, null, socket.playerId, socket.handshake.query.playerName);
     game.addObject(newPlayer);
 
     // Send the player their spawn location.
@@ -136,6 +136,14 @@ io.on('connection', function (socket) {
 
     socket.on('error', function (err) {
         console.error(err);
+    });
+
+    socket.on('set name', function(name) {
+        var player = game.getPlayerById(socket.playerId);
+        
+        if (player.getName() === undefined) {
+            player.setName(name);
+        }
     });
 
     socket.on('shot attempt', function (data) {

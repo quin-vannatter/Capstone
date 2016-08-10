@@ -180,6 +180,12 @@
            o2.bottom < o1.top);
     };
 
+    Game.prototype.getLeaders = function() {
+        var players = this.getAllPlayers();
+
+        return players;
+    };
+
     /**
      * Gets the player with the matching id.
      */

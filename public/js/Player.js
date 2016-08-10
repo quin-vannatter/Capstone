@@ -9,7 +9,7 @@
 'use strict';
 
 class Player extends GameObject {
-    constructor(location, texture, playerId) {
+    constructor(location, texture, playerId, name) {
 		const SIZE = {
 			width: 50,
 			height: 50
@@ -46,8 +46,13 @@ class Player extends GameObject {
 		};
 
 		this.KD_OFFSET = {
-			x: (this.size.width / 2) - 0.5,
-			y: 31
+			x: (this.size.width / 2) + 2,
+			y: 26
+		}
+
+		this.NAME_OFFSET = {
+			x: (this.size.width / 2) - 2,
+			y: 40
 		}
 
 		// Per second.
@@ -89,7 +94,17 @@ class Player extends GameObject {
 
 		// The last player to hit this player with a shot.
 		this.lastHitter = null;
+
+		this.playerName = name;
     }
+
+	setName(newName) {
+		this.playerName = newName;
+	}
+
+	getName() {
+		return this.playerName;
+	}
 
 	toTransit() {
 		return {
@@ -99,8 +114,13 @@ class Player extends GameObject {
 			velocity: this.velocity,
 			health: this.currentHealth,
 			numKills: this.numKills,
-			numDeaths: this.numDeaths
+			numDeaths: this.numDeaths,
+			playerName: this.playerName
 		}
+	}
+	
+	getLeaderString() {
+		return this.numKills + '/' + this.numDeaths + ' ' + this.playerName;
 	}
 
 	getKDString() {
@@ -145,6 +165,13 @@ class Player extends GameObject {
 
 	getHealthOffsetInBar() {
 		return this.HEALTH_OFFSET_IN_BAR;
+	}
+
+	getNameffset(playerHeight) {
+		return {
+			x: this.NAME_OFFSET.x,
+			y: this.NAME_OFFSET.y - playerHeight
+		};
 	}
 
 	getKDOffset(playerHeight) {
