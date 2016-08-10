@@ -237,6 +237,7 @@ class Player extends GameObject {
 			this.addHealth(this.HEALTH_RATE);
 
 			if(this.updatingLocation) {
+				this.clipping = false
 				this.loc.x += (this.updateLoc.x - this.loc.x) / this.MOVE_EASE;
 				this.loc.y += (this.updateLoc.y - this.loc.y) / this.MOVE_EASE;
 
@@ -245,6 +246,7 @@ class Player extends GameObject {
 						x: this.updateLoc.x,
 						y: this.updateLoc.y
 					};
+					this.clipping = true;
 					this.updatingLocation = false;
 				}
 			}
