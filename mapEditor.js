@@ -36,6 +36,16 @@ const BLOCK_SIZE = {
     HEIGHT: 20
 };
 
+var blockSize = {
+    width: BLOCK_SIZE.WIDTH,
+    height: BLOCK_SIZE.HEIGHT
+};
+
+var mapSize = {
+    width: MAP_SIZE.WIDTH,
+    height: MAP_SIZE.HEIGHT
+};
+
 // Spawn fill style.
 const SPAWN_STYLE = '#FF7700';
 
@@ -59,8 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
 
     // Set the properties of the canvas.
-    canvas.width = MAP_SIZE.WIDTH * BLOCK_SIZE.WIDTH;
-    canvas.height = MAP_SIZE.HEIGHT * BLOCK_SIZE.HEIGHT;
+    canvas.width = mapSize.width * blockSize.width;
+    canvas.height = mapSize.height * blockSize.height;
     canvas.style.border = CANVAS_BORDER;
 
     // When the user clicks on the canvas.
@@ -90,6 +100,31 @@ document.addEventListener('DOMContentLoaded', function() {
     drawGrid();
 });
 
+function loadCanvas() {
+    var values = {
+        mw: document.getElementById('mapWidth').value,
+        mh: document.getElementById('mapHeight').value,
+        bw: document.getElementById('blockWidth').value,
+        bh: document.getElementById('blockHeight').value,
+    }
+
+    mapSize = {
+        width: parseInt(values.mw) > 0 ? parseInt(values.mw) : MAP_SIZE.WIDTH,
+        height: parseInt(values.mh) > 0 ? parseInt(values.mh) : MAP_SIZE.HEIGHT
+    }
+
+    blockSize = {
+        width: parseInt(values.bw) > 0 ? parseInt(values.bw) : BLOCK_SIZE.WIDTH,
+        height: parseInt(values.bh) > 0 ? parseInt(values.bh) : BLOCK_SIZE.HEIGHT
+    }
+    
+    canvas.width = mapSize.width * blockSize.width;
+    canvas.height = mapSize.height * blockSize.height;
+
+    addingBlock = true;
+    drawBlocks(false);
+}
+
 // In the event a key is pressed.
 function keyEvent(e) {
     if(e.code === KEY_UNDO) {
@@ -106,8 +141,8 @@ function canvasDraw(e) {
         // Round mouse coords to fit map grid, add block at that point.
         var rect = canvas.getBoundingClientRect();
         var coords = {
-            x: Math.round((e.clientX - rect.left - BLOCK_SIZE.WIDTH/2)/BLOCK_SIZE.WIDTH),
-            y: Math.round((e.clientY - rect.top - BLOCK_SIZE.HEIGHT/2)/BLOCK_SIZE.HEIGHT)
+            x: Math.round((e.clientX - rect.left - blockSize.width/2)/blockSize.width),
+            y: Math.round((e.clientY - rect.top - blockSize.height/2)/blockSize.height)
         };
 
         if(e.which == 1) {
@@ -227,17 +262,17 @@ function addBlock(coords) {
 // Draws a grid for the map.
 function drawGrid() {
     context.clearRect(0,0,canvas.width,canvas.height);
-    for(var i = 0; i < MAP_SIZE.WIDTH; i++) {
+    for(var i = 0; i < mapSize.width; i++) {
         context.beginPath();
-        context.moveTo(i*BLOCK_SIZE.HEIGHT,0);
-        context.lineTo(i*BLOCK_SIZE.HEIGHT, MAP_SIZE.HEIGHT * BLOCK_SIZE.HEIGHT);
+        context.moveTo(i*blockSize.height,0);
+        context.lineTo(i*blockSize.height, mapSize.height * blockSize.height);
         context.stroke();
     }
 
-    for(var i = 0; i < MAP_SIZE.HEIGHT; i++) {
+    for(var i = 0; i < mapSize.height; i++) {
         context.beginPath();
-        context.moveTo(0,i*BLOCK_SIZE.WIDTH);
-        context.lineTo(MAP_SIZE.WIDTH * BLOCK_SIZE.WIDTH, i * BLOCK_SIZE.WIDTH);
+        context.moveTo(0,i*blockSize.width);
+        context.lineTo(mapSize.width * blockSize.width, i * blockSize.width);
         context.stroke();
     }
 }
@@ -252,23 +287,23 @@ function drawBlocks(withNewBlock) {
     for(var i = 0;i<blocks.length;i++) {
         var block = blocks[i];
         context.fillStyle = BLOCK_STYLE;
-        context.fillRect(block.location.x * BLOCK_SIZE.WIDTH, block.location.y * BLOCK_SIZE.HEIGHT,
-            block.size.width * BLOCK_SIZE.WIDTH, block.size.height * BLOCK_SIZE.HEIGHT);
+        context.fillRect(block.location.x * blockSize.width, block.location.y * blockSize.height,
+            block.size.width * blockSize.width, block.size.height * blockSize.height);
     }
 
     // Add each spawn.
     for(var i = 0;i<spawns.length;i++) {
         var spawn = spawns[i];
         context.fillStyle = SPAWN_STYLE;
-        context.fillRect(spawn.x * BLOCK_SIZE.WIDTH, spawn.y * BLOCK_SIZE.HEIGHT, 
-            BLOCK_SIZE.WIDTH, BLOCK_SIZE.HEIGHT);
+        context.fillRect(spawn.x * blockSize.width, spawn.y * blockSize.height, 
+            blockSize.width, blockSize.height);
     }
 
     // Add the starter block if this is a new block.
     if(withNewBlock) {
         context.fillStyle = BLOCK_STYLE;
-        context.fillRect(newBlock.location.x * BLOCK_SIZE.WIDTH, newBlock.location.y * BLOCK_SIZE.HEIGHT,
-            newBlock.size.width * BLOCK_SIZE.WIDTH, newBlock.size.height * BLOCK_SIZE.HEIGHT);
+        context.fillRect(newBlock.location.x * blockSize.width, newBlock.location.y * blockSize.height,
+            newBlock.size.width * blockSize.width, newBlock.size.height * blockSize.height);
     }
 }
 

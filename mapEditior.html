@@ -4,8 +4,24 @@
     </head>
     <body>
         <canvas id="canvas"></canvas>
+        </br>
+        <label for="mapWidth">Map Width: </label>
+        <input type="number" id="mapWidth"/>
+        </br>
+        <label for="mapHeight">Map Height: </label>
+        <input type="number" id="mapHeight"/>
+        </br>
+        <label for="blockWidth">Block Width: </label>
+        <input type="number" id="blockWidth"/>
+        </br>
+        <label for="blockHeight">Block Height: </label>
+        <input type="number" id="blockHeight"/>
+        </br>
+        <label for="jsonValue">JSON Result: </label>
         <input type="text" id="jsonValue"/>
+        </br>
         <input type="button" onclick="getBlocks();" value="Get JSON object"/>
         <input type="button" onclick="loadBlocks();" value="Load JSON object"/>
+        <input type="button" onclick="loadCanvas();" value="Reload Canvas"/>
     </body>
 </html>
