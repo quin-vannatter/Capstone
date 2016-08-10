@@ -16,8 +16,8 @@ var playGame = false;
 var healthFillColor = 'red';
 var KDFillColor = '#125E66';
 
-//var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.157:3700';
+var serverIP = '142.156.127.45:3700';
+//var serverIP = '142.156.127.157:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');

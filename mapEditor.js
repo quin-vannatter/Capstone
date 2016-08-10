@@ -9,6 +9,9 @@ var blocks;
 // Where players will spawn.
 var spawns;
 
+// Keeps track of actions the user makes.
+var actions;
+
 // The map.
 var map;
 
@@ -23,14 +26,14 @@ var clicking;
 
 // Map size.
 const MAP_SIZE = {
-    WIDTH: 50,
-    HEIGHT: 50
+    WIDTH: 30,
+    HEIGHT: 30
 };
 
 // Each block size.
 const BLOCK_SIZE = {
-    WIDTH: 15,
-    HEIGHT: 15
+    WIDTH: 20,
+    HEIGHT: 20
 };
 
 // Spawn fill style.
@@ -41,6 +44,13 @@ const BLOCK_STYLE = '#003322';
 
 // Border for the canvas.
 const CANVAS_BORDER = '1px solid #000000';
+
+// Undo key for reversing mistakes.
+const KEY_UNDO = 'KeyZ';
+
+// Actions.
+const ACTION_SPAWN = 'Spawn';
+const ACTION_BLOCK = 'Block';
 
 // When everything loads. Create stuff.
 document.addEventListener('DOMContentLoaded', function() {
@@ -56,20 +66,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // When the user clicks on the canvas.
     canvas.addEventListener('mousedown', canvasDraw);
     canvas.addEventListener('mouseup', canvasDraw);
+    document.addEventListener('keyup',keyEvent);
 
     // Prevent right-click from bringing up context menu;
     canvas.oncontextmenu = function (e) {
         e.preventDefault();
     };
 
-    // List of blocks and spawns.
     blocks = [];
     spawns = [];
+    actions = [];
 
     // The user starts by adding a block.
     addingBlock = true;
 
-    // User is not clicking
+    // User is not clicking or pressing.
     clicking = false;
 
     // Get the context.
@@ -78,6 +89,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Draw the grid.
     drawGrid();
 });
+
+// In the event a key is pressed.
+function keyEvent(e) {
+    if(e.code === KEY_UNDO) {
+        undoAction();
+    }
+}
 
 // When the user clicks on the canvas.
 function canvasDraw(e) {
@@ -100,10 +118,38 @@ function canvasDraw(e) {
     }
 
     // Set clicking to true if mouse down.
-    clicking = e.type == 'mousedown'
+    clicking = e.type === 'mousedown'
+}
+
+// Undos the last action the user did, spawn or block creation.
+function undoAction() {
+    if(actions.length > 0) {
+
+        // Get the last action the user did.
+        var lastAction = actions[actions.length - 1];
+
+        // Reverse the last action the user did.
+        switch (lastAction) {
+            case ACTION_SPAWN:
+                spawns.splice(spawns.length-1, 1);
+                break;
+            case ACTION_BLOCK:
+                addingBlock = true;
+                blocks.splice(blocks.length - 1, 1);
+                break;
+        }
+
+        // Remove the last action and redraw everything.
+        actions.splice(actions.length-1, 1);
+        drawBlocks(false);
+    }
 }
 
 function addSpawn(coords) {
+
+    // Add an action for adding a spawn.
+    actions.push(ACTION_SPAWN);
+
     // Check if a block has been created at that point.
     var found = false;
     for(var i = 0; i < spawns.length; i++) {
@@ -122,47 +168,60 @@ function addSpawn(coords) {
 // Creates a new block on the map.
 function addBlock(coords) {
 
-    // Only add if either new block or coords are passed old block.
-    if(addingBlock || (!addingBlock && (coords.x >= newBlock.location.x || coords.y >= newBlock.location.y))) {
+    // Add an action for adding a spawn.
+    actions.push(ACTION_BLOCK);
 
-        // Check if a block has been created at that point.
-        var found = false;
-        for(var i = 0; i < blocks.length; i++) {
-            block = blocks[i];
-            found = found || (block.location.x == coords.x && block.location.y == coords.y);
+    // Swap coords if new coords are less than old.
+    if(!addingBlock) {
+        if(coords.x < newBlock.location.x) {
+            var tmp = coords.x;
+            coords.x = newBlock.location.x;
+            newBlock.location.x = tmp;
         }
-
-        // If a block hasn't been added there.
-        if(!found) {
-            // If the block being added is the first block.
-            if(addingBlock) {
-                newBlock = {
-                    location: coords,
-                    size: {
-                        width: 1,
-                        height: 1
-                    }
-                }
-            } else {
-                var size = {
-                    width: coords.x - newBlock.location.x + 1,
-                    height: coords.y - newBlock.location.y + 1
-                }
-                var onWidth = Math.max(size.width, size.height) == size.width;
-                newBlock.size = {
-                    width: onWidth ? size.width : 1,
-                    height: onWidth ? 1 : size.height
-                }
-                blocks.push(newBlock);
-            }
+        if(coords.y < newBlock.location.y) {
+            var tmp = coords.y;
+            coords.y = newBlock.location.y;
+            newBlock.location.y = tmp;
         }
-
-        // Draw all the blocks.
-        drawBlocks(addingBlock);
-
-        // Toggle the adding block.
-        addingBlock = !addingBlock;
     }
+
+    // Check if a block has been created at that point.
+    var found = false;
+    for(var i = 0; i < blocks.length; i++) {
+        block = blocks[i];
+        found = found || (block.location.x == coords.x && block.location.y == coords.y);
+    }
+
+    // If a block hasn't been added there.
+    if(!found) {
+        // If the block being added is the first block.
+        if(addingBlock) {
+            newBlock = {
+                location: coords,
+                size: {
+                    width: 1,
+                    height: 1
+                }
+            }
+        } else {
+            var size = {
+                width: coords.x - newBlock.location.x + 1,
+                height: coords.y - newBlock.location.y + 1
+            }
+            var onWidth = Math.max(size.width, size.height) == size.width;
+            newBlock.size = {
+                width: onWidth ? size.width : 1,
+                height: onWidth ? 1 : size.height
+            }
+            blocks.push(newBlock);
+        }
+    }
+
+    // Draw all the blocks.
+    drawBlocks(addingBlock);
+
+    // Toggle the adding block.
+    addingBlock = !addingBlock;
 }
 
 // Draws a grid for the map.
