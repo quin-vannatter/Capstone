@@ -14,7 +14,7 @@ var socket;
 var playGame = false;
 
 var COLOUR_HEALTH = 'red';
-var COLOUR_HEALTH_BACKGROUND = '#2F2111';
+var COLOUR_HEALTH_BACKGROUND = '#473E2F';
 var COLOUR_KD = '#125E66';
 var COLOUR_NAME = 'black';
 var COLOUR_LEADERBOARD = '#126632';
@@ -50,9 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     backgroundImg = new Image();
     backgroundImg.src = 'img/bg.png';
-
-    healthBarImg = new Image();
-    healthBarImg.src = 'img/healthbar.png';
 
 	window.addEventListener('resize', resizeCanvas);
 

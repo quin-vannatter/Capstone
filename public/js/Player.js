@@ -37,7 +37,7 @@ class Player extends GameObject {
 			x: 1,
 			y: 1,
 			width: this.HEALTH_BAR_SIZE.width - 3,
-			height: this.HEALTH_BAR_SIZE.height - 2.5
+			height: this.HEALTH_BAR_SIZE.height - 2.2
 		}
 
 		this.HEALTH_BAR_OFFSET = {
