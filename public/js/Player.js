@@ -46,12 +46,12 @@ class Player extends GameObject {
 		};
 
 		this.KD_OFFSET = {
-			x: (this.size.width / 2) + 1.5,
+			x: (this.size.width / 2),
 			y: 26.5
 		}
 
 		this.NAME_OFFSET = {
-			x: (this.size.width / 2) - 2,
+			x: (this.size.width / 2),
 			y: 40
 		}
 
@@ -64,8 +64,6 @@ class Player extends GameObject {
 		this.TELEPORT_TIME = 3 * 60;
 		this.LOC_PROXIMITY = 5;
 		this.MOVE_EASE = 4;
-
-		// Health increase (every second).
 		this.HEALTH_RATE = 4 / 60;
 
 		this.teleportTime = this.TELEPORT_TIME;
@@ -170,7 +168,7 @@ class Player extends GameObject {
 		return this.HEALTH_OFFSET_IN_BAR;
 	}
 
-	getNameffset(playerHeight) {
+	getNameOffset(playerHeight) {
 		return {
 			x: this.NAME_OFFSET.x,
 			y: this.NAME_OFFSET.y - playerHeight

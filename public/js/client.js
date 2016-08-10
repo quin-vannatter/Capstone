@@ -27,6 +27,7 @@ var TEXT_NAME = '15px Verdana';
 var TEXT_KD = '15px Verdana';
 var TEXT_LEADER_HEADING = '25px Verdana';
 var TEXT_LEADER = '16px Verdana';
+var TEXT_KD_HEADER = '13px Verdana';
 
 var KEY_ENTER = 'Enter';
 var NAME_DEFAULT = 'anonymous';
@@ -270,15 +271,16 @@ function drawGame() {
                     };
 
                     // Measure string width.
-                    var kdString = g.getKDString();
-                    var stringWidth = context.measureText(kdString).width;
-
                     context.font = TEXT_KD;
                     context.fillStyle = COLOUR_KD;
-                    context.fillText(kdString, kdl.x - (stringWidth / 2), kdl.y);
+
+                    var kdString = g.getKDString();
+                    var kdStringWidth = context.measureText(kdString).width;
+
+                    context.fillText(kdString, kdl.x - (kdStringWidth / 2), kdl.y);
 
                     // Draw name.
-                    var no = g.getNameffset(objSize.height);
+                    var no = g.getNameOffset(objSize.height);
 
                     var nl = {
                         x: loc.x - deltaX + no.x,
@@ -286,12 +288,13 @@ function drawGame() {
                     };
 
                     // Measure string width.
-                    var nameString = g.getName();
-                    stringWidth = context.measureText(nameString).width;
-
                     context.font = TEXT_NAME;
                     context.fillStyle = COLOUR_NAME;
-                    context.fillText(nameString, nl.x - (stringWidth / 2), nl.y);
+                    
+                    var nameString = g.getName();
+                    var nameStringWidth = context.measureText(nameString).width;
+
+                    context.fillText(nameString, nl.x - (nameStringWidth / 2), nl.y);
                 }
             } else {
 
@@ -322,8 +325,11 @@ function drawGame() {
         heightPerPlayer: 20
     };
 
-    context.font = TEXT_LEADER;
     context.fillStyle = COLOUR_LEADERBOARD;
+    context.font = TEXT_KD_HEADER;
+    context.fillText('K/D', 12, 43);
+
+    context.font = TEXT_LEADER;
 
     var maxNameLength = 0;
 
