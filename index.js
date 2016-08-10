@@ -34,6 +34,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var shortid = require('shortid');
 
+var maps = [
+    {"blocks":[{"location":{"x":0,"y":0},"size":{"width":1,"height":50}},{"location":{"x":1,"y":49},"size":{"width":49,"height":1}},{"location":{"x":49,"y":0},"size":{"width":1,"height":49}},{"location":{"x":1,"y":0},"size":{"width":48,"height":1}},{"location":{"x":3,"y":3},"size":{"width":1,"height":44}},{"location":{"x":4,"y":46},"size":{"width":43,"height":1}},{"location":{"x":46,"y":3},"size":{"width":1,"height":43}},{"location":{"x":6,"y":3},"size":{"width":38,"height":1}},{"location":{"x":6,"y":4},"size":{"width":1,"height":40}},{"location":{"x":43,"y":4},"size":{"width":1,"height":40}},{"location":{"x":9,"y":43},"size":{"width":32,"height":1}},{"location":{"x":9,"y":6},"size":{"width":1,"height":37}},{"location":{"x":40,"y":6},"size":{"width":1,"height":37}},{"location":{"x":12,"y":6},"size":{"width":26,"height":1}},{"location":{"x":12,"y":7},"size":{"width":1,"height":34}},{"location":{"x":37,"y":7},"size":{"width":1,"height":34}},{"location":{"x":15,"y":40},"size":{"width":20,"height":1}},{"location":{"x":15,"y":9},"size":{"width":1,"height":31}},{"location":{"x":34,"y":9},"size":{"width":1,"height":31}},{"location":{"x":18,"y":9},"size":{"width":14,"height":1}},{"location":{"x":18,"y":10},"size":{"width":1,"height":28}},{"location":{"x":31,"y":10},"size":{"width":1,"height":28}},{"location":{"x":21,"y":37},"size":{"width":8,"height":1}},{"location":{"x":21,"y":12},"size":{"width":1,"height":25}},{"location":{"x":28,"y":12},"size":{"width":1,"height":25}},{"location":{"x":24,"y":12},"size":{"width":2,"height":1}},{"location":{"x":24,"y":13},"size":{"width":1,"height":22}},{"location":{"x":25,"y":13},"size":{"width":1,"height":22}}],"spawns":[{"x":47,"y":47},{"x":2,"y":47},{"x":2,"y":2},{"x":47,"y":2}]}
+];
+
 // Set port to listen on.
 var port = 3700;
 
@@ -102,7 +106,7 @@ io.on('connection', function (socket) {
     // Send the joining player the game.
     var initialGameState = {
         gameObjects: stringifyGameObjects(game.getGameObjects()),
-        playerId: socket.playerId
+        spawns: game.getSpawnLocations()
     };
     
     socket.emit('initialize game', initialGameState);
@@ -194,31 +198,38 @@ io.on('connection', function (socket) {
 });
 
 function initGame(game) {
-    // Outside walls.
-    game.addObject(new Block({x:-450,y:50,}, {width:1550, height:50})); // top
-    game.addObject(new Block({x:1050,y:50}, {width:50, height:1000}));  // right
-    game.addObject(new Block({x:-450,y:50}, {width:50,height:1000}));   // left
-    game.addObject(new Block({x:-450,y:1050}, {width:1550, height:50})); // bottom
-
-
-    // Top left box.
-    game.addObject(new Block({x:-250,y:200}, {width:200, height:50}));
-    game.addObject(new Block({x:-250,y:250}, {width:50, height:100}));
-    game.addObject(new Block({x:-100,y:250}, {width:50, height:100}));
-    game.addObject(new Block({x:-250,y:350}, {width:200, height:50}));
-
-
-
-    game.addObject(new Block({x:200,y:200}, {width:500, height:50}));
-    game.addObject(new Block({x:400,y:290}, {width:50, height:200}));
-    game.addObject(new Block({x:400,y:520}, {width:50, height:300}));
-    game.addObject(new Block({x:600,y:500}, {width:50, height:550}));
-    game.addObject(new Block({x:500,y:500}, {width:50, height:50}));
-    game.addObject(new Block({x:450,y:600}, {width:50, height:50}));
-    game.addObject(new Block({x:550,y:600}, {width:50, height:50}));
-    game.addObject(new Block({x:500,y:700}, {width:50, height:50}));
-    game.addObject(new Block({x:850,y:300}, {width:50, height:400}));
+    loadMap(maps[0]);
     game.calculateMapBounds();
+}
+
+function loadMap(map) {
+    var BLOCK_SIZE = {
+        WIDTH: 50,
+        HEIGHT: 50
+    };
+    for(var i = 0;i<map.blocks.length;i++) {
+        var b = map.blocks[i];
+
+        var location = {
+            x: b.location.x * BLOCK_SIZE.WIDTH,
+            y: b.location.y * BLOCK_SIZE.HEIGHT
+        };
+
+        var size = {
+            width: b.size.width * BLOCK_SIZE.WIDTH,
+            height: b.size.height * BLOCK_SIZE.HEIGHT
+        };
+        game.addObject(new Block(location,size));
+    }
+    var spawns = [];
+    for(var i = 0;i<map.spawns.length;i++) {
+        var s = map.spawns[i];
+        spawns.push({
+            x: s.x * BLOCK_SIZE.WIDTH,
+            y: s.y * BLOCK_SIZE.HEIGHT
+        });
+    }
+    game.setSpawnLocations(spawns);
 }
 
 function stringifyGameObjects(gameObjects) {

@@ -7,6 +7,7 @@
         this.SYNC_DISTANCE = 500;
         this.TRUST_DISTANCE = 50;
         this.mapBounds = {};
+        this.spawnLocations = [];
     };
 
     // Rate (in milliseconds) at which the game updates.
@@ -77,26 +78,23 @@
         }
     }
     
-    function getSpawnLocations() {
-        var locs = [];
+    Game.prototype.setSpawnLocations = function(locations) {
+        this.spawnLocations = [];
+        for(var i = 0;i<locations.length;i++) {
+            this.spawnLocations.push({
+                x: locations[i].x,
+                y: locations[i].y
+            });
+        }
+    }
 
-        locs.push({x: 117, y: 105});
-        locs.push({x: 662, y: 125});
-        locs.push({x: 977, y: 195});
-        locs.push({x: 472, y: 285});
-        locs.push({x: 819, y: 951});
-        locs.push({x: 514, y: 968});
-        locs.push({x: 129, y: 960});
-        locs.push({x: 248, y: 350});
-
-        return locs;
+    Game.prototype.getSpawnLocations = function() {
+        return this.spawnLocations;
     }
 
     Game.prototype.getRandomSpawnLocation = function() {
-        var spawnLocations = getSpawnLocations();
-        var num = Math.floor(Math.random() * spawnLocations.length);
-
-        return spawnLocations[num];
+        var num = Math.floor(Math.random() * this.spawnLocations.length);
+        return this.spawnLocations[num];
     }
 
     /**

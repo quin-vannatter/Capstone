@@ -14,7 +14,7 @@ var socket;
 var playGame = false;
 
 //var serverIP = '142.156.127.137:3700';
-var serverIP = '142.156.127.156:3700';
+var serverIP = '142.156.127.45:3700';
 
 document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('canvas');
@@ -259,6 +259,8 @@ function initGame(gameData) {
     gameData.gameObjects.forEach(function(element) {
         game.addObject(createObjectFromTransit(element));
     }, this);
+
+    game.setSpawnLocations(gameData.spawns);
 
     playGame = true;
     game.calculateMapBounds();
