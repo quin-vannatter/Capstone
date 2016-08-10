@@ -12,6 +12,10 @@ var backgroundPattern;
 var socket;
 
 var playGame = false;
+var startedGame = false;
+var spectateIndex = -1;
+var spectateWait = SPECTATE_COUNT;
+var SPECTATE_COUNT = 10 * 60;
 
 var COLOUR_HEALTH = 'red';
 var COLOUR_KD = '#125E66';
@@ -23,6 +27,8 @@ var TEXT_KD = '15px Verdana';
 var TEXT_LEADER_HEADING = '25px Verdana';
 var TEXT_LEADER = '18px Verdana';
 
+var KEY_ENTER = 'Enter';
+
 var playerName = '';
 
 var serverIP;
@@ -30,14 +36,9 @@ var serverIP;
 document.addEventListener('DOMContentLoaded', function() {
     serverIP = location.href;
     canvas = document.getElementById('canvas');
-    document.getElementById('play').addEventListener('click', function () {
-        playerName = document.getElementById('playerName').value;
-
-        document.getElementById('input').style.display = 'none';
-        document.getElementById('canvas').style.display = 'block';
-
-        initSocket();
-    });
+    document.addEventListener('keyup',startGame);
+    document.getElementById('play').addEventListener('click', startGame);
+    initSocket();
 
     // Prevent right-click from bringing up context menu;
     canvas.oncontextmenu = function (e) {
@@ -57,8 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setInterval(function() {
         if (playGame) {
-            if(!player.getKill()) {
-                updateInput();
+            if(typeof player !== 'undefined') {
+                if(!player.getKill()) {
+                    updateInput();
+                }
+            } else {
+                if(spectateWait > 0) {
+                    spectateWait--;
+                } else {
+                    findFocus();
+                    spectateWait = SPECTATE_COUNT;
+                }
             }
             game.update();
             camera.update();
@@ -69,8 +79,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('playerName').focus();
 });
 
-function initSocket() {
-    socket = io(serverIP,{ query: 'playerName=' + playerName });
+function initSocket(spectate) {
+
+    var query = spectate ? 'spectate=true' : 'spectate=false&playerName=' + playerName;
+    socket = io(serverIP,{ query: query });
 
     socket.on('connect', function(data) {
         
@@ -130,8 +142,8 @@ function initSocket() {
     socket.on('update all players', function(data) {
         for (var i = 0; i < data.length; i++) {
             var updatingPlayer = game.getPlayerById(data[i].playerId);
-
-            if (updatingPlayer.getId() !== player.getId()) {
+            
+            if (typeof player === 'undefined' || updatingPlayer.getId() !== player.getId()) {
                 updatingPlayer.setUpdateLoc(data[i].loc);
                 updatingPlayer.setVel(data[i].velocity);
             }
@@ -146,6 +158,40 @@ function initSocket() {
             updatingPlayer.setNumDeaths(data[i].numDeaths);
         }
     });
+}
+
+function startGame(e) {
+    if((e.keyIdentifier === KEY_ENTER || e.type == 'click') && !startedGame) {
+        playerName = document.getElementById('playerName').value;
+        document.getElementById('input').style.display = 'none';
+        socket.emit('join game',playerName);
+        startedGame = true;
+    }
+}
+
+function findFocus() {
+
+    var players = game.getAllPlayers();
+
+    if(players.length > 0) {
+        spectateIndex = Math.floor(Math.random() * players.length);
+    }
+
+    var focus;
+
+    if(spectateIndex != -1) {
+        focus = players[spectateIndex];
+    } else {
+        var gameObjects = game.getGameObjects();
+        var index = Math.floor(Math.random() * gameObjects.length);
+        focus = gameObjects[index];
+    }
+
+    if(typeof camera === 'undefined') {
+        camera = new Camera(focus, canvas);
+    } else {
+        camera.setFocus(focus);
+    }
 }
 
 function drawGame() {

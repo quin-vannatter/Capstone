@@ -12,8 +12,7 @@ class Camera extends GameObject {
 	
 	// Constructor for a game object.
     constructor(focus, canvas) {
-		
-		// Set the location and size.
+
 		var location = {
 			x: focus.getLoc().x,
 			y: focus.getLoc().y
@@ -25,6 +24,7 @@ class Camera extends GameObject {
 		this.CAMERA_SPEED = 18;
 		this.focus = focus;
 		this.canvas = canvas;
+		
 		this.center = {
 			width: this.canvas.width/2 - this.focus.getSize().width/2,
 			height: this.canvas.height/2 - this.focus.getSize().height/2
@@ -33,6 +33,13 @@ class Camera extends GameObject {
 	
 	getLoc() {
 		return this.loc;
+	}
+
+	setLoc(location) {
+		this.loc = {
+			x: location.x,
+			y: location.y
+		};
 	}
 	
 	getFocus() {
@@ -46,7 +53,6 @@ class Camera extends GameObject {
 	update() {
 		this.loc.x += ((this.focus.getLoc().x - this.center.width) - this.loc.x)/this.CAMERA_SPEED;
 		this.loc.y += ((this.focus.getLoc().y - this.center.height) - this.loc.y)/this.CAMERA_SPEED;
-		
 	}
 	
 	reCenter() {

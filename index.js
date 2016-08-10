@@ -120,33 +120,27 @@ io.on('connection', function (socket) {
     
     // Create the new player object and add it to the game.
     var loc = game.getRandomSpawnLocation();
-
-    var newPlayer = new Player(loc, null, socket.playerId, socket.handshake.query.playerName);
-    game.addObject(newPlayer);
-
-    // Send the player their spawn location.
-    var playerInfo = {
-        playerId: socket.playerId,
-        loc: loc
-    };
-
-    socket.emit('spawn player', playerInfo);
-
-    // Send the new player to all other players.
-    socket.broadcast.emit('player joined', newPlayer.toTransit());
-
+    
     console.log('\tClient connected(' + numClients + '): ' + socket.playerId);
 
     socket.on('error', function (err) {
         console.error(err);
     });
 
-    socket.on('set name', function(name) {
-        var player = game.getPlayerById(socket.playerId);
-        
-        if (player.getName() === undefined) {
-            player.setName(name);
-        }
+    socket.on('join game', function(name) {
+        var newPlayer = new Player(loc, null, socket.playerId, name);
+        game.addObject(newPlayer);
+
+        // Send the player their spawn location.
+        var playerInfo = {
+            playerId: socket.playerId,
+            loc: loc
+        };
+
+        socket.emit('spawn player', playerInfo);
+
+        // Send the new player to all other players.
+        socket.broadcast.emit('player joined', newPlayer.toTransit());
     });
 
     socket.on('shot attempt', function (data) {

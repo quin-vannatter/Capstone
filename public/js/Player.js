@@ -380,7 +380,6 @@ class Player extends GameObject {
 				y: location.y
 			};
 			this.updatingLocation = true;
-			console.log('updating');
 		} else {
 			this.loc = {
 				x: location.x,
