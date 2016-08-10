@@ -22,8 +22,10 @@ var COLOUR_LEADERBOARD = '#126632';
 var TEXT_NAME = '15px Verdana';
 var TEXT_KD = '15px Verdana';
 var TEXT_LEADER_HEADING = '25px Verdana';
-var TEXT_LEADER = '18px Verdana';
+var TEXT_LEADER = '16px Verdana';
 
+var NAME_DEFAULT = 'anonymous';
+var NAME_MAX_LENGTH = 15;
 var playerName = '';
 
 var serverIP;
@@ -32,7 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
     serverIP = location.href;
     canvas = document.getElementById('canvas');
     document.getElementById('play').addEventListener('click', function () {
-        playerName = document.getElementById('playerName').value;
+        playerName = document.getElementById('playerName').value.trim();
+
+        if (playerName.length < 1) {
+            playerName = NAME_DEFAULT;
+        }
+
+        playerName = playerName.substr(0, NAME_MAX_LENGTH);
 
         document.getElementById('input').style.display = 'none';
         document.getElementById('canvas').style.display = 'block';
@@ -275,24 +283,36 @@ function drawGame() {
         heightPerPlayer: 20
     };
 
+    context.font = TEXT_LEADER;
+    context.fillStyle = COLOUR_LEADERBOARD;
+
+    var maxNameLength = 0;
+
+    for (var i = 0; i < leaders.length; i++) {
+        var name = leaders[i].getLeaderString();
+        var nameLength = context.measureText(name).width;
+
+        if (nameLength > maxNameLength) {
+            maxNameLength = nameLength;
+        }
+
+        context.fillText(name, ltp.x, ltp.y + i * ltp.height);
+    }
+
+    maxNameLength += 20;
+
     var currentAlpha = context.globalAlpha;
 
     context.globalAlpha = 0.2;
-    context.fillRect(0, 0, ltp.baseWidth, ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
+
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, Math.max(ltp.baseWidth, maxNameLength), ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
     
     context.globalAlpha = currentAlpha;
 
     context.fillStyle = COLOUR_LEADERBOARD;
-    
     context.font = TEXT_LEADER_HEADING;
     context.fillText('SCOREBOARD', ltp.x, ltp.headY);
-
-    context.font = TEXT_LEADER;
-    context.fillStyle = COLOUR_LEADERBOARD;
-
-    for (var i = 0; i < leaders.length; i++) {
-        context.fillText(leaders[i].getLeaderString(), ltp.x, ltp.y + i * ltp.height);
-    }
 }
 
 function processMovement(i) {
