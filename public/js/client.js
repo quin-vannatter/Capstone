@@ -267,20 +267,10 @@ function drawGame() {
     var leaders = game.getLeaders();
     var ltp = {
         x: 10,
-        y: 60,
+        y: 50,
         height: 20,
-        headY: 25,
-        baseWidth: 190,
-        baseHeight: 47,
-        heightPerPlayer: 20
+        headY: 25
     };
-
-    var currentAlpha = context.globalAlpha;
-
-    context.globalAlpha = 0.2;
-    context.fillRect(0, 0, ltp.baseWidth, ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
-    
-    context.globalAlpha = currentAlpha;
 
     context.fillStyle = COLOUR_LEADERBOARD;
     
