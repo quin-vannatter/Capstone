@@ -141,8 +141,8 @@ function canvasDraw(e) {
         // Round mouse coords to fit map grid, add block at that point.
         var rect = canvas.getBoundingClientRect();
         var coords = {
-            x: Math.round((e.clientX - rect.left - blockSize.width/2)/blockSize.width),
-            y: Math.round((e.clientY - rect.top - blockSize.height/2)/blockSize.height)
+            x: Math.round((e.clientX - rect.left - blockSize.width / 2) / blockSize.width),
+            y: Math.round((e.clientY - rect.top - blockSize.height / 2) / blockSize.height)
         };
 
         if(e.which == 1) {
@@ -189,7 +189,7 @@ function addSpawn(coords) {
     var found = false;
     for(var i = 0; i < spawns.length; i++) {
         spawn = spawns[i];
-        found = found || (spawn.x == coords.x && spawn.y == coords.y);
+        found = found || (spawn[0] == coords.x && spawn[1] == coords.y);
     }
 
     if(!found) {
@@ -208,15 +208,15 @@ function addBlock(coords) {
 
     // Swap coords if new coords are less than old.
     if(!addingBlock) {
-        if(coords.x < newBlock.location.x) {
+        if(coords.x < newBlock[0]) {
             var tmp = coords.x;
-            coords.x = newBlock.location.x;
-            newBlock.location.x = tmp;
+            coords.x = newBlock[0];
+            newBlock[0] = tmp;
         }
-        if(coords.y < newBlock.location.y) {
+        if(coords.y < newBlock[1]) {
             var tmp = coords.y;
-            coords.y = newBlock.location.y;
-            newBlock.location.y = tmp;
+            coords.y = newBlock[1];
+            newBlock[1] = tmp;
         }
     }
 
@@ -224,7 +224,7 @@ function addBlock(coords) {
     var found = false;
     for(var i = 0; i < blocks.length; i++) {
         block = blocks[i];
-        found = found || (block.location.x == coords.x && block.location.y == coords.y);
+        found = found || (block[0] == coords.x && block[1] == coords.y);
     }
 
     // If a block hasn't been added there.
@@ -240,8 +240,8 @@ function addBlock(coords) {
             }
         } else {
             var size = {
-                width: coords.x - newBlock.location.x + 1,
-                height: coords.y - newBlock.location.y + 1
+                width: coords.x - newBlock[0] + 1,
+                height: coords.y - newBlock[1] + 1
             }
             var onWidth = Math.max(size.width, size.height) == size.width;
             newBlock.size = {
@@ -264,14 +264,14 @@ function drawGrid() {
     context.clearRect(0,0,canvas.width,canvas.height);
     for(var i = 0; i < mapSize.width; i++) {
         context.beginPath();
-        context.moveTo(i*blockSize.height,0);
-        context.lineTo(i*blockSize.height, mapSize.height * blockSize.height);
+        context.moveTo(i * blockSize.height, 0);
+        context.lineTo(i * blockSize.height, mapSize.height * blockSize.height);
         context.stroke();
     }
 
     for(var i = 0; i < mapSize.height; i++) {
         context.beginPath();
-        context.moveTo(0,i*blockSize.width);
+        context.moveTo(0, i * blockSize.width);
         context.lineTo(mapSize.width * blockSize.width, i * blockSize.width);
         context.stroke();
     }
@@ -284,36 +284,32 @@ function drawBlocks(withNewBlock) {
     drawGrid();
 
     // Add each block.
-    for(var i = 0;i<blocks.length;i++) {
+    for(var i = 0;i< blocks.length; i++) {
         var block = blocks[i];
         context.fillStyle = BLOCK_STYLE;
-        context.fillRect(block.location.x * blockSize.width, block.location.y * blockSize.height,
-            block.size.width * blockSize.width, block.size.height * blockSize.height);
+        context.fillRect(block[0] * blockSize.width, block[1] * blockSize.height,
+            block[2] * blockSize.width, block[3] * blockSize.height);
     }
 
     // Add each spawn.
-    for(var i = 0;i<spawns.length;i++) {
+    for(var i = 0;i<spawns.length; i++) {
         var spawn = spawns[i];
         context.fillStyle = SPAWN_STYLE;
-        context.fillRect(spawn.x * blockSize.width, spawn.y * blockSize.height, 
+        context.fillRect(spawn[0] * blockSize.width, spawn[1] * blockSize.height, 
             blockSize.width, blockSize.height);
     }
 
     // Add the starter block if this is a new block.
     if(withNewBlock) {
         context.fillStyle = BLOCK_STYLE;
-        context.fillRect(newBlock.location.x * blockSize.width, newBlock.location.y * blockSize.height,
-            newBlock.size.width * blockSize.width, newBlock.size.height * blockSize.height);
+        context.fillRect(newBlock[0] * blockSize.width, newBlock[1] * blockSize.height,
+            newBlock[2] * blockSize.width, newBlock[3] * blockSize.height);
     }
 }
 
 // Creates the output for all the blocks.
 function getBlocks() {
-    map = {
-        blocks: blocks,
-        spawns: spawns
-    }
-
+    map = [blocks, spawns];
     document.getElementById('jsonValue').value = JSON.stringify(map);
 }
 
@@ -321,8 +317,38 @@ function getBlocks() {
 function loadBlocks() {
     map = JSON.parse(document.getElementById('jsonValue').value);
 
-    spawns = map.spawns;
-    blocks = map.blocks;
+    blocks = map[0];
+    spawns = map[1];
+
+    drawGrid();
+    drawBlocks(false);
+    addingBlock = true;
+}
+
+function loadOldBlocks() {
+    
+    blocks = [];
+    spawns = [];
+    
+    map = JSON.parse(document.getElementById('jsonValue').value);
+    
+    for(var i = 0;i < map.blocks.length; i++) {
+        var block = map.blocks[i];
+        blocks.push([
+            block.location.x,
+            block.location.y,
+            block.size.width,
+            block.size.height
+        ]);
+    }
+    
+    for(var i = 0;i < map.spawns.length; i++) {
+        var spawn = map.spawns[i];
+        spawns.push([
+            spawn.x,
+            spawn.y
+        ]);
+    }
 
     drawGrid();
     drawBlocks(false);

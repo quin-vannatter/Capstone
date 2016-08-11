@@ -34,11 +34,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var shortid = require('shortid');
 
-var maps = [{"blocks":[{"location":{"x":0,"y":0},"size":{"width":1,"height":30}},{"location":{"x":1,"y":29},"size":{"width":29,"height":1}},{"location":{"x":29,"y":0},"size":{"width":1,"height":29}},{"location":{"x":1,"y":0},"size":{"width":28,"height":1}},{"location":{"x":4,"y":5},"size":{"width":1,"height":5}},{"location":{"x":5,"y":8},"size":{"width":5,"height":1}},{"location":{"x":17,"y":4},"size":{"width":1,"height":3}},{"location":{"x":18,"y":4},"size":{"width":4,"height":1}},{"location":{"x":21,"y":5},"size":{"width":1,"height":3}},{"location":{"x":17,"y":7},"size":{"width":4,"height":1}},{"location":{"x":18,"y":11},"size":{"width":1,"height":5}},{"location":{"x":19,"y":13},"size":{"width":8,"height":1}},{"location":{"x":23,"y":9},"size":{"width":1,"height":4}},{"location":{"x":4,"y":12},"size":{"width":9,"height":1}},{"location":{"x":6,"y":10},"size":{"width":7,"height":1}},{"location":{"x":15,"y":13},"size":{"width":1,"height":8}},{"location":{"x":18,"y":19},"size":{"width":9,"height":1}},{"location":{"x":21,"y":16},"size":{"width":6,"height":1}},{"location":{"x":6,"y":3},"size":{"width":8,"height":1}},{"location":{"x":8,"y":6},"size":{"width":7,"height":1}},{"location":{"x":6,"y":16},"size":{"width":5,"height":1}},{"location":{"x":6,"y":17},"size":{"width":1,"height":3}},{"location":{"x":2,"y":14},"size":{"width":1,"height":6}},{"location":{"x":5,"y":20},"size":{"width":7,"height":1}},{"location":{"x":9,"y":18},"size":{"width":4,"height":1}},{"location":{"x":12,"y":7},"size":{"width":1,"height":3}},{"location":{"x":24,"y":9},"size":{"width":5,"height":1}},{"location":{"x":19,"y":23},"size":{"width":10,"height":1}},{"location":{"x":19,"y":24},"size":{"width":1,"height":3}},{"location":{"x":22,"y":26},"size":{"width":5,"height":1}},{"location":{"x":3,"y":23},"size":{"width":1,"height":4}},{"location":{"x":4,"y":26},"size":{"width":13,"height":1}},{"location":{"x":7,"y":23},"size":{"width":9,"height":1}},{"location":{"x":25,"y":3},"size":{"width":1,"height":4}},{"location":{"x":23,"y":20},"size":{"width":1,"height":3}}],"spawns":[{"x":16,"y":9},{"x":3,"y":3},{"x":5,"y":22},{"x":20,"y":21},{"x":27,"y":21},{"x":27,"y":11},{"x":27,"y":2},{"x":19,"y":2},{"x":2,"y":27},{"x":27,"y":27},{"x":7,"y":14}]},
+var maps = [[[[0,0,1,30],[1,29,29,1],[29,0,1,29],[1,0,28,1],[4,5,1,5],[5,8,5,1],[17,4,1,3],[18,4,4,1],[21,5,1,3],[17,7,4,1],[18,11,1,5],[19,13,8,1],[23,9,1,4],[4,12,9,1],[6,10,7,1],[15,13,1,8],[18,19,9,1],[21,16,6,1],[6,3,8,1],[8,6,7,1],[6,16,5,1],[6,17,1,3],[2,14,1,6],[5,20,7,1],[9,18,4,1],[12,7,1,3],[24,9,5,1],[19,23,10,1],[19,24,1,3],[22,26,5,1],[3,23,1,4],[4,26,13,1],[7,23,9,1],[25,3,1,4],[23,20,1,3]],[[16,9],[3,3],[5,22],[20,21],[27,21],[27,11],[27,2],[19,2],[2,27],[27,27],[7,14]]],
 
-{"blocks":[{"location":{"x":0,"y":0},"size":{"width":1,"height":30}},{"location":{"x":1,"y":29},"size":{"width":29,"height":1}},{"location":{"x":29,"y":1},"size":{"width":1,"height":28}},{"location":{"x":1,"y":0},"size":{"width":29,"height":1}},{"location":{"x":3,"y":3},"size":{"width":1,"height":4}},{"location":{"x":4,"y":6},"size":{"width":3,"height":1}},{"location":{"x":6,"y":3},"size":{"width":1,"height":3}},{"location":{"x":4,"y":3},"size":{"width":2,"height":1}},{"location":{"x":23,"y":3},"size":{"width":4,"height":1}},{"location":{"x":23,"y":4},"size":{"width":1,"height":3}},{"location":{"x":24,"y":6},"size":{"width":3,"height":1}},{"location":{"x":26,"y":4},"size":{"width":1,"height":2}},{"location":{"x":9,"y":3},"size":{"width":1,"height":8}},{"location":{"x":3,"y":10},"size":{"width":6,"height":1}},{"location":{"x":20,"y":3},"size":{"width":1,"height":8}},{"location":{"x":21,"y":10},"size":{"width":6,"height":1}},{"location":{"x":13,"y":3},"size":{"width":1,"height":11}},{"location":{"x":3,"y":13},"size":{"width":10,"height":1}},{"location":{"x":16,"y":3},"size":{"width":1,"height":11}},{"location":{"x":17,"y":13},"size":{"width":10,"height":1}},{"location":{"x":3,"y":16},"size":{"width":5,"height":1}},{"location":{"x":10,"y":16},"size":{"width":4,"height":1}},{"location":{"x":16,"y":16},"size":{"width":4,"height":1}},{"location":{"x":22,"y":16},"size":{"width":5,"height":1}},{"location":{"x":26,"y":17},"size":{"width":1,"height":4}},{"location":{"x":3,"y":17},"size":{"width":1,"height":4}},{"location":{"x":6,"y":19},"size":{"width":18,"height":1}},{"location":{"x":14,"y":20},"size":{"width":1,"height":8}},{"location":{"x":15,"y":20},"size":{"width":1,"height":8}},{"location":{"x":18,"y":26},"size":{"width":9,"height":1}},{"location":{"x":26,"y":23},"size":{"width":1,"height":3}},{"location":{"x":18,"y":23},"size":{"width":7,"height":1}},{"location":{"x":3,"y":26},"size":{"width":9,"height":1}},{"location":{"x":3,"y":23},"size":{"width":1,"height":3}},{"location":{"x":5,"y":23},"size":{"width":7,"height":1}}],"spawns":[{"x":2,"y":27},{"x":27,"y":27},{"x":27,"y":2},{"x":2,"y":2},{"x":6,"y":8},{"x":22,"y":8},{"x":19,"y":11},{"x":10,"y":11},{"x":5,"y":18},{"x":24,"y":18},{"x":17,"y":25},{"x":12,"y":25},{"x":17,"y":2},{"x":12,"y":2}]},
+[[[0,0,1,30],[1,29,29,1],[29,1,1,28],[1,0,29,1],[3,3,1,4],[4,6,3,1],[6,3,1,3],[4,3,2,1],[23,3,4,1],[23,4,1,3],[24,6,3,1],[26,4,1,2],[9,3,1,8],[3,10,6,1],[20,3,1,8],[21,10,6,1],[13,3,1,11],[3,13,10,1],[16,3,1,11],[17,13,10,1],[3,16,5,1],[10,16,4,1],[16,16,4,1],[22,16,5,1],[26,17,1,4],[3,17,1,4],[6,19,18,1],[14,20,1,8],[15,20,1,8],[18,26,9,1],[26,23,1,3],[18,23,7,1],[3,26,9,1],[3,23,1,3],[5,23,7,1]],[[2,27],[27,27],[27,2],[2,2],[6,8],[22,8],[19,11],[10,11],[5,18],[24,18],[17,25],[12,25],[17,2],[12,2]]],
 
-{"blocks":[{"location":{"x":0,"y":0},"size":{"width":1,"height":20}},{"location":{"x":1,"y":19},"size":{"width":39,"height":1}},{"location":{"x":39,"y":0},"size":{"width":1,"height":19}},{"location":{"x":1,"y":0},"size":{"width":38,"height":1}},{"location":{"x":37,"y":1},"size":{"width":1,"height":2}},{"location":{"x":38,"y":1},"size":{"width":1,"height":2}},{"location":{"x":3,"y":16},"size":{"width":4,"height":1}},{"location":{"x":6,"y":13},"size":{"width":1,"height":3}},{"location":{"x":3,"y":13},"size":{"width":3,"height":1}},{"location":{"x":3,"y":14},"size":{"width":1,"height":2}},{"location":{"x":11,"y":16},"size":{"width":1,"height":3}},{"location":{"x":36,"y":13},"size":{"width":1,"height":4}},{"location":{"x":33,"y":16},"size":{"width":3,"height":1}},{"location":{"x":32,"y":11},"size":{"width":1,"height":3}},{"location":{"x":33,"y":12},"size":{"width":1,"height":1}},{"location":{"x":31,"y":12},"size":{"width":1,"height":1}},{"location":{"x":29,"y":7},"size":{"width":8,"height":1}},{"location":{"x":29,"y":5},"size":{"width":8,"height":1}},{"location":{"x":29,"y":6},"size":{"width":1,"height":1}},{"location":{"x":36,"y":6},"size":{"width":1,"height":1}},{"location":{"x":15,"y":6},"size":{"width":1,"height":11}},{"location":{"x":19,"y":8},"size":{"width":1,"height":11}},{"location":{"x":4,"y":4},"size":{"width":13,"height":1}},{"location":{"x":7,"y":3},"size":{"width":1,"height":1}},{"location":{"x":10,"y":2},"size":{"width":1,"height":1}},{"location":{"x":13,"y":1},"size":{"width":1,"height":1}},{"location":{"x":22,"y":3},"size":{"width":3,"height":1}},{"location":{"x":24,"y":1},"size":{"width":1,"height":2}},{"location":{"x":25,"y":7},"size":{"width":1,"height":9}},{"location":{"x":26,"y":13},"size":{"width":2,"height":1}},{"location":{"x":23,"y":9},"size":{"width":2,"height":1}},{"location":{"x":7,"y":9},"size":{"width":5,"height":1}},{"location":{"x":16,"y":9},"size":{"width":1,"height":2}},{"location":{"x":18,"y":13},"size":{"width":1,"height":2}}],"spawns":[{"x":2,"y":2},{"x":2,"y":11},{"x":8,"y":17},{"x":10,"y":11},{"x":8,"y":6},{"x":20,"y":2},{"x":27,"y":2},{"x":34,"y":2},{"x":34,"y":10},{"x":30,"y":14},{"x":23,"y":11},{"x":21,"y":17}]}
+[[[0,0,1,20],[1,19,39,1],[39,0,1,19],[1,0,38,1],[37,1,1,2],[38,1,1,2],[3,16,4,1],[6,13,1,3],[3,13,3,1],[3,14,1,2],[11,16,1,3],[36,13,1,4],[33,16,3,1],[32,11,1,3],[33,12,1,1],[31,12,1,1],[29,7,8,1],[29,5,8,1],[29,6,1,1],[36,6,1,1],[15,6,1,11],[19,8,1,11],[4,4,13,1],[7,3,1,1],[10,2,1,1],[13,1,1,1],[22,3,3,1],[24,1,1,2],[25,7,1,9],[26,13,2,1],[23,9,2,1],[7,9,5,1],[16,9,1,2],[18,13,1,2]],[[2,2],[2,11],[8,17],[10,11],[8,6],[20,2],[27,2],[34,2],[34,10],[30,14],[23,11],[21,17]]]
 
 ];
 
@@ -217,28 +217,30 @@ function loadMap(map) {
         WIDTH: 50,
         HEIGHT: 50
     };
-    for(var i = 0;i<map.blocks.length;i++) {
-        var b = map.blocks[i];
+    for(var i = 0;i<map[0].length;i++) {
+        var b = map[0][i];
 
         var location = {
-            x: b.location.x * BLOCK_SIZE.WIDTH,
-            y: b.location.y * BLOCK_SIZE.HEIGHT
+            x: b[0] * BLOCK_SIZE.WIDTH,
+            y: b[1] * BLOCK_SIZE.HEIGHT
         };
 
         var size = {
-            width: b.size.width * BLOCK_SIZE.WIDTH,
-            height: b.size.height * BLOCK_SIZE.HEIGHT
+            width: b[2] * BLOCK_SIZE.WIDTH,
+            height: b[3] * BLOCK_SIZE.HEIGHT
         };
         game.addObject(new Block(location,size));
     }
+    
     var spawns = [];
-    for(var i = 0;i<map.spawns.length;i++) {
-        var s = map.spawns[i];
+    for(var i = 0;i<map[1].length;i++) {
+        var s = map[1][i];
         spawns.push({
-            x: s.x * BLOCK_SIZE.WIDTH,
-            y: s.y * BLOCK_SIZE.HEIGHT
+            x: s[0] * BLOCK_SIZE.WIDTH,
+            y: s[1] * BLOCK_SIZE.HEIGHT
         });
     }
+    
     game.setSpawnLocations(spawns);
 }
 
