@@ -61,10 +61,17 @@ class Player extends GameObject {
 		this.POWER_PER_SHOT = 10;
 		this.ALPHA_CHANGE = 0.1;
 		this.RESPAWN_TIME = 3 * 60;
-		this.TELEPORT_TIME = 3 * 60;
 		this.LOC_PROXIMITY = 5;
 		this.MOVE_EASE = 4;
 		this.HEALTH_RATE = 4 / 60;
+		
+		if (typeof global === 'undefined') {
+			// Client.
+			this.TELEPORT_TIME = 3 * 60;
+		} else {
+			// Server.
+			this.TELEPORT_TIME = 3 * 50;
+		}
 
 		this.teleportTime = this.TELEPORT_TIME;
 		
