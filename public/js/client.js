@@ -214,7 +214,6 @@ function drawGame() {
     
     // Loop through the game objects.
     game.getGameObjects().forEach(function(g) {
-
         // If the game object has something to draw.
         if(g.getTex() != null) {
 
@@ -272,7 +271,50 @@ function drawGame() {
     var oldAlpha = context.globalAlpha;
 
     drawLeaderBoard();
+    drawMap();
+}
 
+function drawMap() {
+    var oldAlpha = context.globalAlpha;
+
+    var map = {
+        x: canvas.width - 204,
+        y: canvas.height - 204,
+        width: 200,
+        height: 200,
+        scale: 8
+    }
+    
+    var tex = new Image();
+
+    var players = game.getAllPlayers();
+
+    context.globalAlpha = LEADERBOARD_ALPHA;
+
+    context.fillStyle = '#000000';
+    context.fillRect(map.x, map.y, map.width, map.height);
+    
+    for (var i=0; i < players.length; i++) {
+        if (players[i].isDead()) {
+            continue;
+        }
+
+        var pl = players[i].getLoc();
+        
+        var mapLoc = {
+            x: ((pl.x - 50) / (game.mapBounds.max.x - 23)) * map.width + map.x,
+            y: ((pl.y - 50) / (game.mapBounds.max.y - 64)) * map.height + map.y
+        }
+
+        if (typeof player === 'undefined' || player.getId() !== players[i].getId()) {
+            tex.src = 'img/player2.png'; 
+        } else {
+            tex.src = 'img/player.png';
+        }
+        
+        context.drawImage(tex, mapLoc.x, mapLoc.y, map.scale, map.scale);
+    }
+    
     context.globalAlpha = oldAlpha;
 }
 
@@ -343,6 +385,8 @@ function drawKD(loc, deltaX, deltaY, g, objSize) {
 }
 
 function drawLeaderBoard() {
+    var oldAlpha = context.globalAlpha;
+
      // Leaderboard.
     var leaders = game.getLeaders();
     var ltp = {
@@ -391,6 +435,8 @@ function drawLeaderBoard() {
     for (var i = 0; i < leaders.length; i++) {
         context.fillText(leaders[i].getLeaderString(), ltp.x, ltp.y + i * ltp.height);
     }
+    
+    context.globalAlpha = oldAlpha;
 }
 
 function processMovement(i) {
