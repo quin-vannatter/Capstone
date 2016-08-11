@@ -134,7 +134,6 @@ function keyEvent(e) {
 
 // When the user clicks on the canvas.
 function canvasDraw(e) {
-
     // Add if mouse button 1, reset adding if button 2.
     if(clicking) {
 
@@ -231,23 +230,15 @@ function addBlock(coords) {
     if(!found) {
         // If the block being added is the first block.
         if(addingBlock) {
-            newBlock = {
-                location: coords,
-                size: {
-                    width: 1,
-                    height: 1
-                }
-            }
+            newBlock = [coords.x,coords.y,1,1];
         } else {
             var size = {
                 width: coords.x - newBlock[0] + 1,
                 height: coords.y - newBlock[1] + 1
             }
             var onWidth = Math.max(size.width, size.height) == size.width;
-            newBlock.size = {
-                width: onWidth ? size.width : 1,
-                height: onWidth ? 1 : size.height
-            }
+            newBlock[2] = onWidth ? size.width : 1;
+            newBlock[3] = onWidth ? 1 : size.height;
             blocks.push(newBlock);
         }
     }
