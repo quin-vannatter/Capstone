@@ -179,6 +179,14 @@ io.on('connection', function (socket) {
         var player = game.getPlayerById(socket.playerId);
         
         if (player.canTeleport()) {
+            if (game.getDistance(data, player.getLoc()) > player.getMaxTeleport()) {
+                var newVector = Vector.multiply(Vector.normalize(Vector.delta(data, player.getLoc())), player.getMaxTeleport());
+                data = {
+                    x: player.getLoc().x + newVector.x,
+                    y: player.getLoc().y + newVector.y
+                }
+            }
+
             player.teleport(data);
 
             var returnData = {

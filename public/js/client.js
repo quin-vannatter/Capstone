@@ -488,18 +488,16 @@ function processMouse(i, io) {
 
         var mapBounds = game.mapBounds;
 
-        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width,mouseLoc.x),mapBounds.min.x);
-        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height,mouseLoc.y),mapBounds.min.y);
-
         if (game.getDistance(mouseLoc, player.getLoc()) > player.getMaxTeleport()) {
-            console.log('too far');
-
             var newVector = Vector.multiply(Vector.normalize(Vector.delta(mouseLoc, player.getLoc())), player.getMaxTeleport());
             mouseLoc = {
                 x: player.getLoc().x + newVector.x,
                 y: player.getLoc().y + newVector.y
             }
         }
+
+        mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width,mouseLoc.x),mapBounds.min.x);
+        mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height,mouseLoc.y),mapBounds.min.y);
 
         player.teleport(mouseLoc);
 
