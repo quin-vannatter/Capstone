@@ -192,7 +192,7 @@ function addSpawn(coords) {
     }
 
     if(!found) {
-        spawns.push(coords);
+        spawns.push([coords.x,coords.y]);
     }
 
     // Draw the current blocks.
