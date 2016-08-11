@@ -277,14 +277,16 @@ function drawGame() {
 function drawMap() {
     var oldAlpha = context.globalAlpha;
 
+    var mapWidth = (game.mapBounds.max.x - game.mapBounds.min.x) / (game.mapBounds.max.y - game.mapBounds.min.y) * 200;
+
     var map = {
-        x: canvas.width - 204,
+        x: canvas.width - mapWidth - 4,
         y: canvas.height - 204,
-        width: 200,
+        width: mapWidth,
         height: 200,
         pieceSize: {
-            x: 50 / (game.mapBounds.max.x - game.mapBounds.min.x) * 200,
-            y: 50 / (game.mapBounds.max.y - game.mapBounds.min.y) * 200,
+            x: 8,
+            y: 8,
         }
     }
     
