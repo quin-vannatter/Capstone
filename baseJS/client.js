@@ -150,7 +150,7 @@ function initSocket(spectate) {
             }
             
             // Update the health if it is off by a lot.
-            if (Math.abs(updatingPlayer.getHealth() - data[i].health) > 5) {
+            if (Math.abs(updatingPlayer.getHealth() - data[i].health) > 50) {
                 updatingPlayer.setHealth(data[i].health);
             }
 
