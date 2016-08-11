@@ -102,6 +102,7 @@ class Player extends GameObject {
 
 		this.playerName = name;
 		this.score = 0;
+		this.maxTeleport = 500;
     }
 
 	setName(newName) {
@@ -275,6 +276,10 @@ class Player extends GameObject {
 				this.teleportTime = this.TELEPORT_TIME;
 			}
 		}
+	}
+
+	getMaxTeleport() {
+		return this.maxTeleport;
 	}
 
 	addHealth(healthAmount) {

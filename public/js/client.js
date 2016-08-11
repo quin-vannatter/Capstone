@@ -491,11 +491,19 @@ function processMouse(i, io) {
         mouseLoc.x = Math.max(Math.min(mapBounds.max.x - size.width,mouseLoc.x),mapBounds.min.x);
         mouseLoc.y = Math.max(Math.min(mapBounds.max.y - size.height,mouseLoc.y),mapBounds.min.y);
 
-        if(!intersectingPlayer(mouseLoc)) { 
-            player.teleport(mouseLoc)
+        if (game.getDistance(mouseLoc, player.getLoc()) > player.getMaxTeleport()) {
+            console.log('too far');
 
-            socket.emit('teleport attempt', mouseLoc);
-        };
+            var newVector = Vector.multiply(Vector.normalize(Vector.delta(mouseLoc, player.getLoc())), player.getMaxTeleport());
+            mouseLoc = {
+                x: player.getLoc().x + newVector.x,
+                y: player.getLoc().y + newVector.y
+            }
+        }
+
+        player.teleport(mouseLoc);
+
+        socket.emit('teleport attempt', mouseLoc);
     }
 
     if (i.shoot && !io.shoot) {
@@ -509,22 +517,6 @@ function processMouse(i, io) {
             socket.emit('shot attempt', mouseLoc);
         }
     }
-}
-
-function intersectingPlayer(location) {
-    var found = false;
-    game.getGameObjects().forEach(function(g) {
-        if(g.constructor.name === "Player") {
-            var loc = g.getLoc();
-            var size = g.getSize();
-
-            if(location.x > loc.x && location.x < loc.x + size.width && 
-                location.y > loc.y && location.y < loc.y + size.height ){
-                    found = true;
-            }
-        }
-    });
-    return found;
 }
 
 function updateInput() {
