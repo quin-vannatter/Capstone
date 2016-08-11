@@ -17,26 +17,23 @@ class Shot extends GameObject {
     constructor(srcId, srcLoc, srcSize, destination) {
 		const TEXTURE = 'img/shot.png';
 		const TEXTURE2 = 'img/shot2.png';
-		const SIZE = {
-			width: 13,
-			height: 13
-		};
+		
 		const SPEED = 7;
 		const MAX_DISTANCE = 900;
 		const SHOT_DAMAGE = 15;
 
 		if (arguments.length === 3) {
-        	super(TEXTURE2, srcLoc, SIZE, SPEED, srcSize, true);
+        	super(TEXTURE2, srcLoc, 13, 13, SPEED, srcSize, true);
 		} else {
 			var loc = {
-				x: srcLoc.x + srcSize.width / 2,
-				y: srcLoc.y + srcSize.height / 2
+				x: (srcLoc.x + srcSize.width / 2) - 13/2,
+				y: (srcLoc.y + srcSize.height / 2) - 13/2
 			};
 			
 			var vector = Vector.normalize(Vector.delta(destination, loc));
 			var velocity = Vector.multiply(vector, SPEED);
 		
-        	super(TEXTURE, loc, SIZE, SPEED, velocity, true);
+        	super(TEXTURE, loc, 13, 13, SPEED, velocity, true);
 		}
 		
 		this.ownerId = srcId;

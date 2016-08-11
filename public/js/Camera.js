@@ -18,7 +18,7 @@ class Camera extends GameObject {
 			y: focus.getLoc().y
 		};
 		
-        super(null, location, {width: 0, height: 0}, 0, Vector.zero(), 0);
+        super(null, location, 0, 0, 0, Vector.zero(), 0);
 		
 		// Set the focus.
 		this.CAMERA_SPEED = 18;

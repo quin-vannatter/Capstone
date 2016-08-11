@@ -17,7 +17,7 @@ class Player extends GameObject {
 		const SPEED = 3.5;
 		const MAX_HEALTH = 100;
 
-		super(texture, location, SIZE, SPEED, Vector.zero(), true);
+		super(texture, location, 50, 50, SPEED, Vector.zero(), true);
 
 		this.playerId = playerId;
 		this.currentHealth = MAX_HEALTH;

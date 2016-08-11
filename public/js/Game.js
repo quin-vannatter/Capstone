@@ -30,7 +30,8 @@
         for(var i = this.gameObjects.length-1; i >= 0; i--) {
             var g1 = this.gameObjects[i];
 
-            if(g1.getDestroy()) { 
+            if(g1.getDestroy()) {
+                this.gameObjects[i] = null;
 				this.gameObjects.splice(i,1);
 				continue;
 			}

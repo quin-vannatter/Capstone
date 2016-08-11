@@ -497,6 +497,7 @@ function processMouse(i, io) {
         };
     }
 
+    /*
     if (i.shoot && !io.shoot) {
         var mouseLoc = {
             x: input.getCursor().x,
@@ -507,6 +508,16 @@ function processMouse(i, io) {
             // Send shot request to server.
             socket.emit('shot attempt', mouseLoc);
         }
+    }
+    */
+    var mouseLoc = {
+        x: input.getCursor().x,
+        y: input.getCursor().y
+    };
+
+    if (game.attemptShot(player.getId(), mouseLoc) !== null) {
+        // Send shot request to server.
+        socket.emit('shot attempt', mouseLoc);
     }
 }
 
