@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
     blocks = [];
     spawns = [];
     actions = [];
+	
+	starterBlocks();
 
     // The user starts by adding a block.
     addingBlock = true;
@@ -97,10 +99,18 @@ document.addEventListener('DOMContentLoaded', function() {
     context = canvas.getContext('2d');
 
     // Draw the grid.
-    drawGrid();
+    drawBlocks(false);
 });
 
+function starterBlocks() {
+	blocks.push([0,0,mapSize.width,1]);
+	blocks.push([0,1,1,mapSize.height - 2]);
+	blocks.push([mapSize.width - 1,1,1,mapSize.height - 2]);
+	blocks.push([0,mapSize.height - 1, mapSize.width, 1]);
+}
+
 function loadCanvas() {
+	
     var values = {
         mw: document.getElementById('mapWidth').value,
         mh: document.getElementById('mapHeight').value,
@@ -120,6 +130,12 @@ function loadCanvas() {
     
     canvas.width = mapSize.width * blockSize.width;
     canvas.height = mapSize.height * blockSize.height;
+	
+    blocks = [];
+    spawns = [];
+    actions = [];
+	
+	starterBlocks();
 
     addingBlock = true;
     drawBlocks(false);
@@ -307,7 +323,7 @@ function getBlocks() {
 // Loads a json object into the map editor.
 function loadBlocks() {
     map = JSON.parse(document.getElementById('jsonValue').value);
-
+	
     blocks = map[0];
     spawns = map[1];
 
