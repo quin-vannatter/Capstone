@@ -51,8 +51,10 @@ class Camera extends GameObject {
 	}
 	
 	update() {
-		this.loc.x += ((this.focus.getLoc().x - this.center.width) - this.loc.x)/this.CAMERA_SPEED;
-		this.loc.y += ((this.focus.getLoc().y - this.center.height) - this.loc.y)/this.CAMERA_SPEED;
+		if (typeof this.focus !== 'undefined') {
+			this.loc.x += ((this.focus.getLoc().x - this.center.width) - this.loc.x)/this.CAMERA_SPEED;
+			this.loc.y += ((this.focus.getLoc().y - this.center.height) - this.loc.y)/this.CAMERA_SPEED;
+		}
 	}
 	
 	reCenter() {

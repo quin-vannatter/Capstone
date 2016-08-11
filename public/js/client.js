@@ -179,7 +179,7 @@ function startGame(e) {
 }
 
 function findFocus() {
-
+    spectateIndex = -1;
     var players = game.getAllPlayers();
 
     if(players.length > 0) {
@@ -204,7 +204,6 @@ function findFocus() {
 }
 
 function drawGame() {
-
     // Draw the background for the canvas.
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -270,8 +269,10 @@ function drawGame() {
     
     var oldAlpha = context.globalAlpha;
 
-    drawLeaderBoard();
-    drawMap();
+    if (typeof player !== 'undefined') {
+        drawLeaderBoard();
+        drawMap();
+    }
 }
 
 function drawMap() {
@@ -497,7 +498,6 @@ function processMouse(i, io) {
         };
     }
 
-    /*
     if (i.shoot && !io.shoot) {
         var mouseLoc = {
             x: input.getCursor().x,
@@ -508,16 +508,6 @@ function processMouse(i, io) {
             // Send shot request to server.
             socket.emit('shot attempt', mouseLoc);
         }
-    }
-    */
-    var mouseLoc = {
-        x: input.getCursor().x,
-        y: input.getCursor().y
-    };
-
-    if (game.attemptShot(player.getId(), mouseLoc) !== null) {
-        // Send shot request to server.
-        socket.emit('shot attempt', mouseLoc);
     }
 }
 
