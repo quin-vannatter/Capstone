@@ -1,3 +1,11 @@
+/* Camera.js
+ * Used as a dynamic camera for the game.
+ * 
+ * Revision History
+ *		Quinlan Vannatter & Jermey Buick, 2016.07.27: Created.
+ *
+ */
+
 'use strict';
 
 class Camera extends GameObject {

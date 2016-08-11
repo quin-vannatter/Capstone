@@ -1,3 +1,11 @@
+/* Vector.js
+ * Has methods for normalizing vectors.
+ * 
+ * Revision History
+ *		Quinlan Vannatter & Jermey Buick, 2016.07.28: Created.
+ *
+ */
+
 'use strict';
 
 class Vector {

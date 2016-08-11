@@ -1,3 +1,11 @@
+/* Player.js
+ * The class for a player of the game.
+ * 
+ * Revision History
+ *		Quinlan Vannatter & Jermey Buick, 2016.07.27: Created.
+ *
+ */
+
 'use strict';
 
 class Shot extends GameObject {

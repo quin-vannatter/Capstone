@@ -1,3 +1,11 @@
+/* GameObject.js
+ * An object that is drawn on the canvas.
+ * 
+ * Revision History
+ *		Quinlan Vannatter & Jermey Buick, 2016.07.27: Created.
+ *
+ */
+
 'use strict';
 
 class GameObject {
