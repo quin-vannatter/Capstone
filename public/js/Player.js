@@ -102,7 +102,7 @@ class Player extends GameObject {
 
 		this.playerName = name;
 		this.score = 0;
-		this.maxTeleport = 500;
+		this.maxTeleport = 1000;
     }
 
 	setName(newName) {
