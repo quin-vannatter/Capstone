@@ -390,13 +390,17 @@ function drawLeaderBoard() {
      // Leaderboard.
     var leaders = game.getLeaders();
     var ltp = {
-        x: 10,
-        y: 60,
+        x: 14,
+        y: 64,
         height: 20,
-        headY: 25,
+        headY: 29,
         baseWidth: 200,
         baseHeight: 47,
-        heightPerPlayer: 20
+        heightPerPlayer: 20,
+        kdLoc: {
+            x: 16,
+            y: 47
+        }
     };
 
     // Get the max name length.
@@ -418,7 +422,7 @@ function drawLeaderBoard() {
     context.globalAlpha = LEADERBOARD_ALPHA;
 
     context.fillStyle = '#000000';
-    context.fillRect(0, 0, Math.max(ltp.baseWidth, maxNameLength), ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
+    context.fillRect(4, 4, Math.max(ltp.baseWidth, maxNameLength), ltp.baseHeight + (leaders.length * ltp.heightPerPlayer));
     
     context.globalAlpha = 1;
 
@@ -428,7 +432,7 @@ function drawLeaderBoard() {
     context.fillText('SCOREBOARD', ltp.x, ltp.headY);
 
     context.font = TEXT_KD_HEADER;
-    context.fillText('K/D', 12, 43);
+    context.fillText('K/D', ltp.kdLoc.x, ltp.kdLoc.y);
 
     context.font = TEXT_LEADER;
 
