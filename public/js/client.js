@@ -282,7 +282,10 @@ function drawMap() {
         y: canvas.height - 204,
         width: 200,
         height: 200,
-        scale: 8
+        pieceSize: {
+            x: 50 / (game.mapBounds.max.x - game.mapBounds.min.x) * 200,
+            y: 50 / (game.mapBounds.max.y - game.mapBounds.min.y) * 200,
+        }
     }
     
     var tex = new Image();
@@ -300,10 +303,10 @@ function drawMap() {
         }
 
         var pl = players[i].getLoc();
-        
+
         var mapLoc = {
-            x: ((pl.x - 50) / (game.mapBounds.max.x - 23)) * map.width + map.x,
-            y: ((pl.y - 50) / (game.mapBounds.max.y - 64)) * map.height + map.y
+            x: ((pl.x - game.mapBounds.min.x) / (game.mapBounds.max.x - game.mapBounds.min.x)) * map.width + map.x,
+            y: ((pl.y - game.mapBounds.min.y) / (game.mapBounds.max.y - game.mapBounds.min.y)) * map.height + map.y
         }
 
         if (typeof player === 'undefined' || player.getId() !== players[i].getId()) {
@@ -312,7 +315,7 @@ function drawMap() {
             tex.src = 'img/player.png';
         }
         
-        context.drawImage(tex, mapLoc.x, mapLoc.y, map.scale, map.scale);
+        context.drawImage(tex, mapLoc.x, mapLoc.y, map.pieceSize.x, map.pieceSize.y);
     }
     
     context.globalAlpha = oldAlpha;
