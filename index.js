@@ -63,12 +63,12 @@ http.listen(port, function () {
 var currentMap = 2;
 
 var gameJS = new require('./public/js/Game.js');
-GLOBAL.GameObject = require('./public/js/GameObject.js');
+global.GameObject = require('./public/js/GameObject.js');
 
-GLOBAL.Player = require('./public/js/Player.js');
-GLOBAL.Block = require('./public/js/Block.js');
-GLOBAL.Shot = require('./public/js/Shot.js');
-GLOBAL.Vector = require('./public/js/Vector.js');
+global.Player = require('./public/js/Player.js');
+global.Block = require('./public/js/Block.js');
+global.Shot = require('./public/js/Shot.js');
+global.Vector = require('./public/js/Vector.js');
 
 const SYNC_INTERVAL = 0.1 * 60;
 var currentSync = SYNC_INTERVAL;
